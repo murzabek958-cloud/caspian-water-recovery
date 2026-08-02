@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LingoVa Pro — Тілді Ойын арқылы Үйрен</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-orb orb1"></div>
+    <div class="auth-orb orb2"></div>
+    <div class="auth-orb orb3"></div>
+  </div>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <span class="logo-bird">🦜</span>
+      <span class="logo-text">LingoVa</span>
+      <div class="logo-tagline">Тілді ойын арқылы үйрен</div>
+    </div>
+    <div class="auth-card" id="login-card">
+      <h2 class="auth-title">Қош келдіңіз!</h2>
+      <div class="auth-form">
+        <div class="form-group">
+          <label>Пайдаланушы аты</label>
+          <input type="text" id="login-user" placeholder="Атыңызды жазыңыз" value="Ермек">
+        </div>
+        <div class="form-group">
+          <label>Құпиясөз</label>
+          <input type="password" id="login-pass" placeholder="••••••••" value="12345678">
+        </div>
+        <button class="auth-btn green" onclick="doLogin()">Кіру</button>
+        <div class="auth-divider"><span>немесе</span></div>
+        <button class="auth-btn blue" onclick="showRegister()">Тіркелу</button>
+        <button class="auth-btn ghost" onclick="doGuest()">👤 Қонақ ретінде</button>
+      </div>
+    </div>
+    <div class="auth-card hidden" id="register-card">
+      <h2 class="auth-title">Тіркелу</h2>
+      <div class="auth-form">
+        <div class="form-group">
+          <label>Толық аты</label>
+          <input type="text" id="reg-name" placeholder="Атыңызды жазыңыз">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Құпиясөз</label>
+          <input type="password" id="reg-pass" placeholder="Кемінде 8 символ">
+        </div>
+        <div class="lang-select-auth">
+          <label>Қай тілді үйренгіңіз келеді?</label>
+          <div class="lang-pills">
+            <div class="lang-pill active" onclick="selectAuthLang(this,'en')">🇬🇧 Ағылшын</div>
+            <div class="lang-pill" onclick="selectAuthLang(this,'de')">🇩🇪 Неміс</div>
+            <div class="lang-pill" onclick="selectAuthLang(this,'fr')">🇫🇷 Француз</div>
+            <div class="lang-pill" onclick="selectAuthLang(this,'es')">🇪🇸 Испан</div>
+            <div class="lang-pill" onclick="selectAuthLang(this,'ja')">🇯🇵 Жапон</div>
+            <div class="lang-pill" onclick="selectAuthLang(this,'ko')">🇰🇷 Корей</div>
+          </div>
+        </div>
+        <button class="auth-btn green" onclick="doRegister()">Тіркелу</button>
+        <button class="auth-btn ghost" onclick="showLogin()">← Артқа</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANG ONBOARDING -->
+<div id="onboarding-screen" class="onboarding-screen hidden">
+  <div class="onboard-inner">
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">🌍</div>
+      <h2>Қай тілді үйренгіңіз келеді?</h2>
+      <div class="ob-lang-grid" id="ob-lang-grid"></div>
+    </div>
+    <div class="ob-step hidden" id="ob-step-2">
+      <div class="ob-emoji">🎯</div>
+      <h2>Деңгейіңізді таңдаңыз</h2>
+      <div class="ob-levels">
+        <div class="ob-level" onclick="selectLevel('beginner',this)"><span>🐣</span><b>Жаңадан бастаушы</b><small>Тіл туралы ештеңе білмеймін</small></div>
+        <div class="ob-level" onclick="selectLevel('basic',this)"><span>📖</span><b>Негіз бар</b><small>Бірнеше сөздер білемін</small></div>
+        <div class="ob-level" onclick="selectLevel('intermediate',this)"><span>💪</span><b>Орта деңгей</b><small>Қарапайым сөйлемдер айта аламын</small></div>
+        <div class="ob-level" onclick="selectLevel('advanced',this)"><span>🚀</span><b>Жоғары деңгей</b><small>Жылтырату керек</small></div>
+      </div>
+    </div>
+    <div class="ob-step hidden" id="ob-step-3">
+      <div class="ob-emoji">⏱️</div>
+      <h2>Күніне қанша уақыт бөлесіз?</h2>
+      <div class="ob-goals">
+        <div class="ob-goal" onclick="selectGoal('casual',this)"><span>🌿</span><b>Бейресми</b><small>5 мин/күн</small></div>
+        <div class="ob-goal" onclick="selectGoal('regular',this)"><span>🔥</span><b>Тұрақты</b><small>10 мин/күн</small></div>
+        <div class="ob-goal" onclick="selectGoal('serious',this)"><span>⚡</span><b>Белсенді</b><small>20 мин/күн</small></div>
+        <div class="ob-goal" onclick="selectGoal('intense',this)"><span>💎</span><b>Интенсивті</b><small>30 мин/күн</small></div>
+      </div>
+    </div>
+    <div class="ob-nav">
+      <button class="auth-btn ghost small" id="ob-back" onclick="obBack()" style="display:none">← Артқа</button>
+      <button class="auth-btn green" id="ob-next" onclick="obNext()" disabled>Жалғастыру →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="main-app hidden">
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-left">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="logo" onclick="showPage('learn')">
+        <span class="logo-bird">🦜</span>
+        <span class="logo-name">LingoVa</span>
+      </div>
+    </div>
+    <div class="nav-center" id="nav-breadcrumb"></div>
+    <div class="nav-right">
+      <div class="nav-stat streak" onclick="showStreakModal()">
+        <span>🔥</span><span id="nav-streak">7</span>
+      </div>
+      <div class="nav-stat xp" onclick="showPage('stats')">
+        <span>⚡</span><span id="nav-xp">1240</span>
+      </div>
+      <div class="nav-stat hearts" onclick="showShopModal()">
+        <span>❤️</span><span id="nav-hearts">5</span>
+      </div>
+      <div class="nav-stat gems" onclick="showPage('shop')">
+        <span>💎</span><span id="nav-gems">320</span>
+      </div>
+      <div class="nav-avatar" onclick="showPage('profile')">
+        <div class="mini-avatar" id="nav-av">🦊</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT -->
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-profile" onclick="showPage('profile')">
+        <div class="sb-avatar-wrap">
+          <div class="sb-avatar" id="sb-av">🦊</div>
+          <div class="sb-level" id="sb-level">12</div>
+        </div>
+        <div class="sb-info">
+          <div class="sb-name" id="sb-name">Ермек</div>
+          <div class="sb-lang" id="sb-lang">🇬🇧 Ағылшын</div>
+        </div>
+      </div>
+      <div class="sb-xp-wrap">
+        <div class="sb-xp-bar"><div class="sb-xp-fill" id="sb-xp-fill" style="width:68%"></div></div>
+        <div class="sb-xp-label"><span id="sb-xp">1240</span> / <span id="sb-xp-max">1800</span> XP</div>
+      </div>
+
+      <nav class="sb-nav">
+        <div class="sb-item active" data-page="learn" onclick="showPage('learn',this)"><span class="sb-icon">🗺️</span><span>Үйрену</span></div>
+        <div class="sb-item" data-page="practice" onclick="showPage('practice',this)"><span class="sb-icon">🎯</span><span>Жаттығу</span></div>
+        <div class="sb-item" data-page="stories" onclick="showPage('stories',this)"><span class="sb-icon">📖</span><span>Оқиғалар</span></div>
+        <div class="sb-item" data-page="leaderboard" onclick="showPage('leaderboard',this)"><span class="sb-icon">🏆</span><span>Рейтинг</span></div>
+        <div class="sb-item" data-page="stats" onclick="showPage('stats',this)"><span class="sb-icon">📊</span><span>Статистика</span></div>
+        <div class="sb-item" data-page="shop" onclick="showPage('shop',this)"><span class="sb-icon">🛒</span><span>Дүкен</span></div>
+        <div class="sb-item" data-page="languages" onclick="showPage('languages',this)"><span class="sb-icon">🌍</span><span>Тілдер</span></div>
+        <div class="sb-item" data-page="profile" onclick="showPage('profile',this)"><span class="sb-icon">👤</span><span>Профиль</span></div>
+        <div class="sb-item" data-page="settings" onclick="showPage('settings',this)"><span class="sb-icon">⚙️</span><span>Баптаулар</span></div>
+      </nav>
+
+      <div class="sb-premium" onclick="showPremiumModal()">
+        <span>👑</span>
+        <div><b>Super Plus</b><small>Жарнамасыз, ❤️ шексіз</small></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="main-content">
+
+      <!-- ===== LEARN PAGE ===== -->
+      <div class="page active" id="page-learn">
+        <div class="page-header">
+          <div>
+            <div class="page-subtitle" id="learn-lang-label">🇬🇧 Ағылшын тілі</div>
+            <h1 class="page-title">Сабақ жолы</h1>
+          </div>
+          <button class="icon-btn" onclick="showPage('languages')">🌍 Тілді өзгерт</button>
+        </div>
+        <div id="course-path"></div>
+      </div>
+
+      <!-- ===== PRACTICE PAGE ===== -->
+      <div class="page" id="page-practice">
+        <div class="page-header"><h1 class="page-title">🎯 Жаттығу</h1></div>
+        <div class="practice-grid" id="practice-grid"></div>
+      </div>
+
+      <!-- ===== STORIES PAGE ===== -->
+      <div class="page" id="page-stories">
+        <div class="page-header"><h1 class="page-title">📖 Оқиғалар</h1></div>
+        <div class="stories-grid" id="stories-grid"></div>
+      </div>
+
+      <!-- ===== LEADERBOARD PAGE ===== -->
+      <div class="page" id="page-leaderboard">
+        <div class="page-header"><h1 class="page-title">🏆 Рейтинг</h1></div>
+        <div class="lb-page" id="lb-page"></div>
+      </div>
+
+      <!-- ===== STATS PAGE ===== -->
+      <div class="page" id="page-stats">
+        <div class="page-header"><h1 class="page-title">📊 Статистика</h1></div>
+        <div id="stats-content"></div>
+      </div>
+
+      <!-- ===== SHOP PAGE ===== -->
+      <div class="page" id="page-shop">
+        <div class="page-header">
+          <h1 class="page-title">🛒 Дүкен</h1>
+          <div class="shop-balance"><span>💎 <span id="shop-gems">320</span></span></div>
+        </div>
+        <div id="shop-content"></div>
+      </div>
+
+      <!-- ===== LANGUAGES PAGE ===== -->
+      <div class="page" id="page-languages">
+        <div class="page-header"><h1 class="page-title">🌍 Тіл таңда</h1></div>
+        <div id="lang-content"></div>
+      </div>
+
+      <!-- ===== PROFILE PAGE ===== -->
+      <div class="page" id="page-profile">
+        <div id="profile-content"></div>
+      </div>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <div class="page" id="page-settings">
+        <div class="page-header"><h1 class="page-title">⚙️ Баптаулар</h1></div>
+        <div id="settings-content"></div>
+      </div>
+
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel" id="right-panel">
+      <div class="rp-streak-card">
+        <div class="rp-section-title">🔥 Апталық серия</div>
+        <div class="rp-streak-num" id="rp-streak">7</div>
+        <div class="week-dots" id="week-dots"></div>
+      </div>
+      <div class="rp-goals-card">
+        <div class="rp-section-title">🎯 Күнделікті мақсат</div>
+        <div id="rp-goals"></div>
+      </div>
+      <div class="rp-lb-card">
+        <div class="rp-section-title">🏆 Апта рейтингі <a onclick="showPage('leaderboard')" style="cursor:pointer;color:var(--blue);font-size:12px;font-weight:700;float:right">Барлығы →</a></div>
+        <div id="rp-lb"></div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ===== LESSON MODAL ===== -->
+<div class="modal-overlay" id="lesson-modal">
+  <div class="lesson-modal" id="lesson-modal-inner">
+    <div class="lm-top">
+      <button class="lm-close" onclick="confirmQuit()">✕</button>
+      <div class="lm-prog-wrap"><div class="lm-prog-fill" id="lm-prog"></div></div>
+      <div class="lm-hearts" id="lm-hearts"></div>
+      <div class="lm-xp-badge" id="lm-xp-badge">⚡ 0</div>
+    </div>
+    <div class="lm-body" id="lm-body"></div>
+    <div class="lm-footer" id="lm-footer">
+      <div class="lm-feedback" id="lm-feedback"></div>
+      <button class="lm-btn" id="lm-btn" onclick="handleLessonBtn()">ТЕКСЕР</button>
+    </div>
+    <div class="lm-complete hidden" id="lm-complete"></div>
+  </div>
+</div>
+
+<!-- ===== STORY MODAL ===== -->
+<div class="modal-overlay" id="story-modal">
+  <div class="story-modal">
+    <button class="lm-close" onclick="closeModal('story-modal')" style="position:absolute;top:16px;right:16px">✕</button>
+    <div id="story-content"></div>
+  </div>
+</div>
+
+<!-- ===== STREAK MODAL ===== -->
+<div class="modal-overlay" id="streak-modal">
+  <div class="info-modal">
+    <div class="im-icon">🔥</div>
+    <h2 id="sm-title">7 Күнлік серия!</h2>
+    <p id="sm-body">Сіз 7 күн қатарынан үйрендіңіз. Тамаша!</p>
+    <div class="big-week-dots" id="big-week-dots"></div>
+    <button class="auth-btn green" onclick="closeModal('streak-modal')">Жабу</button>
+  </div>
+</div>
+
+<!-- ===== PREMIUM MODAL ===== -->
+<div class="modal-overlay" id="premium-modal">
+  <div class="premium-modal">
+    <div class="pm-header">
+      <div class="pm-crown">👑</div>
+      <h2>Super Plus</h2>
+      <p>Шексіз мүмкіндіктер</p>
+    </div>
+    <div class="pm-features">
+      <div class="pm-feat"><span>❤️</span> Шексіз жүрек</div>
+      <div class="pm-feat"><span>🚫</span> Жарнамасыз</div>
+      <div class="pm-feat"><span>⚡</span> 2X XP бонусы</div>
+      <div class="pm-feat"><span>🎨</span> Ерекше аватарлар</div>
+      <div class="pm-feat"><span>📊</span> Толық статистика</div>
+      <div class="pm-feat"><span>🌙</span> Тәжірибелік режим</div>
+    </div>
+    <div class="pm-plans">
+      <div class="pm-plan" onclick="selectPlan(this,'monthly')">
+        <div class="pm-plan-name">Ай сайын</div>
+        <div class="pm-plan-price">₸2,990</div>
+        <div class="pm-plan-sub">айына</div>
+      </div>
+      <div class="pm-plan best" onclick="selectPlan(this,'yearly')">
+        <div class="pm-plan-badge">ҮНЕМДІ</div>
+        <div class="pm-plan-name">Жылдық</div>
+        <div class="pm-plan-price">₸19,990</div>
+        <div class="pm-plan-sub">жылына · ₸1,665/ай</div>
+      </div>
+    </div>
+    <button class="auth-btn green" onclick="buyPremium()" style="width:100%;font-size:18px;padding:18px">👑 Super Plus алу</button>
+    <button class="auth-btn ghost small" onclick="closeModal('premium-modal')">Кейінірек</button>
+  </div>
+</div>
+
+<!-- QUIT CONFIRM -->
+<div class="modal-overlay" id="quit-modal">
+  <div class="info-modal" style="max-width:380px">
+    <div class="im-icon">😢</div>
+    <h2>Шығасыз ба?</h2>
+    <p>Сабақтың барлық прогресі жоғалады</p>
+    <div style="display:flex;gap:12px;width:100%">
+      <button class="auth-btn ghost" onclick="closeModal('quit-modal')" style="flex:1">Жалғастыру</button>
+      <button class="auth-btn" style="flex:1;background:var(--red);color:#fff" onclick="forceQuitLesson()">Шығу</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
