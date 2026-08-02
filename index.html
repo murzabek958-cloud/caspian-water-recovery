@@ -3,355 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LingoVa Pro — Тілді Ойын арқылы Үйрен</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<title>💧 Caspian Water Recovery</title>
+
+<!-- Leaflet карта -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg:      #0a0e1a;
+    --card:    #0d1b2a;
+    --border:  #1e3a5f;
+    --accent:  #00bcd4;
+    --text:    #e0e0e0;
+    --muted:   #90caf9;
+    --green:   #4caf50;
+    --orange:  #ff9800;
+    --red:     #f44336;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d47a1, #006064);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--accent);
+    position: sticky; top: 0; z-index: 1000;
+  }
+  header h1 { font-size: 20px; color: var(--accent); letter-spacing: .5px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted);
+  }
+  .dot {
+    width: 8px; height: 8px; background: var(--green);
+    border-radius: 50%; animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── BEST BANNER ── */
+  #bestBanner {
+    background: linear-gradient(90deg, #1a237e, #006064);
+    border-left: 4px solid var(--green);
+    padding: 12px 24px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  #bestBanner span { color: var(--green); font-weight: bold; }
+
+  /* ── MAIN GRID ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    padding: 16px 24px;
+  }
+  @media(max-width:768px) {
+    .main { grid-template-columns: 1fr; padding: 12px; }
+  }
+
+  /* ── MAP ── */
+  #map {
+    grid-row: 1 / 3;
+    height: 480px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    z-index: 1;
+  }
+  @media(max-width:768px) { #map { grid-row: auto; height: 320px; } }
+
+  /* ── CARDS ── */
+  .cards {
+    display: flex; flex-direction: column; gap: 10px;
+    overflow-y: auto; max-height: 480px;
+  }
+  @media(max-width:768px) {
+    .cards {
+      flex-direction: row; flex-wrap: wrap;
+      max-height: none; overflow: visible;
+    }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: transform .2s, border-color .2s;
+    flex: 1; min-width: 140px;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card.active { border-color: var(--accent); background: #0a2040; }
+  .card-city { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .card-index { font-size: 30px; font-weight: bold; }
+  .card-status { font-size: 11px; margin-bottom: 8px; }
+  .card-rows { font-size: 11px; }
+  .card-row { display:flex; justify-content:space-between; padding: 2px 0; color: var(--muted); }
+  .card-row b { color: var(--text); }
+  .card-tech {
+    margin-top: 8px; font-size: 10px; color: var(--accent);
+    background: #0a1628; padding: 4px 8px; border-radius: 5px;
+  }
+
+  /* ── CHARTS ── */
+  .charts {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .chart-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .chart-box h4 { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+
+  /* ── AI BOX ── */
+  .ai-box {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--card), #0a2744);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .ai-box h4 { color: var(--accent); margin-bottom: 10px; font-size: 14px; }
+  .ai-text { font-size: 13px; line-height: 1.8; color: #cfd8dc; }
+  .ai-text b { color: var(--green); }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 9999; gap: 16px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    text-align: center; padding: 14px;
+    color: #455a64; font-size: 11px;
+    border-top: 1px solid var(--border);
+  }
+
+  .refresh-btn {
+    background: var(--accent); color: #000;
+    border: none; border-radius: 6px;
+    padding: 6px 14px; font-size: 12px;
+    cursor: pointer; font-weight: bold;
+    margin-left: 12px;
+  }
+  .refresh-btn:hover { opacity: .85; }
+</style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
-<div id="auth-screen" class="auth-screen">
-  <div class="auth-bg">
-    <div class="auth-orb orb1"></div>
-    <div class="auth-orb orb2"></div>
-    <div class="auth-orb orb3"></div>
+<!-- LOADER -->
+<div id="loader">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:14px">Каспий деректері жүктелуде...</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <h1>💧 Caspian Water Recovery</h1>
+  <div class="live-badge">
+    <div class="dot"></div>
+    <span id="timeLabel">—</span>
+    <button class="refresh-btn" onclick="loadData()">🔄 Жаңарту</button>
   </div>
-  <div class="auth-container">
-    <div class="auth-logo">
-      <span class="logo-bird">🦜</span>
-      <span class="logo-text">LingoVa</span>
-      <div class="logo-tagline">Тілді ойын арқылы үйрен</div>
+</header>
+
+<!-- BEST BANNER -->
+<div id="bestBanner">⏳ Жүктелуде...</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- MAP -->
+  <div id="map"></div>
+
+  <!-- CARDS -->
+  <div class="cards" id="cards"></div>
+
+  <!-- CHARTS -->
+  <div class="charts">
+    <div class="chart-box">
+      <h4>📊 Конденсация индексі (%)</h4>
+      <canvas id="indexChart"></canvas>
     </div>
-    <div class="auth-card" id="login-card">
-      <h2 class="auth-title">Қош келдіңіз!</h2>
-      <div class="auth-form">
-        <div class="form-group">
-          <label>Пайдаланушы аты</label>
-          <input type="text" id="login-user" placeholder="Атыңызды жазыңыз" value="Ермек">
-        </div>
-        <div class="form-group">
-          <label>Құпиясөз</label>
-          <input type="password" id="login-pass" placeholder="••••••••" value="12345678">
-        </div>
-        <button class="auth-btn green" onclick="doLogin()">Кіру</button>
-        <div class="auth-divider"><span>немесе</span></div>
-        <button class="auth-btn blue" onclick="showRegister()">Тіркелу</button>
-        <button class="auth-btn ghost" onclick="doGuest()">👤 Қонақ ретінде</button>
-      </div>
+    <div class="chart-box">
+      <h4>💧 Ылғалдылық vs 🌡️ Температура</h4>
+      <canvas id="humidChart"></canvas>
     </div>
-    <div class="auth-card hidden" id="register-card">
-      <h2 class="auth-title">Тіркелу</h2>
-      <div class="auth-form">
-        <div class="form-group">
-          <label>Толық аты</label>
-          <input type="text" id="reg-name" placeholder="Атыңызды жазыңыз">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="reg-email" placeholder="email@example.com">
-        </div>
-        <div class="form-group">
-          <label>Құпиясөз</label>
-          <input type="password" id="reg-pass" placeholder="Кемінде 8 символ">
-        </div>
-        <div class="lang-select-auth">
-          <label>Қай тілді үйренгіңіз келеді?</label>
-          <div class="lang-pills">
-            <div class="lang-pill active" onclick="selectAuthLang(this,'en')">🇬🇧 Ағылшын</div>
-            <div class="lang-pill" onclick="selectAuthLang(this,'de')">🇩🇪 Неміс</div>
-            <div class="lang-pill" onclick="selectAuthLang(this,'fr')">🇫🇷 Француз</div>
-            <div class="lang-pill" onclick="selectAuthLang(this,'es')">🇪🇸 Испан</div>
-            <div class="lang-pill" onclick="selectAuthLang(this,'ja')">🇯🇵 Жапон</div>
-            <div class="lang-pill" onclick="selectAuthLang(this,'ko')">🇰🇷 Корей</div>
-          </div>
-        </div>
-        <button class="auth-btn green" onclick="doRegister()">Тіркелу</button>
-        <button class="auth-btn ghost" onclick="showLogin()">← Артқа</button>
-      </div>
-    </div>
+  </div>
+
+  <!-- AI BOX -->
+  <div class="ai-box">
+    <h4>🤖 AI Талдауы</h4>
+    <div class="ai-text" id="aiText">Жүктелуде...</div>
   </div>
 </div>
 
-<!-- LANG ONBOARDING -->
-<div id="onboarding-screen" class="onboarding-screen hidden">
-  <div class="onboard-inner">
-    <div class="ob-step" id="ob-step-1">
-      <div class="ob-emoji">🌍</div>
-      <h2>Қай тілді үйренгіңіз келеді?</h2>
-      <div class="ob-lang-grid" id="ob-lang-grid"></div>
-    </div>
-    <div class="ob-step hidden" id="ob-step-2">
-      <div class="ob-emoji">🎯</div>
-      <h2>Деңгейіңізді таңдаңыз</h2>
-      <div class="ob-levels">
-        <div class="ob-level" onclick="selectLevel('beginner',this)"><span>🐣</span><b>Жаңадан бастаушы</b><small>Тіл туралы ештеңе білмеймін</small></div>
-        <div class="ob-level" onclick="selectLevel('basic',this)"><span>📖</span><b>Негіз бар</b><small>Бірнеше сөздер білемін</small></div>
-        <div class="ob-level" onclick="selectLevel('intermediate',this)"><span>💪</span><b>Орта деңгей</b><small>Қарапайым сөйлемдер айта аламын</small></div>
-        <div class="ob-level" onclick="selectLevel('advanced',this)"><span>🚀</span><b>Жоғары деңгей</b><small>Жылтырату керек</small></div>
+<footer>
+  💧 Caspian Water Recovery &nbsp;|&nbsp;
+  I Халықаралық CASPIAN HACKATHON 2026 &nbsp;|&nbsp;
+  Деректер: OpenWeatherMap (нақты уақыт)
+</footer>
+
+<script>
+// ── Карта ──
+const map = L.map('map', { zoomControl: true }).setView([45.5, 51.5], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© CartoDB'
+}).addTo(map);
+
+let heatLayer = null;
+let markers   = [];
+let indexChart = null, humidChart = null;
+
+function getColor(i) {
+  return i >= 70 ? '#4caf50' : i >= 40 ? '#ff9800' : '#f44336';
+}
+function getLabel(i) {
+  return i >= 70 ? '🟢 ТИІМДІ' : i >= 40 ? '🟡 ОРТАША' : '🔴 ТИІМСІЗ';
+}
+
+function renderCards(data) {
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+  data.forEach((d, i) => {
+    const color = getColor(d.index);
+    const label = getLabel(d.index);
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.id = `card-${i}`;
+    div.innerHTML = `
+      <div class="card-city">📍 ${d.city}</div>
+      <div class="card-index" style="color:${color}">${d.index}%</div>
+      <div class="card-status" style="color:${color}">${label}</div>
+      <div class="card-rows">
+        <div class="card-row"><span>🌡️ Темп</span><b>${d.temp}°C</b></div>
+        <div class="card-row"><span>💧 Ылғал</span><b>${d.humidity}%</b></div>
+        <div class="card-row"><span>🌬️ Жел</span><b>${d.wind} м/с</b></div>
+        <div class="card-row"><span>🌫️ Шық</span><b>${d.dew}°C</b></div>
       </div>
-    </div>
-    <div class="ob-step hidden" id="ob-step-3">
-      <div class="ob-emoji">⏱️</div>
-      <h2>Күніне қанша уақыт бөлесіз?</h2>
-      <div class="ob-goals">
-        <div class="ob-goal" onclick="selectGoal('casual',this)"><span>🌿</span><b>Бейресми</b><small>5 мин/күн</small></div>
-        <div class="ob-goal" onclick="selectGoal('regular',this)"><span>🔥</span><b>Тұрақты</b><small>10 мин/күн</small></div>
-        <div class="ob-goal" onclick="selectGoal('serious',this)"><span>⚡</span><b>Белсенді</b><small>20 мин/күн</small></div>
-        <div class="ob-goal" onclick="selectGoal('intense',this)"><span>💎</span><b>Интенсивті</b><small>30 мин/күн</small></div>
+      <div class="card-tech">⚙️ ${d.tech}</div>
+    `;
+    div.onclick = () => {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      div.classList.add('active');
+      map.flyTo([d.lat, d.lon], 9, { duration: 1 });
+    };
+    container.appendChild(div);
+  });
+}
+
+function renderMap(data) {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  if (heatLayer) { map.removeLayer(heatLayer); }
+
+  const heatData = data.map(d => [d.lat, d.lon, d.index / 100]);
+  heatLayer = L.heatLayer(heatData, { radius: 60, blur: 40, minOpacity: 0.3 }).addTo(map);
+
+  data.forEach(d => {
+    const color = getColor(d.index);
+    const label = getLabel(d.index);
+    const circle = L.circleMarker([d.lat, d.lon], {
+      radius: d.index / 5 + 10,
+      color, fillColor: color,
+      fillOpacity: 0.7, weight: 2,
+    }).addTo(map);
+    circle.bindPopup(`
+      <div style="font-family:Arial;min-width:200px;padding:8px">
+        <h3 style="color:#00bcd4;margin:0 0 8px">💧 ${d.city}</h3>
+        <b>📊 Индекс:</b> ${d.index}%<br>
+        <b>🤖 AI:</b> ${label}<br><hr style="margin:6px 0">
+        <b>🌡️</b> ${d.temp}°C &nbsp;
+        <b>💧</b> ${d.humidity}% &nbsp;
+        <b>🌬️</b> ${d.wind} м/с<br>
+        <b>⚙️</b> ${d.tech}
       </div>
-    </div>
-    <div class="ob-nav">
-      <button class="auth-btn ghost small" id="ob-back" onclick="obBack()" style="display:none">← Артқа</button>
-      <button class="auth-btn green" id="ob-next" onclick="obNext()" disabled>Жалғастыру →</button>
-    </div>
-  </div>
-</div>
+    `, { maxWidth: 240 });
+    circle.bindTooltip(`${d.city}: ${d.index}% | ${label}`);
+    markers.push(circle);
+  });
+}
 
-<!-- MAIN APP -->
-<div id="main-app" class="main-app hidden">
+function renderCharts(data) {
+  const cities  = data.map(d => d.city);
+  const indexes = data.map(d => d.index);
+  const humids  = data.map(d => d.humidity);
+  const temps   = data.map(d => d.temp);
+  const colors  = data.map(d => getColor(d.index));
 
-  <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-left">
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
-      <div class="logo" onclick="showPage('learn')">
-        <span class="logo-bird">🦜</span>
-        <span class="logo-name">LingoVa</span>
-      </div>
-    </div>
-    <div class="nav-center" id="nav-breadcrumb"></div>
-    <div class="nav-right">
-      <div class="nav-stat streak" onclick="showStreakModal()">
-        <span>🔥</span><span id="nav-streak">7</span>
-      </div>
-      <div class="nav-stat xp" onclick="showPage('stats')">
-        <span>⚡</span><span id="nav-xp">1240</span>
-      </div>
-      <div class="nav-stat hearts" onclick="showShopModal()">
-        <span>❤️</span><span id="nav-hearts">5</span>
-      </div>
-      <div class="nav-stat gems" onclick="showPage('shop')">
-        <span>💎</span><span id="nav-gems">320</span>
-      </div>
-      <div class="nav-avatar" onclick="showPage('profile')">
-        <div class="mini-avatar" id="nav-av">🦊</div>
-      </div>
-    </div>
-  </nav>
+  const opts = {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#90caf9' } } },
+    scales: {
+      x: { ticks: { color: '#90caf9' }, grid: { color: '#1e3a5f' } },
+      y: { ticks: { color: '#90caf9' }, grid: { color: '#1e3a5f' } },
+    }
+  };
 
-  <!-- LAYOUT -->
-  <div class="app-layout">
+  if (indexChart) indexChart.destroy();
+  indexChart = new Chart(document.getElementById('indexChart'), {
+    type: 'bar',
+    data: {
+      labels: cities,
+      datasets: [{
+        label: 'Конденсация индексі (%)',
+        data: indexes,
+        backgroundColor: colors,
+        borderRadius: 6,
+      }]
+    },
+    options: { ...opts, scales: { ...opts.scales, y: { ...opts.scales.y, max: 100 } } }
+  });
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-profile" onclick="showPage('profile')">
-        <div class="sb-avatar-wrap">
-          <div class="sb-avatar" id="sb-av">🦊</div>
-          <div class="sb-level" id="sb-level">12</div>
-        </div>
-        <div class="sb-info">
-          <div class="sb-name" id="sb-name">Ермек</div>
-          <div class="sb-lang" id="sb-lang">🇬🇧 Ағылшын</div>
-        </div>
-      </div>
-      <div class="sb-xp-wrap">
-        <div class="sb-xp-bar"><div class="sb-xp-fill" id="sb-xp-fill" style="width:68%"></div></div>
-        <div class="sb-xp-label"><span id="sb-xp">1240</span> / <span id="sb-xp-max">1800</span> XP</div>
-      </div>
+  if (humidChart) humidChart.destroy();
+  humidChart = new Chart(document.getElementById('humidChart'), {
+    type: 'bar',
+    data: {
+      labels: cities,
+      datasets: [
+        { label: 'Ылғалдылық (%)', data: humids, backgroundColor: '#1565c0', borderRadius: 6 },
+        { label: 'Температура (°C)', data: temps, backgroundColor: '#b71c1c', borderRadius: 6 },
+      ]
+    },
+    options: opts
+  });
+}
 
-      <nav class="sb-nav">
-        <div class="sb-item active" data-page="learn" onclick="showPage('learn',this)"><span class="sb-icon">🗺️</span><span>Үйрену</span></div>
-        <div class="sb-item" data-page="practice" onclick="showPage('practice',this)"><span class="sb-icon">🎯</span><span>Жаттығу</span></div>
-        <div class="sb-item" data-page="stories" onclick="showPage('stories',this)"><span class="sb-icon">📖</span><span>Оқиғалар</span></div>
-        <div class="sb-item" data-page="leaderboard" onclick="showPage('leaderboard',this)"><span class="sb-icon">🏆</span><span>Рейтинг</span></div>
-        <div class="sb-item" data-page="stats" onclick="showPage('stats',this)"><span class="sb-icon">📊</span><span>Статистика</span></div>
-        <div class="sb-item" data-page="shop" onclick="showPage('shop',this)"><span class="sb-icon">🛒</span><span>Дүкен</span></div>
-        <div class="sb-item" data-page="languages" onclick="showPage('languages',this)"><span class="sb-icon">🌍</span><span>Тілдер</span></div>
-        <div class="sb-item" data-page="profile" onclick="showPage('profile',this)"><span class="sb-icon">👤</span><span>Профиль</span></div>
-        <div class="sb-item" data-page="settings" onclick="showPage('settings',this)"><span class="sb-icon">⚙️</span><span>Баптаулар</span></div>
-      </nav>
+function renderAI(data, best) {
+  document.getElementById('aiText').innerHTML = `
+    Қазақстанның Каспий жағалауындағы <b>${data.length} аймақтың</b>
+    нақты уақыттағы климаттық деректері талданды.<br>
+    <b>Ең тиімді аймақ: ${best.city}</b> —
+    конденсация индексі <b>${best.index}%</b>,
+    ылғалдылық ${best.humidity}%,
+    температура ${best.temp}°C,
+    шық нүктесі ${best.dew}°C.<br>
+    Ұсынылатын технология: <b>⚙️ ${best.tech}</b>.<br>
+    Буланған судың белгілі бір бөлігін конденсация арқылы қайтару —
+    Каспийдің су балансын қалпына келтірудің энергия тиімді жолы.
+  `;
+}
 
-      <div class="sb-premium" onclick="showPremiumModal()">
-        <span>👑</span>
-        <div><b>Super Plus</b><small>Жарнамасыз, ❤️ шексіз</small></div>
-      </div>
-    </aside>
+async function loadData() {
+  try {
+    const res  = await fetch('/api/weather');
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content" id="main-content">
+    const data = json.data;
+    const best = data.reduce((a, b) => a.index > b.index ? a : b);
+    const time = new Date(json.time).toLocaleString('kk-KZ');
 
-      <!-- ===== LEARN PAGE ===== -->
-      <div class="page active" id="page-learn">
-        <div class="page-header">
-          <div>
-            <div class="page-subtitle" id="learn-lang-label">🇬🇧 Ағылшын тілі</div>
-            <h1 class="page-title">Сабақ жолы</h1>
-          </div>
-          <button class="icon-btn" onclick="showPage('languages')">🌍 Тілді өзгерт</button>
-        </div>
-        <div id="course-path"></div>
-      </div>
+    document.getElementById('timeLabel').textContent = time;
+    document.getElementById('bestBanner').innerHTML =
+      `🏆 Ең тиімді аймақ: <span>${best.city}</span> — ` +
+      `Индекс: <span>${best.index}%</span> | ⚙️ <span>${best.tech}</span>`;
 
-      <!-- ===== PRACTICE PAGE ===== -->
-      <div class="page" id="page-practice">
-        <div class="page-header"><h1 class="page-title">🎯 Жаттығу</h1></div>
-        <div class="practice-grid" id="practice-grid"></div>
-      </div>
+    renderCards(data);
+    renderMap(data);
+    renderCharts(data);
+    renderAI(data, best);
+    document.getElementById('loader').style.display = 'none';
 
-      <!-- ===== STORIES PAGE ===== -->
-      <div class="page" id="page-stories">
-        <div class="page-header"><h1 class="page-title">📖 Оқиғалар</h1></div>
-        <div class="stories-grid" id="stories-grid"></div>
-      </div>
+  } catch (e) {
+    document.getElementById('loader').innerHTML =
+      `<div style="color:#f44336">❌ Қате: ${e.message}</div>`;
+  }
+}
 
-      <!-- ===== LEADERBOARD PAGE ===== -->
-      <div class="page" id="page-leaderboard">
-        <div class="page-header"><h1 class="page-title">🏆 Рейтинг</h1></div>
-        <div class="lb-page" id="lb-page"></div>
-      </div>
-
-      <!-- ===== STATS PAGE ===== -->
-      <div class="page" id="page-stats">
-        <div class="page-header"><h1 class="page-title">📊 Статистика</h1></div>
-        <div id="stats-content"></div>
-      </div>
-
-      <!-- ===== SHOP PAGE ===== -->
-      <div class="page" id="page-shop">
-        <div class="page-header">
-          <h1 class="page-title">🛒 Дүкен</h1>
-          <div class="shop-balance"><span>💎 <span id="shop-gems">320</span></span></div>
-        </div>
-        <div id="shop-content"></div>
-      </div>
-
-      <!-- ===== LANGUAGES PAGE ===== -->
-      <div class="page" id="page-languages">
-        <div class="page-header"><h1 class="page-title">🌍 Тіл таңда</h1></div>
-        <div id="lang-content"></div>
-      </div>
-
-      <!-- ===== PROFILE PAGE ===== -->
-      <div class="page" id="page-profile">
-        <div id="profile-content"></div>
-      </div>
-
-      <!-- ===== SETTINGS PAGE ===== -->
-      <div class="page" id="page-settings">
-        <div class="page-header"><h1 class="page-title">⚙️ Баптаулар</h1></div>
-        <div id="settings-content"></div>
-      </div>
-
-    </main>
-
-    <!-- RIGHT PANEL -->
-    <aside class="right-panel" id="right-panel">
-      <div class="rp-streak-card">
-        <div class="rp-section-title">🔥 Апталық серия</div>
-        <div class="rp-streak-num" id="rp-streak">7</div>
-        <div class="week-dots" id="week-dots"></div>
-      </div>
-      <div class="rp-goals-card">
-        <div class="rp-section-title">🎯 Күнделікті мақсат</div>
-        <div id="rp-goals"></div>
-      </div>
-      <div class="rp-lb-card">
-        <div class="rp-section-title">🏆 Апта рейтингі <a onclick="showPage('leaderboard')" style="cursor:pointer;color:var(--blue);font-size:12px;font-weight:700;float:right">Барлығы →</a></div>
-        <div id="rp-lb"></div>
-      </div>
-    </aside>
-
-  </div>
-</div>
-
-<!-- ===== LESSON MODAL ===== -->
-<div class="modal-overlay" id="lesson-modal">
-  <div class="lesson-modal" id="lesson-modal-inner">
-    <div class="lm-top">
-      <button class="lm-close" onclick="confirmQuit()">✕</button>
-      <div class="lm-prog-wrap"><div class="lm-prog-fill" id="lm-prog"></div></div>
-      <div class="lm-hearts" id="lm-hearts"></div>
-      <div class="lm-xp-badge" id="lm-xp-badge">⚡ 0</div>
-    </div>
-    <div class="lm-body" id="lm-body"></div>
-    <div class="lm-footer" id="lm-footer">
-      <div class="lm-feedback" id="lm-feedback"></div>
-      <button class="lm-btn" id="lm-btn" onclick="handleLessonBtn()">ТЕКСЕР</button>
-    </div>
-    <div class="lm-complete hidden" id="lm-complete"></div>
-  </div>
-</div>
-
-<!-- ===== STORY MODAL ===== -->
-<div class="modal-overlay" id="story-modal">
-  <div class="story-modal">
-    <button class="lm-close" onclick="closeModal('story-modal')" style="position:absolute;top:16px;right:16px">✕</button>
-    <div id="story-content"></div>
-  </div>
-</div>
-
-<!-- ===== STREAK MODAL ===== -->
-<div class="modal-overlay" id="streak-modal">
-  <div class="info-modal">
-    <div class="im-icon">🔥</div>
-    <h2 id="sm-title">7 Күнлік серия!</h2>
-    <p id="sm-body">Сіз 7 күн қатарынан үйрендіңіз. Тамаша!</p>
-    <div class="big-week-dots" id="big-week-dots"></div>
-    <button class="auth-btn green" onclick="closeModal('streak-modal')">Жабу</button>
-  </div>
-</div>
-
-<!-- ===== PREMIUM MODAL ===== -->
-<div class="modal-overlay" id="premium-modal">
-  <div class="premium-modal">
-    <div class="pm-header">
-      <div class="pm-crown">👑</div>
-      <h2>Super Plus</h2>
-      <p>Шексіз мүмкіндіктер</p>
-    </div>
-    <div class="pm-features">
-      <div class="pm-feat"><span>❤️</span> Шексіз жүрек</div>
-      <div class="pm-feat"><span>🚫</span> Жарнамасыз</div>
-      <div class="pm-feat"><span>⚡</span> 2X XP бонусы</div>
-      <div class="pm-feat"><span>🎨</span> Ерекше аватарлар</div>
-      <div class="pm-feat"><span>📊</span> Толық статистика</div>
-      <div class="pm-feat"><span>🌙</span> Тәжірибелік режим</div>
-    </div>
-    <div class="pm-plans">
-      <div class="pm-plan" onclick="selectPlan(this,'monthly')">
-        <div class="pm-plan-name">Ай сайын</div>
-        <div class="pm-plan-price">₸2,990</div>
-        <div class="pm-plan-sub">айына</div>
-      </div>
-      <div class="pm-plan best" onclick="selectPlan(this,'yearly')">
-        <div class="pm-plan-badge">ҮНЕМДІ</div>
-        <div class="pm-plan-name">Жылдық</div>
-        <div class="pm-plan-price">₸19,990</div>
-        <div class="pm-plan-sub">жылына · ₸1,665/ай</div>
-      </div>
-    </div>
-    <button class="auth-btn green" onclick="buyPremium()" style="width:100%;font-size:18px;padding:18px">👑 Super Plus алу</button>
-    <button class="auth-btn ghost small" onclick="closeModal('premium-modal')">Кейінірек</button>
-  </div>
-</div>
-
-<!-- QUIT CONFIRM -->
-<div class="modal-overlay" id="quit-modal">
-  <div class="info-modal" style="max-width:380px">
-    <div class="im-icon">😢</div>
-    <h2>Шығасыз ба?</h2>
-    <p>Сабақтың барлық прогресі жоғалады</p>
-    <div style="display:flex;gap:12px;width:100%">
-      <button class="auth-btn ghost" onclick="closeModal('quit-modal')" style="flex:1">Жалғастыру</button>
-      <button class="auth-btn" style="flex:1;background:var(--red);color:#fff" onclick="forceQuitLesson()">Шығу</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast-container" id="toast-container"></div>
-
-<script src="app.js"></script>
+loadData();
+// Әр 10 минут сайын жаңарту
+setInterval(loadData, 10 * 60 * 1000);
+</script>
 </body>
 </html>
