@@ -10,7 +10,6 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
 html,body{height:100%;background:#04131f;color:#d7ecfa;overflow:hidden}
 #map{position:absolute;inset:0}
-
 header{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:10px;
   padding:10px 16px;background:rgba(4,19,31,.86);backdrop-filter:blur(10px);border-bottom:1px solid #12395c}
 header h1{font-size:15px;color:#7fd0ff;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
@@ -18,7 +17,6 @@ header .tag{font-size:11px;color:#9fb8cc;background:#0d2a42;padding:3px 8px;bord
 header .live{margin-left:auto;color:#5fff9a;font-size:11px;animation:blink 1.6s infinite}
 header .live::before{content:'';display:inline-block;width:7px;height:7px;background:#5fff9a;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #5fff9a}
 @keyframes blink{50%{opacity:.4}}
-
 .panel{position:absolute;top:58px;left:10px;z-index:9;width:280px;max-height:calc(100% - 78px);overflow:auto;
   background:rgba(5,22,36,.88);backdrop-filter:blur(10px);border:1px solid #14405f;border-radius:14px;padding:14px;color:#d7ecfa;
   scrollbar-width:thin;scrollbar-color:#1e5c88 #0a2740}
@@ -26,79 +24,40 @@ header .live::before{content:'';display:inline-block;width:7px;height:7px;backgr
 .panel::-webkit-scrollbar-thumb{background:#1e5c88;border-radius:3px}
 .panel h2{font-size:11px;color:#7fd0ff;margin:14px 0 6px;text-transform:uppercase;letter-spacing:1.2px;display:flex;align-items:center;gap:6px}
 .panel h2:first-child{margin-top:0}
-
 .btn{display:inline-block;margin:3px 4px 3px 0;padding:7px 11px;font-size:12px;border-radius:9px;cursor:pointer;
   background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;transition:.2s;user-select:none}
 .btn:hover{background:#145079;transform:translateY(-1px)}
 .btn.active{background:#1f6fae;color:#fff;box-shadow:0 0 10px rgba(31,111,174,.5)}
-
 .top-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 9px;margin:5px 0;border-radius:9px;
   background:#0a2740;border:1px solid #143a58;cursor:pointer;transition:.15s}
 .top-item:hover{background:#0f3a5e;border-color:#1e5c88;transform:translateX(2px)}
 .top-item b{color:#ffd166;font-size:13px}
-
 .stat-row{display:flex;justify-content:space-between;padding:6px 8px;font-size:12px;border-bottom:1px dashed #143a58}
 .stat-row:last-child{border:none}
 .stat-row .lbl{color:#9fb8cc}
 .stat-row .val{color:#ffd166;font-weight:600}
-
 .ai-box{padding:10px;border-radius:9px;font-size:12px;line-height:1.5;border-left:3px solid}
 .ai-critical{background:rgba(255,59,59,.12);border-color:#ff3b3b;color:#ffc2c2}
 .ai-warning{background:rgba(255,209,102,.12);border-color:#ffd166;color:#ffe7a8}
 .ai-stable{background:rgba(127,255,180,.10);border-color:#5fff9a;color:#b7ffd8}
-
 .legend{font-size:11px;line-height:1.9;color:#a9c8de}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
-
-/* РЕАЛИСТИКАЛЫҚ БҰЛТ МАРКЕРЛЕРІ */
-.cloud-marker{
-  position:relative;
-  pointer-events:auto;
-  cursor:pointer;
-  animation:float 6s ease-in-out infinite;
-}
-.cloud-marker .vapor{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(8px);
-  opacity:0.6;
-  mix-blend-mode:screen;
-}
-.cloud-marker .core{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  box-shadow:0 0 20px currentColor;
-}
-.cloud-marker.critical .core{
-  animation:pulse 2s ease-in-out infinite;
-}
-@keyframes float{
-  0%,100%{transform:translate(0,0) scale(1)}
-  25%{transform:translate(-2px,-3px) scale(1.02)}
-  50%{transform:translate(1px,-1px) scale(1.05)}
-  75%{transform:translate(2px,-2px) scale(1.03)}
-}
-@keyframes pulse{
-  0%,100%{opacity:1;box-shadow:0 0 20px currentColor}
-  50%{opacity:0.7;box-shadow:0 0 30px currentColor,0 0 40px currentColor}
-}
-
+.cloud-marker{position:relative;pointer-events:auto;cursor:pointer;animation:float 6s ease-in-out infinite}
+.cloud-marker .vapor{position:absolute;border-radius:50%;filter:blur(8px);opacity:0.6;mix-blend-mode:screen}
+.cloud-marker .core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 20px currentColor}
+.cloud-marker.critical .core{animation:pulse 2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-2px,-3px) scale(1.02)}50%{transform:translate(1px,-1px) scale(1.05)}75%{transform:translate(2px,-2px) scale(1.03)}}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 20px currentColor}50%{opacity:0.7;box-shadow:0 0 30px currentColor,0 0 40px currentColor}}
 .mapboxgl-popup-content{background:#0a2740;color:#d7ecfa;border:1px solid #1e5c88;border-radius:10px;padding:10px 14px;font-size:12px;min-width:180px}
 .mapboxgl-popup-tip{border-top-color:#0a2740}
 .mapboxgl-popup-content b{color:#7fd0ff}
 .mapboxgl-popup-content .big{font-size:15px;color:#ffd166;font-weight:700}
-
 footer{position:absolute;bottom:6px;left:0;right:0;text-align:center;z-index:8;font-size:10px;color:#6d93ad;pointer-events:none}
-
 #loader{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at center,#0a2740,#04131f);color:#7fd0ff;flex-direction:column;gap:14px;transition:.6s}
 #loader.hide{opacity:0;pointer-events:none}
 .spinner{width:44px;height:44px;border:3px solid #1e5c88;border-top-color:#7fd0ff;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 @media(max-width:720px){
   .panel{width:calc(100% - 20px);max-height:44vh;top:auto;bottom:10px;border-radius:14px 14px 10px 10px}
   header h1{font-size:13px}
@@ -160,19 +119,13 @@ footer{position:absolute;bottom:6px;left:0;right:0;text-align:center;z-index:8;f
 <footer>💧 CASPIAN WATER RECOVERY · I ХАЛЫҚАРАЛЫҚ CASPIAN HACKATHON 2026</footer>
 
 <script>
-/* ════════════════════════════════════════════════════════════════
-   CONFIG
-   ════════════════════════════════════════════════════════════════ */
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFudXJrYXlldiIsImEiOiJjbXNjdGx3YWMwd3o1MnpzNXd4ZTB3a20xIn0.TFkYBesFueHqrCjX6wzUSw'; // ← өз токеніңіз
+mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbHNhbXBsZSJ9.example';
 
 const KZ_BOUNDS = [[48.5, 41.7], [55.1, 47.7]];
 const ALL_BOUNDS = [[47.0, 36.0], [55.5, 47.7]];
 
-/* ════════════════════════════════════════════════════════════════
-   UTILS
-   ════════════════════════════════════════════════════════════════ */
 const clean = r => Object.fromEntries(Object.entries(r).map(([k,v]) => [k.trim(), v]));
-const avg = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
+const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
 
 const evapColor = e => {
   if (e < 5)  return '#9ad9ff';
@@ -181,11 +134,8 @@ const evapColor = e => {
   return '#ff3b3b';
 };
 
-/* ════════════════════════════════════════════════════════════════
-   РЕАЛИСТИКАЛЫҚ БҰЛТ МАРКЕРІ
-   ════════════════════════════════════════════════════════════════ */
 function createRealisticCloud(p) {
-  const e = +p.evaporation;
+  const e = +p.evaporation || 0;
   const size = 30 + e * 5;
   const color = evapColor(e);
   const isCritical = e > 14;
@@ -196,7 +146,6 @@ function createRealisticCloud(p) {
   el.style.height = size + 'px';
   el.style.color = color;
 
-  // Көп қабатты бу эффектісі
   el.innerHTML = `
     <div class="vapor" style="width:${size*1.2}px;height:${size*1.2}px;top:-10%;left:-10%;background:radial-gradient(circle,${color} 0%,transparent 70%);animation:float ${4+Math.random()*2}s ease-in-out infinite;"></div>
     <div class="vapor" style="width:${size*0.9}px;height:${size*0.9}px;top:5%;left:5%;background:radial-gradient(circle,${color} 0%,transparent 70%);animation:float ${5+Math.random()*2}s ease-in-out infinite reverse;"></div>
@@ -207,13 +156,13 @@ function createRealisticCloud(p) {
   const popup = new mapboxgl.Popup({offset: size/2, closeButton: true}).setHTML(`
     <div class="big">☁️ ${e.toFixed(2)} мм/күн</div>
     <div style="margin-top:6px">
-      🌡️ Ауа: <b>${(+p.temp).toFixed(1)}°C</b><br>
-      🌊 SST: <b>${(+p.sst).toFixed(1)}°C</b><br>
-      💧 Ылғал: <b>${(+p.humidity).toFixed(0)}%</b><br>
-      💨 Жел: <b>${(+p.wind).toFixed(1)} м/с</b>
+      🌡️ Ауа: <b>${(+p.temp || 0).toFixed(1)}°C</b><br>
+      🌊 SST: <b>${(+p.sst || 0).toFixed(1)}°C</b><br>
+      💧 Ылғал: <b>${(+p.humidity || 0).toFixed(0)}%</b><br>
+      💨 Жел: <b>${(+p.wind || 0).toFixed(1)} м/с</b>
     </div>
     <div style="margin-top:6px;font-size:10px;color:#7a9ab3">
-      📍 ${(+p.lat).toFixed(3)}, ${(+p.lon).toFixed(3)}
+      📍 ${(+p.lat || 0).toFixed(3)}, ${(+p.lon || 0).toFixed(3)}
     </div>`);
 
   return new mapboxgl.Marker({element: el, anchor:'center'})
@@ -222,9 +171,6 @@ function createRealisticCloud(p) {
     .addTo(map);
 }
 
-/* ════════════════════════════════════════════════════════════════
-   MAP INITIALIZATION
-   ════════════════════════════════════════════════════════════════ */
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/satellite-streets-v12',
@@ -235,11 +181,8 @@ const map = new mapboxgl.Map({
 });
 
 let cloudMarkers = [];
-let currentFocus = 'kz';
 
 map.on('load', async () => {
-
-  /* Қазақстан секторының пунктирлі полигоны */
   map.addSource('kz-sector', { type:'geojson', data:{
     type:'Feature',
     geometry:{ type:'Polygon', coordinates:[[
@@ -255,30 +198,41 @@ map.on('load', async () => {
     paint:{ 'line-color':'#ffd166','line-width':2.2,'line-dasharray':[2,2] }
   });
 
-  /* Деректерді жүктеу */
   let seaGrid = [], kzGrid = [];
+  
   try {
+    console.log('Жүктеу: caspian_grid.json');
     const r1 = await fetch('caspian_grid.json');
-    if (r1.ok) seaGrid = (await r1.json()).map(clean);
+    if (r1.ok) {
+      seaGrid = (await r1.json()).map(clean);
+      console.log('seaGrid жүктелді:', seaGrid.length);
+    }
+  } catch(e){ console.warn('caspian_grid.json қатесі:', e); }
+
+  try {
+    console.log('Жүктеу: caspian_sea_grid.json');
     const r2 = await fetch('caspian_sea_grid.json');
-    if (r2.ok) kzGrid  = (await r2.json()).map(clean);
-  } catch(e){ console.warn('JSON жүктеу қатесі:', e); }
+    if (r2.ok) {
+      kzGrid = (await r2.json()).map(clean);
+      console.log('kzGrid жүктелді:', kzGrid.length);
+    }
+  } catch(e){ console.warn('caspian_sea_grid.json қатесі:', e); }
 
   if (!kzGrid.length && seaGrid.length) {
     kzGrid = seaGrid.filter(p => +p.lon >= 49.0 && +p.lon <= 55.0);
+    console.log('kzGrid seaGrid-тен алынды:', kzGrid.length);
   }
   if (!seaGrid.length) seaGrid = kzGrid;
 
-  /* Реалистикалық бұлт маркерлері */
+  console.log('Бұлттар жасалуда:', kzGrid.length);
   cloudMarkers = kzGrid.map(createRealisticCloud);
 
-  /* Тегіс Heatmap қабаты */
   map.addSource('evap-src', { type:'geojson', data:{
     type:'FeatureCollection',
     features: seaGrid.map(p => ({
       type:'Feature',
       geometry:{ type:'Point', coordinates:[+p.lon, +p.lat] },
-      properties:{ evap:+p.evaporation }
+      properties:{ evap:+p.evaporation || 0 }
     }))
   }});
   map.addLayer({
@@ -301,12 +255,11 @@ map.on('load', async () => {
     }
   });
 
-  /* Статистика */
-  const sstArr = kzGrid.map(p => +p.sst);
-  const tmpArr = kzGrid.map(p => +p.temp);
-  const evArr  = kzGrid.map(p => +p.evaporation);
-  const wArr   = kzGrid.map(p => +p.wind);
-  const hArr   = kzGrid.map(p => +p.humidity);
+  const sstArr = kzGrid.map(p => +p.sst || 0);
+  const tmpArr = kzGrid.map(p => +p.temp || 0);
+  const evArr  = kzGrid.map(p => +p.evaporation || 0);
+  const wArr   = kzGrid.map(p => +p.wind || 0);
+  const hArr   = kzGrid.map(p => +p.humidity || 0);
 
   const sstA  = avg(sstArr);
   const tmpA  = avg(tmpArr);
@@ -320,7 +273,6 @@ map.on('load', async () => {
   document.getElementById('statWind').textContent = wA.toFixed(2)+' м/с';
   document.getElementById('statHum').textContent  = hA.toFixed(1)+'%';
 
-  /* AI Талдау */
   const aiEl = document.getElementById('ai');
   if (evA > 10) {
     aiEl.className = 'ai-box ai-critical';
@@ -339,13 +291,14 @@ map.on('load', async () => {
       <br><br>🔧 <b>Ұсыныс:</b> Ультрадыбыстық ионизатор режимі.`;
   }
 
-  /* TOP-5 Қазақстан секторында */
-  const top5 = [...kzGrid].sort((a,b) => +b.evaporation - +a.evaporation).slice(0,5);
-  document.getElementById('top5').innerHTML = top5.map((p,i) => `
+  const top5 = [...kzGrid].sort((a,b) => (+b.evaporation || 0) - (+a.evaporation || 0)).slice(0,5);
+  console.log('TOP-5:', top5);
+  document.getElementById('top5').innerHTML = top5.length ? top5.map((p,i) => `
     <div class="top-item" data-lon="${p.lon}" data-lat="${p.lat}">
       <span>#${i+1} 📍 ${(+p.lat).toFixed(2)}, ${(+p.lon).toFixed(2)}</span>
       <b>${(+p.evaporation).toFixed(1)}</b>
-    </div>`).join('');
+    </div>`).join('') : '<div class="top-item"><span>Деректер жоқ</span></div>';
+  
   document.querySelectorAll('#top5 .top-item').forEach(el => {
     el.onclick = () => map.flyTo({
       center:[+el.dataset.lon, +el.dataset.lat],
@@ -353,12 +306,13 @@ map.on('load', async () => {
     });
   });
 
-  /* Қалалар (OWM API) */
   try {
+    console.log('API шақыру: /api/weather');
     const r = await fetch('/api/weather');
     const d = await r.json();
+    console.log('API жауап:', d);
     const cEl = document.getElementById('cities');
-    if (d.ok && Array.isArray(d.data)) {
+    if (d.ok && Array.isArray(d.data) && d.data.length > 0) {
       cEl.innerHTML = d.data.map(c => `
         <div class="top-item" data-lon="${c.lon}" data-lat="${c.lat}">
           <span>🏙️ ${c.city}</span>
@@ -371,21 +325,17 @@ map.on('load', async () => {
         });
       });
     } else {
-      cEl.innerHTML = `<div class="top-item"><span>⚠️ API қатесі</span></div>`;
+      cEl.innerHTML = `<div class="top-item"><span>⚠️ API қатесі: ${d.error || 'Белгісіз'}</span></div>`;
     }
   } catch(e){
-    document.getElementById('cities').innerHTML = `<div class="top-item"><span>🚫 API қолжетімсіз</span></div>`;
+    console.error('API қатесі:', e);
+    document.getElementById('cities').innerHTML = `<div class="top-item"><span>🚫 API қолжетімсіз: ${e.message}</span></div>`;
   }
 
-  /* Қазақстан секторына фокус */
   map.fitBounds(KZ_BOUNDS, {padding:80, duration:1800});
 
-  /* LOADER */
   setTimeout(() => document.getElementById('loader').classList.add('hide'), 600);
 
-  /* ═══════════════════════════════════════════════════════════
-     БАТЫРМАЛАР
-     ═══════════════════════════════════════════════════════════ */
   const btnKZ     = document.getElementById('btnKZ');
   const btnAll    = document.getElementById('btnAll');
   const btnClouds = document.getElementById('btnClouds');
@@ -395,14 +345,12 @@ map.on('load', async () => {
     map.fitBounds(KZ_BOUNDS, {padding:80, duration:1500});
     btnKZ.classList.add('active');
     btnAll.classList.remove('active');
-    currentFocus = 'kz';
   });
 
   btnAll.addEventListener('click', () => {
     map.fitBounds(ALL_BOUNDS, {padding:50, duration:1500});
     btnAll.classList.add('active');
     btnKZ.classList.remove('active');
-    currentFocus = 'all';
   });
 
   let cloudsVisible = true;
