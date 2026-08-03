@@ -3,382 +3,529 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>💧 Caspian Water Recovery — 🇰🇿 Қазақстан секторы</title>
+<title>💧 Caspian Water Recovery</title>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
 html,body{height:100%;background:#04131f;color:#d7ecfa;overflow:hidden}
 #map{position:absolute;inset:0}
-header{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:10px;
-  padding:10px 16px;background:rgba(4,19,31,.86);backdrop-filter:blur(10px);border-bottom:1px solid #12395c}
-header h1{font-size:15px;color:#7fd0ff;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
-header .tag{font-size:11px;color:#9fb8cc;background:#0d2a42;padding:3px 8px;border-radius:20px;border:1px solid #1c4a70}
-header .live{margin-left:auto;color:#5fff9a;font-size:11px;animation:blink 1.6s infinite}
-header .live::before{content:'';display:inline-block;width:7px;height:7px;background:#5fff9a;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #5fff9a}
-@keyframes blink{50%{opacity:.4}}
-.panel{position:absolute;top:58px;left:10px;z-index:9;width:280px;max-height:calc(100% - 78px);overflow:auto;
-  background:rgba(5,22,36,.88);backdrop-filter:blur(10px);border:1px solid #14405f;border-radius:14px;padding:14px;color:#d7ecfa;
-  scrollbar-width:thin;scrollbar-color:#1e5c88 #0a2740}
-.panel::-webkit-scrollbar{width:6px}
-.panel::-webkit-scrollbar-thumb{background:#1e5c88;border-radius:3px}
-.panel h2{font-size:11px;color:#7fd0ff;margin:14px 0 6px;text-transform:uppercase;letter-spacing:1.2px;display:flex;align-items:center;gap:6px}
+header{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  padding:9px 14px;background:rgba(4,19,31,.86);backdrop-filter:blur(10px);border-bottom:1px solid #12395c}
+header h1{font-size:14px;color:#7fd0ff}
+.tag{font-size:10px;color:#9fb8cc;background:#0d2a42;padding:3px 8px;border-radius:20px;border:1px solid #1c4a70}
+.live{color:#5fff9a;font-size:11px;animation:bl 1.6s infinite}
+@keyframes bl{50%{opacity:.4}}
+#bR{margin-left:auto;background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+.panel{position:absolute;top:54px;left:10px;z-index:9;width:280px;max-height:calc(100% - 72px);overflow:auto;
+  background:rgba(5,22,36,.9);backdrop-filter:blur(10px);border:1px solid #14405f;border-radius:14px;padding:12px}
+.panel h2{font-size:11px;color:#7fd0ff;margin:12px 0 6px;text-transform:uppercase;letter-spacing:1px}
 .panel h2:first-child{margin-top:0}
-.btn{display:inline-block;margin:3px 4px 3px 0;padding:7px 11px;font-size:12px;border-radius:9px;cursor:pointer;
-  background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;transition:.2s;user-select:none}
-.btn:hover{background:#145079;transform:translateY(-1px)}
+.btn{display:inline-block;margin:2px 3px 2px 0;padding:6px 10px;font-size:12px;border-radius:8px;cursor:pointer;
+  background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;transition:.2s}
+.btn:hover{background:#145079}
 .btn.active{background:#1f6fae;color:#fff;box-shadow:0 0 10px rgba(31,111,174,.5)}
-.top-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:7px 9px;margin:5px 0;border-radius:9px;
-  background:#0a2740;border:1px solid #143a58;cursor:pointer;transition:.15s}
-.top-item:hover{background:#0f3a5e;border-color:#1e5c88;transform:translateX(2px)}
-.top-item b{color:#ffd166;font-size:13px}
-.stat-row{display:flex;justify-content:space-between;padding:6px 8px;font-size:12px;border-bottom:1px dashed #143a58}
-.stat-row:last-child{border:none}
-.stat-row .lbl{color:#9fb8cc}
-.stat-row .val{color:#ffd166;font-weight:600}
-.ai-box{padding:10px;border-radius:9px;font-size:12px;line-height:1.5;border-left:3px solid}
-.ai-critical{background:rgba(255,59,59,.12);border-color:#ff3b3b;color:#ffc2c2}
-.ai-warning{background:rgba(255,209,102,.12);border-color:#ffd166;color:#ffe7a8}
-.ai-stable{background:rgba(127,255,180,.10);border-color:#5fff9a;color:#b7ffd8}
-.legend{font-size:11px;line-height:1.9;color:#a9c8de}
-.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
-.cloud-marker{position:relative;pointer-events:auto;cursor:pointer;animation:float 6s ease-in-out infinite}
-.cloud-marker .vapor{position:absolute;border-radius:50%;filter:blur(8px);opacity:0.6;mix-blend-mode:screen}
-.cloud-marker .core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 20px currentColor}
-.cloud-marker.critical .core{animation:pulse 2s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-2px,-3px) scale(1.02)}50%{transform:translate(1px,-1px) scale(1.05)}75%{transform:translate(2px,-2px) scale(1.03)}}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 20px currentColor}50%{opacity:0.7;box-shadow:0 0 30px currentColor,0 0 40px currentColor}}
-.mapboxgl-popup-content{background:#0a2740;color:#d7ecfa;border:1px solid #1e5c88;border-radius:10px;padding:10px 14px;font-size:12px;min-width:180px}
-.mapboxgl-popup-tip{border-top-color:#0a2740}
+.row{display:flex;justify-content:space-between;font-size:12px;padding:4px 6px;border-bottom:1px dashed #143a58}
+.row .v{color:#ffd166;font-weight:600}
+.item{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:6px 8px;margin:4px 0;
+  border-radius:8px;background:#0a2740;border:1px solid #143a58;cursor:pointer;transition:.15s;gap:6px}
+.item:hover{background:#0f3a5e;border-color:#1e5c88}
+.item b{color:#ffd166;text-align:right}
+.ai{padding:10px;border-radius:9px;font-size:12px;line-height:1.5;border-left:3px solid;margin:8px 0}
+.ai.critical{background:rgba(255,59,59,.12);border-color:#ff3b3b;color:#ffc2c2}
+.ai.warning{background:rgba(255,209,102,.12);border-color:#ffd166;color:#ffe7a8}
+.ai.stable{background:rgba(127,255,180,.1);border-color:#5fff9a;color:#b7ffd8}
+.vp{position:relative;pointer-events:auto;cursor:pointer;transition:opacity .4s}
+.vp.dim{opacity:.12}
+.vp .base{position:absolute;inset:0;border-radius:50%;filter:blur(6px);opacity:.7}
+.vp .puff{position:absolute;bottom:35%;width:40%;height:40%;border-radius:50%;filter:blur(4px);opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:.85}100%{transform:translateY(-54px) scale(1.8);opacity:0}}
+.crow{display:flex;align-items:center;gap:6px;font-size:10px;margin:3px 0}
+.cl{width:74px;overflow:hidden;white-space:nowrap}
+.cb{flex:1;height:7px;background:#0a2740;border-radius:4px}
+.cb i{display:block;height:100%;border-radius:4px}
+.crow b{width:44px;text-align:right;color:#ffd166}
+.lbar{height:10px;border-radius:5px;background:linear-gradient(90deg,#4fc3f7,#ffd166 33.3%,#ff8c42 66.6%,#ff3b3b)}
+.ltick{display:flex;justify-content:space-between;font-size:10px;color:#9fb8cc;margin-top:2px}
+.mapboxgl-popup-content{background:#0a2740;color:#d7ecfa;border:1px solid #1e5c88;border-radius:10px;font-size:12px;min-width:180px}
 .mapboxgl-popup-content b{color:#7fd0ff}
-.mapboxgl-popup-content .big{font-size:15px;color:#ffd166;font-weight:700}
-footer{position:absolute;bottom:6px;left:0;right:0;text-align:center;z-index:8;font-size:10px;color:#6d93ad;pointer-events:none}
-#loader{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+#ld{position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at center,#0a2740,#04131f);color:#7fd0ff;flex-direction:column;gap:14px;transition:.6s}
-#loader.hide{opacity:0;pointer-events:none}
+#ld.h{opacity:0;pointer-events:none}
 .spinner{width:44px;height:44px;border:3px solid #1e5c88;border-top-color:#7fd0ff;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;font-size:9px;color:#6d93ad;pointer-events:none}
 @media(max-width:720px){
-  .panel{width:calc(100% - 20px);max-height:44vh;top:auto;bottom:10px;border-radius:14px 14px 10px 10px}
-  header h1{font-size:13px}
+  .panel{width:calc(100% - 20px);max-height:42vh;top:auto;bottom:8px;border-radius:14px 14px 10px 10px}
   header .tag{display:none}
 }
 </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div>🌊 NASA + Mapbox GL деректері жүктелуде...</div></div>
+<div id="ld">
+  <div class="spinner"></div>
+  <div>🌊 NASA + Mapbox GL жүктелуде...</div>
+</div>
 
 <header>
   <h1>💧 CASPIAN WATER RECOVERY</h1>
-  <span class="tag">🇰🇿 Қазақстан секторы</span>
-  <span class="tag">NASA POWER · OWM</span>
-  <span class="live">LIVE</span>
+  <span class="tag"> Kazakhstan Sector </span>
+  <span class="tag"> NASA POWER · OWM </span>
+  <span class="live"> LIVE </span>
+  <button id="bR">⟳ REFRESH</button>
 </header>
 
 <div id="map"></div>
 
 <div class="panel">
-  <h2>🎯 Фокус</h2>
-  <div>
-    <span class="btn active" id="btnKZ">🇰🇿 Қазақстан</span>
-    <span class="btn" id="btnAll">🌐 Бүкіл Каспий</span>
-  </div>
-  <div style="margin-top:4px">
-    <span class="btn active" id="btnClouds">💨 Бұлттар</span>
-    <span class="btn" id="btnHeat">🔥 Heatmap</span>
-  </div>
+  <h2>🎯 ФОКУС</h2>
+  <span class="btn active" id="bK">🇰🇿 Қазақстан</span>
+  <span class="btn" id="bA">🌐 Бүкіл Каспий</span>
+  <span class="btn active" id="bC">💨 Бу</span>
+  <span class="btn" id="bH">🔥 Heatmap</span>
+  <span class="btn" id="b3">🌐 3D Режим</span>
+  <span class="btn" id="bCr">📍 Критикалық</span>
 
-  <h2>📊 Статистика (орташа)</h2>
-  <div id="stats">
-    <div class="stat-row"><span class="lbl">🌊 Су темп. (SST)</span><span class="val" id="statSST">—</span></div>
-    <div class="stat-row"><span class="lbl">🌡️ Ауа темп.</span><span class="val" id="statTemp">—</span></div>
-    <div class="stat-row"><span class="lbl">💧 Булану</span><span class="val" id="statEvap">—</span></div>
-    <div class="stat-row"><span class="lbl">💨 Жел</span><span class="val" id="statWind">—</span></div>
-    <div class="stat-row"><span class="lbl">🌫️ Ылғал</span><span class="val" id="statHum">—</span></div>
-  </div>
+  <h2>📡 NASA Статистика (Қазақстан секторы)</h2>
+  <div class="row"><span>🔵 Нүктелер</span><span class="v" id="sN">—</span></div>
+  <div class="row"><span>🌊 Су темп. (SST)</span><span class="v" id="sS">—</span></div>
+  <div class="row"><span>🌡️ Ауа темп.</span><span class="v" id="sT">—</span></div>
+  <div class="row"><span>💧 Булану</span><span class="v" id="sE">—</span></div>
+  <div class="row"><span>💨 Жел</span><span class="v" id="sW">—</span></div>
+  <div class="row"><span>🌫️ Ылғал</span><span class="v" id="sH">—</span></div>
 
-  <h2>🤖 AI Талдау</h2>
-  <div id="ai" class="ai-box ai-stable">⏳ Талдау жүргізілуде...</div>
+  <h2>🤖 AI Автоматты Шешім</h2>
+  <div id="ai" class="ai stable">⏳ Талдау жүргізілуде...</div>
 
-  <h2>🏆 TOP-5 Булану (Қазақстан)</h2>
-  <div id="top5">⏳ Жүктелуде...</div>
+  <h2>⚠️ TOP-5 Булану Зона</h2>
+  <div id="t5">⏳ Жүктелуде...</div>
 
   <h2>🏙️ Қалалар (OWM)</h2>
-  <div id="cities">⏳ Жүктелуде...</div>
+  <div id="ct">⏳ Жүктелуде...</div>
 
-  <h2>💨 Аңыз</h2>
-  <div class="legend">
-    <span class="dot" style="background:#9ad9ff"></span>Аз — &lt; 5 мм/күн<br>
-    <span class="dot" style="background:#ffd166"></span>Орташа — 5–10<br>
-    <span class="dot" style="background:#ff8c42"></span>Жоғары — 10–14<br>
-    <span class="dot" style="background:#ff3b3b"></span>Критикалық — &gt; 14
-  </div>
+  <h2>⚙️ Технология Кестесі</h2>
+  <div id="tech">⏳ Жүктелуде...</div>
+
+  <h2>📊 Конденсация Индексі (%)</h2>
+  <div id="ch1">⏳ Жүктелуде...</div>
+
+  <h2>💧 Ылғал vs 🌡️ Темп</h2>
+  <div id="ch2">⏳ Жүктелуде...</div>
+
+  <h2>💨 Булану Шкаласы (мм/күн)</h2>
+  <div class="lbar"></div>
+  <div class="ltick"><span>3</span><span>7</span><span>11</span><span>15+</span></div>
 </div>
 
-<footer>💧 CASPIAN WATER RECOVERY · I ХАЛЫҚАРАЛЫҚ CASPIAN HACKATHON 2026</footer>
+<footer>💧 CASPIAN WATER RECOVERY · I ХАЛЫҚАРАЛЫҚ CASPIAN HACKATHON 2026 · NASA POWER · OWM · Mapbox GL</footer>
 
 <script>
+// ──────────────────────────────────────────────────────────────
+// CONFIG
+// ──────────────────────────────────────────────────────────────
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFudXJrYXlldiIsImEiOiJjbXNjdGx3YWMwd3o1MnpzNXd4ZTB3a20xIn0.TFkYBesFueHqrCjX6wzUSw';
 
 const KZ_BOUNDS = [[48.5, 41.7], [55.1, 47.7]];
 const ALL_BOUNDS = [[47.0, 36.0], [55.5, 47.7]];
 
-const clean = r => Object.fromEntries(Object.entries(r).map(([k,v]) => [k.trim(), v]));
-const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+// ──────────────────────────────────────────────────────────────
+// UTILS
+// ──────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-const evapColor = e => {
-  if (e < 5)  return '#9ad9ff';
-  if (e < 10) return '#ffd166';
-  if (e < 14) return '#ff8c42';
-  return '#ff3b3b';
+// Кілттердегі бос орындарды тазалау
+const clean = obj => Object.fromEntries(
+  Object.entries(obj).map(([k, v]) => [k.trim(), v])
+);
+
+// Түс интерполяциясы (3→көк, 7→сары, 11→қызғылт, 15→қызыл)
+const interpolateColor = value => {
+  const stops = [
+    [3, [79, 195, 247]],    // көк
+    [7, [255, 209, 102]],   // сары
+    [11, [255, 140, 66]],   // қызғылт
+    [15, [255, 59, 59]]     // қызыл
+  ];
+  if (value <= stops[0][0]) return `rgb(${stops[0][1].join(',')})`;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [aVal, aCol] = stops[i];
+    const [bVal, bCol] = stops[i + 1];
+    if (value <= bVal) {
+      const t = (value - aVal) / (bVal - aVal);
+      const r = Math.round(aCol[0] + (bCol[0] - aCol[0]) * t);
+      const g = Math.round(aCol[1] + (bCol[1] - aCol[1]) * t);
+      const b = Math.round(aCol[2] + (bCol[2] - aCol[2]) * t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+  return `rgb(${stops[3][1].join(',')})`;
 };
 
-function createRealisticCloud(p) {
-  const e = +p.evaporation || 0;
-  const size = 30 + e * 5;
-  const color = evapColor(e);
-  const isCritical = e > 14;
-
-  const el = document.createElement('div');
-  el.className = 'cloud-marker' + (isCritical ? ' critical' : '');
-  el.style.width = size + 'px';
-  el.style.height = size + 'px';
-  el.style.color = color;
-
-  el.innerHTML = `
-    <div class="vapor" style="width:${size*1.2}px;height:${size*1.2}px;top:-10%;left:-10%;background:radial-gradient(circle,${color} 0%,transparent 70%);animation:float ${4+Math.random()*2}s ease-in-out infinite;"></div>
-    <div class="vapor" style="width:${size*0.9}px;height:${size*0.9}px;top:5%;left:5%;background:radial-gradient(circle,${color} 0%,transparent 70%);animation:float ${5+Math.random()*2}s ease-in-out infinite reverse;"></div>
-    <div class="vapor" style="width:${size*0.7}px;height:${size*0.7}px;top:15%;left:15%;background:radial-gradient(circle,${color} 0%,transparent 70%);animation:float ${3+Math.random()*2}s ease-in-out infinite;"></div>
-    <div class="core" style="width:${size*0.4}px;height:${size*0.4}px;background:radial-gradient(circle,${color} 0%,${color}88 50%,transparent 100%);"></div>
-  `;
-
-  const popup = new mapboxgl.Popup({offset: size/2, closeButton: true}).setHTML(`
-    <div class="big">☁️ ${e.toFixed(2)} мм/күн</div>
-    <div style="margin-top:6px">
-      🌡️ Ауа: <b>${(+p.temp || 0).toFixed(1)}°C</b><br>
-      🌊 SST: <b>${(+p.sst || 0).toFixed(1)}°C</b><br>
-      💧 Ылғал: <b>${(+p.humidity || 0).toFixed(0)}%</b><br>
-      💨 Жел: <b>${(+p.wind || 0).toFixed(1)} м/с</b>
-    </div>
-    <div style="margin-top:6px;font-size:10px;color:#7a9ab3">
-      📍 ${(+p.lat || 0).toFixed(3)}, ${(+p.lon || 0).toFixed(3)}
-    </div>`);
-
-  return new mapboxgl.Marker({element: el, anchor:'center'})
-    .setLngLat([+p.lon, +p.lat])
-    .setPopup(popup)
-    .addTo(map);
-}
-
+// ──────────────────────────────────────────────────────────────
+// MAP INIT
+// ──────────────────────────────────────────────────────────────
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/satellite-streets-v12',
   center: [51.9, 44.9],
   zoom: 5.8,
-  pitch: 20,
-  bearing: -10
+  pitch: 0,
+  bearing: 0
 });
 
-let cloudMarkers = [];
+let markers = [];
+let allData = [];
+let seaData = [];
+let cities = [];
 
-map.on('load', async () => {
-  map.addSource('kz-sector', { type:'geojson', data:{
-    type:'Feature',
-    geometry:{ type:'Polygon', coordinates:[[
-      [48.5, 41.7],[55.1, 41.7],[55.1, 47.7],[48.5, 47.7],[48.5, 41.7]
-    ]]}
-  }});
-  map.addLayer({
-    id:'kz-fill', type:'fill', source:'kz-sector',
-    paint:{ 'fill-color':'#ffd166','fill-opacity':0.06 }
-  });
-  map.addLayer({
-    id:'kz-line', type:'line', source:'kz-sector',
-    paint:{ 'line-color':'#ffd166','line-width':2.2,'line-dasharray':[2,2] }
-  });
+// ──────────────────────────────────────────────────────────────
+// MARKER CREATOR (булардың анимациясы)
+// ──────────────────────────────────────────────────────────────
+function createVaporMarker(point) {
+  const evap = point.evaporation;
+  const color = interpolateColor(evap);
+  const size = 26 + evap * 4;
+  const count = Math.min(2 + Math.round(evap / 3), 7); // әр мәнге әр қарқындылық
+  const duration = Math.max(6 - evap * 0.35, 1.6); // жоғары булану = жылдам бу
 
-  let seaGrid = [], kzGrid = [];
-  
-  try {
-    console.log('Жүктеу: caspian_grid.json');
-    const r1 = await fetch('caspian_grid.json');
-    if (r1.ok) {
-      seaGrid = (await r1.json()).map(clean);
-      console.log('seaGrid жүктелді:', seaGrid.length);
-    }
-  } catch(e){ console.warn('caspian_grid.json қатесі:', e); }
+  const el = document.createElement('div');
+  el.className = 'vp';
+  el.style.width = `${size}px`;
+  el.style.height = `${size}px`;
+  el.dataset.evap = evap;
 
-  try {
-    console.log('Жүктеу: caspian_sea_grid.json');
-    const r2 = await fetch('caspian_sea_grid.json');
-    if (r2.ok) {
-      kzGrid = (await r2.json()).map(clean);
-      console.log('kzGrid жүктелді:', kzGrid.length);
-    }
-  } catch(e){ console.warn('caspian_sea_grid.json қатесі:', e); }
-
-  if (!kzGrid.length && seaGrid.length) {
-    kzGrid = seaGrid.filter(p => +p.lon >= 49.0 && +p.lon <= 55.0);
-    console.log('kzGrid seaGrid-тен алынды:', kzGrid.length);
+  let html = `<div class="base" style="background:radial-gradient(circle,${color} 0%,transparent 70%)"></div>`;
+  for (let i = 0; i < count; i++) {
+    html += `<div class="puff" style="
+      background:radial-gradient(circle,${color} 0%,transparent 70%);
+      left:${15 + Math.random() * 50}%;
+      animation-duration:${duration.toFixed(2)}s;
+      animation-delay:-${(Math.random() * duration).toFixed(2)}s"></div>`;
   }
-  if (!seaGrid.length) seaGrid = kzGrid;
+  el.innerHTML = html;
 
-  console.log('Бұлттар жасалуда:', kzGrid.length);
-  cloudMarkers = kzGrid.map(createRealisticCloud);
+  const popup = new mapboxgl.Popup({ offset: size / 2 }).setHTML(`
+    💧 <b>${evap.toFixed(2)} мм/күн</b><br>
+    🌡️ ${point.temp}°C · 🌊 ${point.sst}°C<br>
+    💧 ${point.humidity}% · 💨 ${point.wind} м/с<br>
+    <span style="color:${color}">●</span> түс = дәл осы мән
+  `);
 
-  map.addSource('evap-src', { type:'geojson', data:{
-    type:'FeatureCollection',
-    features: seaGrid.map(p => ({
-      type:'Feature',
-      geometry:{ type:'Point', coordinates:[+p.lon, +p.lat] },
-      properties:{ evap:+p.evaporation || 0 }
-    }))
-  }});
+  return new mapboxgl.Marker({ element: el, anchor: 'center' })
+    .setLngLat([point.lon, point.lat])
+    .setPopup(popup)
+    .addTo(map);
+}
+
+// ──────────────────────────────────────────────────────────────
+// GRAPHICS RENDER
+// ──────────────────────────────────────────────────────────────
+function renderBars(containerId, data, max, color) {
+  const container = $(containerId);
+  container.innerHTML = data.map(item => `
+    <div class="crow">
+      <span class="cl">${item.name}</span>
+      <div class="cb"><i style="width:${Math.min(item.value / max * 100, 100)}%;background:${color}"></i></div>
+      <b>${item.value}</b>
+    </div>
+  `).join('');
+}
+
+// ──────────────────────────────────────────────────────────────
+// AI LOGIC (технологиялар)
+// ──────────────────────────────────────────────────────────────
+function dewPoint(temp, humidity) {
+  return +(temp - ((100 - humidity) / 5)).toFixed(1);
+}
+
+function condensationIndex(temp, humidity, wind) {
+  const h = humidity;
+  const t = Math.max(0, (45 - temp) / 45 * 100);
+  const w = Math.min(wind * 5, 100);
+  return +(h * 0.5 + t * 0.3 + w * 0.2).toFixed(1);
+}
+
+function bestTech(temp, humidity, wind, evap) {
+  const dp = dewPoint(temp, humidity);
+  if (temp - dp < 5) return 'Радиациялық салқындату';
+  if (humidity > 70) return 'Fog collector торлары';
+  if (wind > 5) return 'Ылғалды ауа ағыны';
+  if (evap > 10) return 'Ультрадыбыстық ионизатор';
+  return 'Күн+Жел энергиясы';
+}
+
+// ──────────────────────────────────────────────────────────────
+// MAIN LOAD
+// ──────────────────────────────────────────────────────────────
+map.on('load', async () => {
+  // ── Қазақстан секторының полигоны ──
+  map.addSource('kz-sector', {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[[48.5, 41.7], [55.1, 41.7], [55.1, 47.7], [48.5, 47.7], [48.5, 41.7]]]
+      }
+    }
+  });
   map.addLayer({
-    id:'evap-heat', type:'heatmap', source:'evap-src',
-    layout:{ visibility:'none' },
-    paint:{
-      'heatmap-weight': ['interpolate',['linear'],['get','evap'], 2, 0.3, 16, 1.2],
-      'heatmap-intensity': ['interpolate',['linear'],['zoom'], 4, 0.8, 10, 1.5],
-      'heatmap-radius': ['interpolate',['linear'],['zoom'], 4, 30, 10, 50],
-      'heatmap-opacity': 0.65,
+    id: 'kz-line',
+    type: 'line',
+    source: 'kz-sector',
+    paint: {
+      'line-color': '#ffd166',
+      'line-width': 2,
+      'line-dasharray': [2, 2]
+    }
+  });
+
+  // ── Деректерді жүктеу ──
+  try {
+    const [r1, r2] = await Promise.allSettled([
+      fetch('caspian_grid.json'),
+      fetch('caspian_sea_grid.json')
+    ]);
+
+    if (r1.status === 'fulfilled' && r1.value.ok) {
+      allData = (await r1.value.json()).map(clean);
+    }
+    if (r2.status === 'fulfilled' && r2.value.ok) {
+      seaData = (await r2.value.json()).map(clean);
+    }
+  } catch (e) {
+    console.error('JSON жүктеу қатесі:', e);
+  }
+
+  // Егер ештеңе жүктелмесе — fallback деректерін қолдану (JSON файлдары жоқ болса)
+  if (!seaData.length) {
+    seaData = [
+      { lat: 42.33, lon: 50.18, temp: 24.01, humidity: 76.0, wind: 5.1, sst: 24.09, evaporation: 3.3 },
+      { lat: 42.33, lon: 52.93, temp: 28.53, humidity: 32.0, wind: 4.85, sst: 30.99, evaporation: 12.09 },
+      { lat: 43.5, lon: 51.75, temp: 28.4, humidity: 33.1, wind: 4.79, sst: 30.94, evaporation: 11.77 },
+      { lat: 44.67, lon: 52.93, temp: 28.62, humidity: 31.6, wind: 4.65, sst: 31.23, evaporation: 12.1 },
+      { lat: 47.0, lon: 52.93, temp: 27.52, humidity: 34.0, wind: 4.44, sst: 29.62, evaporation: 10.84 }
+    ].map(clean);
+  }
+
+  // ── Буларды орнату (Қазақстан секторы үшін) ──
+  markers = seaData.map(p => createVaporMarker(p));
+
+  // ── Heatmap қабаты ──
+  map.addSource('evap-heat', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: allData.map(p => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
+        properties: { evap: p.evaporation }
+      }))
+    }
+  });
+  map.addLayer({
+    id: 'heatmap',
+    type: 'heatmap',
+    source: 'evap-heat',
+    layout: { visibility: 'none' },
+    paint: {
+      'heatmap-weight': ['interpolate', ['linear'], ['get', 'evap'], 2, 0.3, 16, 1],
+      'heatmap-radius': 40,
+      'heatmap-opacity': 0.6,
       'heatmap-color': [
-        'interpolate',['linear'],['heatmap-density'],
-        0,   'rgba(0,0,255,0)',
-        0.1, '#9ad9ff',
-        0.3, '#ffd166',
-        0.5, '#ff8c42',
-        0.7, '#ff3b3b',
-        1,   '#ff0000'
+        'interpolate', ['linear'], ['heatmap-density'],
+        0, 'rgba(0,0,0,0)',
+        0.2, '#4fc3f7',
+        0.45, '#ffd166',
+        0.7, '#ff8c42',
+        1, '#ff3b3b'
       ]
     }
   });
 
-  const sstArr = kzGrid.map(p => +p.sst || 0);
-  const tmpArr = kzGrid.map(p => +p.temp || 0);
-  const evArr  = kzGrid.map(p => +p.evaporation || 0);
-  const wArr   = kzGrid.map(p => +p.wind || 0);
-  const hArr   = kzGrid.map(p => +p.humidity || 0);
+  // ── Статистика (Қазақстан секторы) ──
+  const kzPoints = seaData.filter(p => p.lat >= 42.33);
+  $('sN').textContent = kzPoints.length;
+  $('sS').textContent = avg(kzPoints.map(p => p.sst)).toFixed(2) + '°C';
+  $('sT').textContent = avg(kzPoints.map(p => p.temp)).toFixed(2) + '°C';
+  const avgEvap = avg(kzPoints.map(p => p.evaporation));
+  $('sE').textContent = avgEvap.toFixed(2) + ' мм/күн';
+  $('sW').textContent = avg(kzPoints.map(p => p.wind)).toFixed(2) + ' м/с';
+  $('sH').textContent = avg(kzPoints.map(p => p.humidity)).toFixed(1) + '%';
 
-  const sstA  = avg(sstArr);
-  const tmpA  = avg(tmpArr);
-  const evA   = avg(evArr);
-  const wA    = avg(wArr);
-  const hA    = avg(hArr);
-
-  document.getElementById('statSST').textContent  = sstA.toFixed(2)+'°C';
-  document.getElementById('statTemp').textContent = tmpA.toFixed(2)+'°C';
-  document.getElementById('statEvap').textContent = evA.toFixed(2)+' мм/күн';
-  document.getElementById('statWind').textContent = wA.toFixed(2)+' м/с';
-  document.getElementById('statHum').textContent  = hA.toFixed(1)+'%';
-
-  const aiEl = document.getElementById('ai');
-  if (evA > 10) {
-    aiEl.className = 'ai-box ai-critical';
-    aiEl.innerHTML = `⚠️ <b>КРИТИКАЛЫҚ ДЕҢГЕЙ</b><br>
-      Қазақстан секторында орташа булану <b>${evA.toFixed(1)} мм/күн</b> — су ресурстары жедел азайып жатыр.
-      <br><br>🔧 <b>Ұсыныс:</b> Радиациялық салқындату + Fog collector торларын дереу орнату.`;
-  } else if (evA > 6) {
-    aiEl.className = 'ai-box ai-warning';
-    aiEl.innerHTML = `⚡ <b>ОРТАША ҚАУІП</b><br>
-      Орташа булану <b>${evA.toFixed(1)} мм/күн</b> — мониторинг қажет.
-      <br><br>🔧 <b>Ұсыныс:</b> Ылғалды ауа ағыны жүйесін белсендіру.`;
+  // ── AI Талдау ──
+  const aiEl = $('ai');
+  if (avgEvap > 10) {
+    aiEl.className = 'ai critical';
+    aiEl.innerHTML = `⚠️ <b>КРИТИКАЛЫҚ</b>: Орташа булану ${avgEvap.toFixed(1)} мм/күн. Су ресурстары жедел азайуда.<br><br>🔧 Ұсыныс: Радиациялық салқындату + Fog collector торларын дереу орнату.`;
+  } else if (avgEvap > 6) {
+    aiEl.className = 'ai warning';
+    aiEl.innerHTML = `⚡ <b>ОРТАША ҚАУІП</b>: ${avgEvap.toFixed(1)} мм/күн. Мониторинг қажет.<br><br>🔧 Ұсыныс: Ылғалды ауа ағыны жүйесін белсендіру.`;
   } else {
-    aiEl.className = 'ai-box ai-stable';
-    aiEl.innerHTML = `✅ <b>ТҰРАҚТЫ ДЕҢГЕЙ</b><br>
-      Орташа булану <b>${evA.toFixed(1)} мм/күн</b> — жағдай қалыпты.
-      <br><br>🔧 <b>Ұсыныс:</b> Ультрадыбыстық ионизатор режимі.`;
+    aiEl.className = 'ai stable';
+    aiEl.innerHTML = `✅ <b>ТҰРАҚТЫ ДЕҢГЕЙ</b>: ${avgEvap.toFixed(1)} мм/күн. Жағдай қалыпты.<br><br>🔧 Ұсыныс: Ультрадыбыстық ионизатор режимі.`;
   }
 
-  const top5 = [...kzGrid].sort((a,b) => (+b.evaporation || 0) - (+a.evaporation || 0)).slice(0,5);
-  console.log('TOP-5:', top5);
-  document.getElementById('top5').innerHTML = top5.length ? top5.map((p,i) => `
-    <div class="top-item" data-lon="${p.lon}" data-lat="${p.lat}">
-      <span>#${i+1} 📍 ${(+p.lat).toFixed(2)}, ${(+p.lon).toFixed(2)}</span>
-      <b>${(+p.evaporation).toFixed(1)}</b>
-    </div>`).join('') : '<div class="top-item"><span>Деректер жоқ</span></div>';
-  
-  document.querySelectorAll('#top5 .top-item').forEach(el => {
+  // ── TOP-5 булану ──
+  const top5 = [...kzPoints].sort((a, b) => b.evaporation - a.evaporation).slice(0, 5);
+  $('t5').innerHTML = top5.map((p, i) => `
+    <div class="item" data-lon="${p.lon}" data-lat="${p.lat}">
+      <span>#${i + 1} 📍 ${p.lat}, ${p.lon}</span>
+      <b>${p.evaporation.toFixed(1)}</b>
+    </div>
+  `).join('');
+  document.querySelectorAll('#t5 .item').forEach(el => {
     el.onclick = () => map.flyTo({
-      center:[+el.dataset.lon, +el.dataset.lat],
-      zoom:8.4, duration:1800, essential:true
+      center: [+el.dataset.lon, +el.dataset.lat],
+      zoom: 8.4,
+      duration: 1600
     });
   });
 
-  try {
-    console.log('API шақыру: /api/weather');
-    const r = await fetch('/api/weather');
-    const d = await r.json();
-    console.log('API жауап:', d);
-    const cEl = document.getElementById('cities');
-    if (d.ok && Array.isArray(d.data) && d.data.length > 0) {
-      cEl.innerHTML = d.data.map(c => `
-        <div class="top-item" data-lon="${c.lon}" data-lat="${c.lat}">
-          <span>🏙️ ${c.city}</span>
-          <b>${c.temp}°C · ${c.humidity}%</b>
-        </div>`).join('');
-      cEl.querySelectorAll('.top-item').forEach(el => {
-        el.onclick = () => map.flyTo({
-          center:[+el.dataset.lon, +el.dataset.lat],
-          zoom:10, duration:1600
+  // ── Қалалар (OWM API) ──
+  async function loadCities() {
+    try {
+      const r = await fetch('/api/weather');
+      const d = await r.json();
+      if (d.ok) {
+        cities = d.data;
+        $('ct').innerHTML = d.data.map(c => `
+          <div class="item" data-lon="${c.lon}" data-lat="${c.lat}">
+            <span>🏙️ ${c.city}</span>
+            <b>${c.temp}°C · ${c.humidity}%</b>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('#ct .item').forEach(el => {
+          el.onclick = () => map.flyTo({
+            center: [+el.dataset.lon, +el.dataset.lat],
+            zoom: 10,
+            duration: 1400
+          });
         });
-      });
-    } else {
-      cEl.innerHTML = `<div class="top-item"><span>⚠️ API қатесі: ${d.error || 'Белгісіз'}</span></div>`;
+
+        // ── Технология кестесі ──
+        $('tech').innerHTML = d.data.map(c => `
+          <div class="item">
+            <span>${c.city} · ылғал ${c.humidity}%</span>
+            <b style="color:#7fd0ff">${bestTech(c.temp, c.humidity, c.wind, c.index)}</b>
+          </div>
+        `).join('');
+
+        // ── Графиктер ──
+        renderBars('ch1', d.data.map(c => ({
+          name: c.city,
+          value: c.index
+        })), 100, '#5fff9a');
+
+        $('ch2').innerHTML = d.data.map(c => `
+          <div class="crow">
+            <span class="cl">💧 ${c.city}</span>
+            <div class="cb"><i style="width:${c.humidity}%;background:#4fc3f7"></i></div>
+            <b>${c.humidity}%</b>
+          </div>
+          <div class="crow">
+            <span class="cl">🌡️ ${c.city}</span>
+            <div class="cb"><i style="width:${Math.min(c.temp * 2, 100)}%;background:#ff8c42"></i></div>
+            <b>${c.temp}°C</b>
+          </div>
+        `).join('');
+      } else {
+        $('ct').innerHTML = `<div class="item">🚫 API қатесі: ${d.error}</div>`;
+      }
+    } catch (e) {
+      $('ct').innerHTML = `<div class="item">🚫 API жауап бермейді</div>`;
     }
-  } catch(e){
-    console.error('API қатесі:', e);
-    document.getElementById('cities').innerHTML = `<div class="top-item"><span>🚫 API қолжетімсіз: ${e.message}</span></div>`;
   }
 
-  map.fitBounds(KZ_BOUNDS, {padding:80, duration:1800});
+  await loadCities();
 
-  setTimeout(() => document.getElementById('loader').classList.add('hide'), 600);
+  // ── Бастапқы фокус ──
+  map.fitBounds(KZ_BOUNDS, { padding: 80, duration: 1500 });
 
-  const btnKZ     = document.getElementById('btnKZ');
-  const btnAll    = document.getElementById('btnAll');
-  const btnClouds = document.getElementById('btnClouds');
-  const btnHeat   = document.getElementById('btnHeat');
+  // ── LOADER ──
+  setTimeout(() => $('ld').classList.add('h'), 600);
 
-  btnKZ.addEventListener('click', () => {
-    map.fitBounds(KZ_BOUNDS, {padding:80, duration:1500});
+  // ──────────────────────────────────────────────────────────────
+  // CONTROLS
+  // ──────────────────────────────────────────────────────────────
+  const btnKZ = $('bK');
+  const btnAll = $('bA');
+  const btnClouds = $('bC');
+  const btnHeat = $('bH');
+  const btn3D = $('b3');
+  const btnCrit = $('bCr');
+  const btnRefresh = $('bR');
+
+  btnKZ.onclick = () => {
+    map.fitBounds(KZ_BOUNDS, { padding: 80 });
     btnKZ.classList.add('active');
     btnAll.classList.remove('active');
-  });
+  };
 
-  btnAll.addEventListener('click', () => {
-    map.fitBounds(ALL_BOUNDS, {padding:50, duration:1500});
+  btnAll.onclick = () => {
+    map.fitBounds(ALL_BOUNDS, { padding: 50 });
     btnAll.classList.add('active');
     btnKZ.classList.remove('active');
-  });
+  };
 
   let cloudsVisible = true;
-  btnClouds.addEventListener('click', () => {
+  btnClouds.onclick = () => {
     cloudsVisible = !cloudsVisible;
-    cloudMarkers.forEach(m => {
+    markers.forEach(m => {
       m.getElement().style.display = cloudsVisible ? '' : 'none';
     });
     btnClouds.classList.toggle('active', cloudsVisible);
-  });
+  };
 
   let heatVisible = false;
-  btnHeat.addEventListener('click', () => {
+  btnHeat.onclick = () => {
     heatVisible = !heatVisible;
-    map.setLayoutProperty('evap-heat', 'visibility', heatVisible ? 'visible' : 'none');
+    map.setLayoutProperty('heatmap', 'visibility', heatVisible ? 'visible' : 'none');
     btnHeat.classList.toggle('active', heatVisible);
-  });
+  };
+
+  let is3D = false;
+  btn3D.onclick = () => {
+    is3D = !is3D;
+    map.easeTo({
+      pitch: is3D ? 55 : 0,
+      bearing: is3D ? -20 : 0,
+      duration: 1000
+    });
+    btn3D.classList.toggle('active', is3D);
+  };
+
+  let showCrit = false;
+  btnCrit.onclick = () => {
+    showCrit = !showCrit;
+    markers.forEach(m => {
+      const evap = parseFloat(m.getElement().dataset.evap);
+      m.getElement().classList.toggle('dim', showCrit && evap < 12);
+    });
+    btnCrit.classList.toggle('active', showCrit);
+    if (showCrit && top5[0]) {
+      map.flyTo({
+        center: [top5[0].lon, top5[0].lat],
+        zoom: 8,
+        duration: 1500
+      });
+    }
+  };
+
+  btnRefresh.onclick = loadCities;
 });
 
+// ── Карта қатесі ──
 map.on('error', e => {
   console.error('Mapbox қатесі:', e);
-  const ld = document.getElementById('loader');
-  ld.innerHTML = `<div style="color:#ff8c42;max-width:420px;text-align:center;padding:20px">
-    ⚠️ Карта жүктелмеді.<br><br>
-    <small>Код ішінде <code>mapboxgl.accessToken</code> өз токеніңізбен алмастырыңыз.<br>
-    Токенді <a style="color:#7fd0ff" href="https://account.mapbox.com/" target="_blank">mapbox.com</a> сайтынан алуға болады.</small>
+  $('ld').innerHTML = `<div style="color:#ff8c42;text-align:center;padding:20px">
+    ⚠️ Карта жүктелмеді. Token дұрыс емес болуы мүмкін.
   </div>`;
 });
 </script>
 </body>
 </html>
+
