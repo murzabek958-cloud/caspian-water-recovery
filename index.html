@@ -24,10 +24,7 @@ header h1{font-size:18px;color:var(--accent)}
 .tab{flex:1;padding:12px;text-align:center;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .panel{display:none}.panel.active{display:block}
-#map{height:380px}
-.layer-btns{display:flex;gap:8px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.layer-btn{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s}
-.layer-btn.on{background:var(--accent);color:#000;border-color:var(--accent);font-weight:bold}
+#map{height:420px}
 .map-legend{position:absolute;bottom:20px;left:10px;z-index:1000;background:rgba(10,14,26,0.92);padding:12px;border-radius:10px;color:var(--text);font-size:11px;border:1px solid var(--border);pointer-events:none}
 .map-legend b{color:var(--accent)}.map-legend hr{border-color:var(--border);margin:6px 0}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:14px}
@@ -77,16 +74,16 @@ footer{text-align:center;padding:12px;color:#455a64;font-size:11px;border-top:1p
   <div class="tab" onclick="showTab('charts',this)">📊 Графиктер</div>
 </div>
 <div class="panel active" id="tab-map">
-  <div class="layer-btns">
-    <button class="layer-btn on" id="btn-evap" onclick="toggleLayer('evap')">💨 Булану (NASA)</button>
-    <button class="layer-btn on" id="btn-cond" onclick="toggleLayer('cond')">💧 Конденсация</button>
-    <button class="layer-btn on" id="btn-danger" onclick="toggleLayer('danger')">⚠️ Критикалық</button>
-  </div>
   <div style="position:relative">
     <div id="map"></div>
     <div class="map-legend">
-      <b>💨 Булану (NASA)</b><br>🔵 &lt;5 мм/күн<br>🟡 5-10 мм/күн<br>🟠 10-14 мм/күн<br>🔴 &gt;14 мм/күн
-      <hr><b>💧 Конденсация</b><br>🟢 Тиімді ≥70%<br>🟡 Орташа 40-69%<br>🔴 Тиімсіз &lt;40%
+      <b>💨 Булану (NASA)</b><br>
+      🟢 Аз &lt;5 мм/күн<br>
+      🟡 Орташа 5-10 мм/күн<br>
+      🟠 Жоғары 10-14 мм/күн<br>
+      🔴 Критикалық &gt;14 мм/күн<br>
+      <hr>
+      ⚠️ Нүктелер — критикалық аймақтар
     </div>
   </div>
   <div class="cards" id="cards"></div>
@@ -109,13 +106,13 @@ footer{text-align:center;padding:12px;color:#455a64;font-size:11px;border-top:1p
 </div>
 <footer>💧 Caspian Water Recovery | I Халықаралық CASPIAN HACKATHON 2026 | NASA POWER API + OpenWeatherMap</footer>
 <script>
-const map=L.map('map').setView([44.0,51.5],5);
+const map=L.map('map').setView([42.0,51.5],5);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-let layers={evap:null,cond:null,danger:null};
-let layerOn={evap:true,cond:true,danger:true};
 let indexChart=null,humidChart=null;
+
 function getColor(i){return i>=70?'#4caf50':i>=40?'#ff9800':'#f44336'}
 function getLabel(i){return i>=70?'🟢 ТИІМДІ':i>=40?'🟡 ОРТАША':'🔴 ТИІМСІЗ'}
+
 function showTab(name,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -123,12 +120,7 @@ function showTab(name,el){
   el.classList.add('active');
   if(name==='map')setTimeout(()=>map.invalidateSize(),100);
 }
-function toggleLayer(name){
-  layerOn[name]=!layerOn[name];
-  const btn=document.getElementById('btn-'+name);
-  if(layerOn[name]){btn.classList.add('on');if(layers[name])map.addLayer(layers[name]);}
-  else{btn.classList.remove('on');if(layers[name])map.removeLayer(layers[name]);}
-}
+
 function getDecision(temp,humidity,wind){
   const dp=temp-((100-humidity)/5);
   return [
@@ -139,21 +131,54 @@ function getDecision(temp,humidity,wind){
     {tech:"☀️ Күн+Жел энергиясы",shart:"Әрдайым қосулы (қуат көзі)",on:true},
   ];
 }
+
 async function loadNASA(){
-  document.getElementById('loaderText').textContent='NASA деректері жүктелуде...';
-  const res=await fetch('./caspian_grid.json');
+  document.getElementById('loaderText').textContent='NASA теңіз деректері жүктелуде...';
+  const res=await fetch('./caspian_sea_grid.json');
   const data=await res.json();
+
+  // Градиент: жасыл → сары → қызғылт (тым ашық емес)
   const evapMax=Math.max(...data.map(d=>d.evaporation));
-  layers.evap=L.heatLayer(data.map(d=>[d.lat,d.lon,d.evaporation/evapMax]),{radius:25,blur:20,minOpacity:0.35,gradient:{0.2:'blue',0.5:'yellow',0.8:'orange',1.0:'red'}});
-  if(layerOn.evap)layers.evap.addTo(map);
+  L.heatLayer(
+    data.map(d=>[d.lat,d.lon,d.evaporation/evapMax]),
+    {
+      radius:22,
+      blur:18,
+      minOpacity:0.25,
+      gradient:{
+        0.0:'#1a9850',  // жасыл
+        0.3:'#91cf60',  // ашық жасыл
+        0.5:'#fee08b',  // сары
+        0.7:'#fc8d59',  // қызғылт сары
+        1.0:'#d73027'   // қызғылт
+      }
+    }
+  ).addTo(map);
+
+  // Критикалық нүктелер — теңіздің ішінде
   const top5=[...data].sort((a,b)=>b.evaporation-a.evaporation).slice(0,5);
-  const dg=L.layerGroup();
   top5.forEach((d,i)=>{
-    L.marker([d.lat,d.lon],{icon:L.divIcon({html:`<div style="background:#ff4444;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;border:2px solid white">${i+1}</div>`,iconSize:[26,26],iconAnchor:[13,13]})})
-    .bindPopup(`<b style="color:#ff4444">⚠️ #${i+1}</b><br>💨 ${d.evaporation} мм/күн<br>🌡️ ${d.temp}°C<br>🌊 ${d.sst}°C`)
-    .bindTooltip(`⚠️ #${i+1} | ${d.evaporation} мм/күн`).addTo(dg);
+    L.circleMarker([d.lat,d.lon],{
+      radius:8,
+      color:'#ff4444',
+      fillColor:'#ff4444',
+      fillOpacity:0.9,
+      weight:2
+    })
+    .bindPopup(`
+      <div style="font-family:Arial;padding:8px;min-width:180px">
+        <b style="color:#ff4444">⚠️ #${i+1} Критикалық аймақ</b><br>
+        <b>💨 Булану:</b> ${d.evaporation} мм/күн<br>
+        <b>🌡️ Ауа:</b> ${d.temp}°C<br>
+        <b>🌊 Су:</b> ${d.sst}°C<br>
+        <b>💧 Ылғал:</b> ${d.humidity}%
+      </div>
+    `)
+    .bindTooltip(`⚠️ #${i+1} | ${d.evaporation} мм/күн`)
+    .addTo(map);
   });
-  layers.danger=dg;if(layerOn.danger)dg.addTo(map);
+
+  // NASA статистика
   const evaps=data.map(d=>d.evaporation);
   const avg=(evaps.reduce((a,b)=>a+b,0)/evaps.length).toFixed(2);
   document.getElementById('nasaStats').innerHTML=`
@@ -161,8 +186,8 @@ async function loadNASA(){
     <div class="stat-card"><div class="stat-val">${avg}</div><div class="stat-label">💨 Орташа булану мм/күн</div></div>
     <div class="stat-card"><div class="stat-val" style="color:var(--green)">${Math.min(...evaps)}</div><div class="stat-label">💨 Мин булану мм/күн</div></div>
     <div class="stat-card"><div class="stat-val">${data.length}</div><div class="stat-label">📍 NASA нүктелері</div></div>`;
-  return top5;
 }
+
 async function loadWeather(){
   document.getElementById('loaderText').textContent='Нақты уақыт деректері...';
   const res=await fetch('/api/weather');
@@ -172,34 +197,44 @@ async function loadWeather(){
   const best=data.reduce((a,b)=>a.index>b.index?a:b);
   document.getElementById('timeLabel').textContent=new Date(json.time).toLocaleString('ru-RU');
   document.getElementById('bestBanner').innerHTML=`🏆 Ең тиімді: <span>${best.city}</span> — Индекс: <span>${best.index}%</span> | ⚙️ <span>${best.tech}</span>`;
+
+  // Карточкалар — қалалар тек осында
   const container=document.getElementById('cards');container.innerHTML='';
-  data.forEach((d,i)=>{
-    const color=getColor(d.index),label=getLabel(d.index);
-    const div=document.createElement('div');div.className='card';
-    div.innerHTML=`<div class="card-city">📍 ${d.city}</div><div class="card-index" style="color:${color}">${d.index}%</div><div class="card-status" style="color:${color}">${label}</div><div class="card-row"><span>🌡️</span><b>${d.temp}°C</b></div><div class="card-row"><span>💧</span><b>${d.humidity}%</b></div><div class="card-row"><span>🌬️</span><b>${d.wind} м/с</b></div><div class="card-row"><span>🌫️</span><b>${d.dew}°C</b></div><div class="card-tech">⚙️ ${d.tech}</div>`;
-    div.onclick=()=>{document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));div.classList.add('active');map.flyTo([d.lat,d.lon],9,{duration:1});};
-    container.appendChild(div);
-  });
-  if(layers.cond)map.removeLayer(layers.cond);
-  const cg=L.layerGroup();
   data.forEach(d=>{
     const color=getColor(d.index),label=getLabel(d.index);
-    L.circleMarker([d.lat,d.lon],{radius:d.index/5+8,color,fillColor:color,fillOpacity:0.85,weight:2})
-    .bindPopup(`<div style="font-family:Arial;padding:8px;min-width:180px"><h3 style="color:#00bcd4;margin:0 0 6px">💧 ${d.city}</h3><b>📊</b> <span style="color:${color}">${d.index}%</span> ${label}<br><b>🌡️</b> ${d.temp}°C <b>💧</b> ${d.humidity}% <b>🌬️</b> ${d.wind}м/с<br><b>⚙️</b> ${d.tech}</div>`,{maxWidth:220})
-    .bindTooltip(`${d.city}: ${d.index}%`).addTo(cg);
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`
+      <div class="card-city">📍 ${d.city}</div>
+      <div class="card-index" style="color:${color}">${d.index}%</div>
+      <div class="card-status" style="color:${color}">${label}</div>
+      <div class="card-row"><span>🌡️</span><b>${d.temp}°C</b></div>
+      <div class="card-row"><span>💧</span><b>${d.humidity}%</b></div>
+      <div class="card-row"><span>🌬️</span><b>${d.wind} м/с</b></div>
+      <div class="card-row"><span>🌫️</span><b>${d.dew}°C</b></div>
+      <div class="card-tech">⚙️ ${d.tech}</div>`;
+    container.appendChild(div);
   });
-  layers.cond=cg;if(layerOn.cond)cg.addTo(map);
+
+  // Графиктер
   const cities=data.map(d=>d.city),indexes=data.map(d=>d.index),humids=data.map(d=>d.humidity),temps=data.map(d=>d.temp),colors=data.map(d=>getColor(d.index));
   const opts={responsive:true,plugins:{legend:{labels:{color:'#90caf9'}}},scales:{x:{ticks:{color:'#90caf9'},grid:{color:'#1e3a5f'}},y:{ticks:{color:'#90caf9'},grid:{color:'#1e3a5f'}}}};
   if(indexChart)indexChart.destroy();
   indexChart=new Chart(document.getElementById('indexChart'),{type:'bar',data:{labels:cities,datasets:[{label:'Конденсация индексі (%)',data:indexes,backgroundColor:colors,borderRadius:6}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,max:100}}}});
   if(humidChart)humidChart.destroy();
   humidChart=new Chart(document.getElementById('humidChart'),{type:'bar',data:{labels:cities,datasets:[{label:'Ылғалдылық (%)',data:humids,backgroundColor:'#1565c0',borderRadius:6},{label:'Температура (°C)',data:temps,backgroundColor:'#b71c1c',borderRadius:6}]},options:opts});
+
+  // AI шешім
   const dec=getDecision(best.temp,best.humidity,best.wind);
   const active=dec.filter(d=>d.on);
-  document.getElementById('aiText').innerHTML=`<b>${best.city}</b> аймағында конденсация индексі <b>${best.index}%</b>.<br>Температура ${best.temp}°C, ылғалдылық ${best.humidity}%, жел ${best.wind} м/с.<br>AI шешімі: <b style="color:${getColor(best.index)}">${getLabel(best.index)}</b><br>Іске қосылатын технологиялар: <b>${active.map(d=>d.tech).join(', ')}</b>`;
-  document.getElementById('decisionTable').innerHTML=dec.map(d=>`<tr><td>${d.tech}</td><td style="color:#90caf9">${d.shart}</td><td class="${d.on?'status-on':'status-off'}">${d.on?'✅ ІСКЕ ҚОСЫЛДЫ':'⛔ ӨШІРУЛІ'}</td></tr>`).join('');
+  document.getElementById('aiText').innerHTML=`
+    <b>${best.city}</b> аймағында конденсация индексі <b>${best.index}%</b>.<br>
+    Температура ${best.temp}°C, ылғалдылық ${best.humidity}%, жел ${best.wind} м/с.<br>
+    AI шешімі: <b style="color:${getColor(best.index)}">${getLabel(best.index)}</b><br>
+    Іске қосылатын технологиялар: <b>${active.map(d=>d.tech).join(', ')}</b>`;
+  document.getElementById('decisionTable').innerHTML=dec.map(d=>`
+    <tr><td>${d.tech}</td><td style="color:#90caf9">${d.shart}</td><td class="${d.on?'status-on':'status-off'}">${d.on?'✅ ІСКЕ ҚОСЫЛДЫ':'⛔ ӨШІРУЛІ'}</td></tr>`).join('');
 }
+
 async function init(){
   try{
     await loadNASA();
