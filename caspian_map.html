@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f7f9508392161c65e1af4e4adb4b9f62 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@main/folium/templates/leaflet_heat.min.js"></script>
+</head>
+<body>
+    
+    
+<div style="position: fixed; bottom: 30px; left: 30px; z-index: 1000;
+     background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px;
+     color: white; font-family: Arial; font-size: 13px;">
+    <b>💧 Конденсация индексі</b><br><br>
+    🟢 70-100% — Тиімді<br>
+    🟡 40-69%  — Орташа<br>
+    🔴 0-39%   — Тиімсіз
+</div>
+    
+            <div class="folium-map" id="map_f7f9508392161c65e1af4e4adb4b9f62" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_f7f9508392161c65e1af4e4adb4b9f62 = L.map(
+                "map_f7f9508392161c65e1af4e4adb4b9f62",
+                {
+                    center: [43.0, 51.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_79bc90693e2f64080abfd4f10fc11c86 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_79bc90693e2f64080abfd4f10fc11c86.addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+    
+            var circle_marker_fed13f4988ed20c0a2d255e0ce84c7ae = L.circleMarker(
+                [43.65, 51.17],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.0, "stroke": true, "weight": 3}
+            ).addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+    
+        var popup_c4e01c633094b99359e83fd235b421f3 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_16a8e9d7c72d8f845ce3e457a78f66df = $(`<div id="html_16a8e9d7c72d8f845ce3e457a78f66df" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial; min-width: 220px; padding: 10px;">         <h3 style="color:#00bcd4; margin:0">💧 Ақтау</h3>         <hr style="border-color:#333">         <b>📊 Конденсация индексі:</b> 32.0%<br>         <b>🤖 AI шешімі:</b> 🔴 ТИІМСІЗ<br>         <hr style="border-color:#333">         <b>🌡️ Температура:</b> 38.2°C<br>         <b>💧 Ылғалдылық:</b> 42%<br>         <b>🌬️ Жел:</b> 6.5 м/с<br>         <hr style="border-color:#333">         <b>⚙️ Технология:</b> 💨 Ылғалды ауа ағыны<br>         <small style="color:#888">🕐 17:55</small>     </div>     </div>`)[0];
+                popup_c4e01c633094b99359e83fd235b421f3.setContent(html_16a8e9d7c72d8f845ce3e457a78f66df);
+            
+        
+
+        circle_marker_fed13f4988ed20c0a2d255e0ce84c7ae.bindPopup(popup_c4e01c633094b99359e83fd235b421f3)
+        ;
+
+        
+    
+    
+            circle_marker_fed13f4988ed20c0a2d255e0ce84c7ae.bindTooltip(
+                `<div>
+                     Ақтау: 32.0% | 🔴 ТИІМСІЗ
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c9e503348c76261018b1766b5cec4dc1 = L.circleMarker(
+                [47.1, 51.91],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.425, "stroke": true, "weight": 3}
+            ).addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+    
+        var popup_bbf58329495cb36e5b7e655bb07036e8 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_c1defe6af1af8f5a19a01c1fe5a067ef = $(`<div id="html_c1defe6af1af8f5a19a01c1fe5a067ef" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial; min-width: 220px; padding: 10px;">         <h3 style="color:#00bcd4; margin:0">💧 Атырау</h3>         <hr style="border-color:#333">         <b>📊 Конденсация индексі:</b> 33.7%<br>         <b>🤖 AI шешімі:</b> 🔴 ТИІМСІЗ<br>         <hr style="border-color:#333">         <b>🌡️ Температура:</b> 36.8°C<br>         <b>💧 Ылғалдылық:</b> 48%<br>         <b>🌬️ Жел:</b> 4.2 м/с<br>         <hr style="border-color:#333">         <b>⚙️ Технология:</b> ⚡ Ультрадыбыстық ионизатор<br>         <small style="color:#888">🕐 17:55</small>     </div>     </div>`)[0];
+                popup_bbf58329495cb36e5b7e655bb07036e8.setContent(html_c1defe6af1af8f5a19a01c1fe5a067ef);
+            
+        
+
+        circle_marker_c9e503348c76261018b1766b5cec4dc1.bindPopup(popup_bbf58329495cb36e5b7e655bb07036e8)
+        ;
+
+        
+    
+    
+            circle_marker_c9e503348c76261018b1766b5cec4dc1.bindTooltip(
+                `<div>
+                     Атырау: 33.7% | 🔴 ТИІМСІЗ
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9123c74fba03805371db255074d3aa7a = L.circleMarker(
+                [40.41, 49.87],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 22.35, "stroke": true, "weight": 3}
+            ).addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+    
+        var popup_dd1d23065690b1659aeeb62dd86d2a5a = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_6ee66ad7bb955b6a3190991b1716b2c8 = $(`<div id="html_6ee66ad7bb955b6a3190991b1716b2c8" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial; min-width: 220px; padding: 10px;">         <h3 style="color:#00bcd4; margin:0">💧 Баку</h3>         <hr style="border-color:#333">         <b>📊 Конденсация индексі:</b> 49.4%<br>         <b>🤖 AI шешімі:</b> 🟡 ОРТАША<br>         <hr style="border-color:#333">         <b>🌡️ Температура:</b> 32.5°C<br>         <b>💧 Ылғалдылық:</b> 68%<br>         <b>🌬️ Жел:</b> 7.1 м/с<br>         <hr style="border-color:#333">         <b>⚙️ Технология:</b> 💨 Ылғалды ауа ағыны<br>         <small style="color:#888">🕐 17:55</small>     </div>     </div>`)[0];
+                popup_dd1d23065690b1659aeeb62dd86d2a5a.setContent(html_6ee66ad7bb955b6a3190991b1716b2c8);
+            
+        
+
+        circle_marker_9123c74fba03805371db255074d3aa7a.bindPopup(popup_dd1d23065690b1659aeeb62dd86d2a5a)
+        ;
+
+        
+    
+    
+            circle_marker_9123c74fba03805371db255074d3aa7a.bindTooltip(
+                `<div>
+                     Баку: 49.4% | 🟡 ОРТАША
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_84a2bc6e97e554b4aa9ce0ccd6a2c1a1 = L.circleMarker(
+                [40.02, 52.97],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.65, "stroke": true, "weight": 3}
+            ).addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+    
+        var popup_ddcc761317236940e8b604773088ba7c = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_0414c25102cb278fbe5b074da6d2e713 = $(`<div id="html_0414c25102cb278fbe5b074da6d2e713" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial; min-width: 220px; padding: 10px;">         <h3 style="color:#00bcd4; margin:0">💧 Туркменбашы</h3>         <hr style="border-color:#333">         <b>📊 Конденсация индексі:</b> 26.6%<br>         <b>🤖 AI шешімі:</b> 🔴 ТИІМСІЗ<br>         <hr style="border-color:#333">         <b>🌡️ Температура:</b> 40.1°C<br>         <b>💧 Ылғалдылық:</b> 35%<br>         <b>🌬️ Жел:</b> 5.8 м/с<br>         <hr style="border-color:#333">         <b>⚙️ Технология:</b> 💨 Ылғалды ауа ағыны<br>         <small style="color:#888">🕐 17:55</small>     </div>     </div>`)[0];
+                popup_ddcc761317236940e8b604773088ba7c.setContent(html_0414c25102cb278fbe5b074da6d2e713);
+            
+        
+
+        circle_marker_84a2bc6e97e554b4aa9ce0ccd6a2c1a1.bindPopup(popup_ddcc761317236940e8b604773088ba7c)
+        ;
+
+        
+    
+    
+            circle_marker_84a2bc6e97e554b4aa9ce0ccd6a2c1a1.bindTooltip(
+                `<div>
+                     Туркменбашы: 26.6% | 🔴 ТИІМСІЗ
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var heat_map_88954d9f8114cb8d240116b46d9a25ed = L.heatLayer(
+                [[43.65, 51.17, 0.32], [47.1, 51.91, 0.337], [40.41, 49.87, 0.494], [40.02, 52.97, 0.266]],
+                {
+  "minOpacity": 0.3,
+  "maxZoom": 18,
+  "radius": 60,
+  "blur": 40,
+}
+            );
+        
+    
+            heat_map_88954d9f8114cb8d240116b46d9a25ed.addTo(map_f7f9508392161c65e1af4e4adb4b9f62);
+        
+</script>
+</html>
