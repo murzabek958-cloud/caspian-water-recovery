@@ -4,13 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="google-site-verification" content="mwitdqhIO6JiLPtiJc46Rfd4AMu_0RRfEHT0E7zb394"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="Каспий теңізінің су ресурстарын қалпына келтіру. NASA POWER + Machine Learning AI мониторинг жүйесі. Caspian Hackathon 2026"/>
-<meta name="keywords" content="Caspian Sea, water recovery, NASA, AI, экология, Каспий"/>
-<meta property="og:title" content="💧 Caspian Water Recovery - AI Мониторинг"/>
-<meta property="og:description" content="NASA POWER + ML болжам жүйесі. Каспий теңізінің булану мониторингі."/>
+<meta name="description" content="Caspian Water Recovery — Каспий теңізінің булануын AI мониторингі: NASA POWER, Magnus-Tetens термодинамикасы, Smart Ion Buoys. Caspian Hackathon 2026"/>
+<meta property="og:title" content="💧 Caspian Water Recovery — Smart Ion Buoys"/>
+<meta property="og:description" content="NASA POWER + Magnus-Tetens + ML. Локальды микро-конденсация платформасы."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://caspian-water-recovery.vercel.app"/>
-<title>💧 Caspian Water Recovery - AI Мониторинг</title>
+<title>💧 Caspian Water Recovery — Smart Ion Buoys</title>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet"/>
 <style>
@@ -24,7 +23,7 @@ header h1{font-size:14px;color:#7fd0ff}
 .live{color:#5fff9a;font-size:11px;animation:bl 1.6s infinite}
 @keyframes bl{50%{opacity:.4}}
 #bR{margin-left:auto;background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}
-.panel{position:absolute;top:54px;left:10px;z-index:9;width:280px;max-height:calc(100% - 72px);overflow:auto;
+.panel{position:absolute;top:54px;left:10px;z-index:9;width:290px;max-height:calc(100% - 72px);overflow:auto;
   background:rgba(5,22,36,.9);backdrop-filter:blur(10px);border:1px solid #14405f;border-radius:14px;padding:12px}
 .panel h2{font-size:11px;color:#7fd0ff;margin:12px 0 6px;text-transform:uppercase;letter-spacing:1px}
 .panel h2:first-child{margin-top:0}
@@ -42,11 +41,14 @@ header h1{font-size:14px;color:#7fd0ff}
 .ai.critical{background:rgba(255,59,59,.12);border-color:#ff3b3b;color:#ffc2c2}
 .ai.warning{background:rgba(255,209,102,.12);border-color:#ffd166;color:#ffe7a8}
 .ai.stable{background:rgba(127,255,180,.1);border-color:#5fff9a;color:#b7ffd8}
-.vp{position:relative;pointer-events:auto;cursor:pointer;transition:opacity .4s}
-.vp.dim{opacity:.12}
-.vp .base{position:absolute;inset:0;border-radius:50%;filter:blur(6px);opacity:.7}
-.vp .puff{position:absolute;bottom:35%;width:40%;height:40%;border-radius:50%;filter:blur(4px);opacity:0;animation:rise linear infinite}
-@keyframes rise{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:.85}100%{transform:translateY(-54px) scale(1.8);opacity:0}}
+.pt{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.85);cursor:pointer;box-shadow:0 0 6px rgba(0,0,0,.5)}
+.buoy{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd166,#ff8c42 70%);
+  border:2px solid #fff;box-shadow:0 0 12px #ff8c42;position:relative;cursor:pointer}
+.buoy::after{content:'';position:absolute;inset:-8px;border:2px solid rgba(255,140,66,.6);border-radius:50%;animation:pulse 1.6s infinite}
+@keyframes pulse{from{transform:scale(.6);opacity:1}to{transform:scale(1.4);opacity:0}}
+.city-label{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;font-weight:600;
+  text-shadow:0 1px 4px #000,0 0 8px rgba(0,0,0,.7);pointer-events:none}
+.city-label b{font-size:14px}
 .crow{display:flex;align-items:center;gap:6px;font-size:10px;margin:3px 0}
 .cl{width:74px;overflow:hidden;white-space:nowrap}
 .cb{flex:1;height:7px;background:#0a2740;border-radius:4px}
@@ -54,7 +56,7 @@ header h1{font-size:14px;color:#7fd0ff}
 .crow b{width:44px;text-align:right;color:#ffd166}
 .lbar{height:10px;border-radius:5px;background:linear-gradient(90deg,#4fc3f7,#ffd166 33.3%,#ff8c42 66.6%,#ff3b3b)}
 .ltick{display:flex;justify-content:space-between;font-size:10px;color:#9fb8cc;margin-top:2px}
-.mapboxgl-popup-content{background:#0a2740;color:#d7ecfa;border:1px solid #1e5c88;border-radius:10px;font-size:12px;min-width:180px}
+.mapboxgl-popup-content{background:#0a2740;color:#d7ecfa;border:1px solid #1e5c88;border-radius:10px;font-size:12px;min-width:190px}
 .mapboxgl-popup-content b{color:#7fd0ff}
 #ld{position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at center,#0a2740,#04131f);color:#7fd0ff;flex-direction:column;gap:14px;transition:.6s}
@@ -62,7 +64,7 @@ header h1{font-size:14px;color:#7fd0ff}
 .spinner{width:44px;height:44px;border:3px solid #1e5c88;border-top-color:#7fd0ff;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;font-size:9px;color:#6d93ad;pointer-events:none}
-.ai-btn{background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;margin-left:4px;transition:.2s}
+.ai-btn{background:#0d3350;color:#bfe6ff;border:1px solid #1e5c88;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;transition:.2s}
 .ai-btn:hover{background:#145079}
 @keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}
@@ -74,19 +76,17 @@ footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;f
 </head>
 <body>
 
-<div id="ld">
-  <div class="spinner"></div>
-  <div>🌊 NASA + Mapbox GL жүктелуде...</div>
-</div>
+<div id="ld"><div class="spinner"></div><div>🌊 NASA + Mapbox GL жүктелуде...</div></div>
 
 <header>
   <h1>💧 CASPIAN WATER RECOVERY</h1>
-  <span class="tag"> Kazakhstan Sector </span>
-  <span class="tag"> NASA POWER · OWM </span>
+  <span class="tag"> Smart Ion Buoys </span>
+  <span class="tag"> NASA POWER · OWM · CMEMS </span>
   <span class="live"> LIVE </span>
   <button id="bAI" class="ai-btn" style="background:#1f6fae;color:#fff;">🤖 AI</button>
   <button id="bHist" class="ai-btn">📊 Тарих</button>
   <button id="bExp" class="ai-btn">📥 Есеп</button>
+  <button id="bWind" class="ai-btn">🌬️ Windy</button>
   <button id="bR">⟳ REFRESH</button>
 </header>
 
@@ -94,12 +94,16 @@ footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;f
 
 <div class="panel">
   <h2>🎯 ФОКУС</h2>
-  <span class="btn active" id="bK">🇰🇿 Қазақстан</span>
-  <span class="btn" id="bA">🌐 Бүкіл Каспий</span>
-  <span class="btn active" id="bC">💨 Бу</span>
+  <span class="btn active" id="bK">🇰 Қазақстан</span>
+  <span class="btn" id="bA">🌐 Каспий</span>
+  <span class="btn" id="bG">🌍 Глобал</span>
   <span class="btn" id="bH">🔥 Heatmap</span>
-  <span class="btn" id="b3">🌐 3D Режим</span>
+  <span class="btn" id="b3">🌐 3D</span>
   <span class="btn" id="bCr">📍 Критикалық</span>
+
+  <h2>🌍 НАҒЫЗ КЛИМАТ (LIVE)</h2>
+  <span class="btn" id="bSat">🛰️ Спутник бұлттары</span>
+  <span class="btn" id="bRad">🌧️ Жауын радары</span>
 
   <h2>📡 NASA Статистика (Қазақстан секторы)</h2>
   <div class="row"><span>🔵 Нүктелер</span><span class="v" id="sN">—</span></div>
@@ -109,16 +113,21 @@ footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;f
   <div class="row"><span>💨 Жел</span><span class="v" id="sW">—</span></div>
   <div class="row"><span>🌫️ Ылғал</span><span class="v" id="sH">—</span></div>
 
-  <h2>📍 НҮКТЕ СТАТИСТИКАСЫ</h2>
+  <h2>📍 НҮКТЕ ТАЛДАУЫ (Magnus–Tetens)</h2>
   <div class="row"><span>📍 Координат</span><span class="v" id="pCoord">Нүктені басыңыз</span></div>
   <div class="row"><span>💨 Булану</span><span class="v" id="pEvap">—</span></div>
-  <div class="row"><span>🌡️ Ауа темп.</span><span class="v" id="pTemp">—</span></div>
-  <div class="row"><span>🌊 Су темп.</span><span class="v" id="pSst">—</span></div>
-  <div class="row"><span>💧 Ылғал</span><span class="v" id="pHum">—</span></div>
-  <div class="row"><span>🌬️ Жел</span><span class="v" id="pWind">—</span></div>
+  <div class="row"><span>🌡️ Ауа / Су темп.</span><span class="v" id="pTemp">—</span></div>
+  <div class="row"><span>💧 Ылғал / Жел</span><span class="v" id="pHum">—</span></div>
+  <div class="row"><span>🌫️ Шық нүктесі (Td)</span><span class="v" id="pDew">—</span></div>
+  <div class="row"><span>🌙 Қажет салқындату</span><span class="v" id="pCool">—</span></div>
+  <div class="row"><span>⚙️ Ұсынылған технология</span><span class="v" id="pTech">—</span></div>
 
-  <h2>🤖 AI Автоматты Шешім</h2>
+  <h2>🤖 AI Шешім (NASA + ML)</h2>
   <div id="ai" class="ai stable">⏳ Талдау жүргізілуде...</div>
+
+  <h2>⚓ Smart Ion Buoys</h2>
+  <span class="btn" id="bBuoy">⚓ Буйларды орналастыру</span>
+  <div id="econ" style="margin-top:6px"></div>
 
   <h2>⚠️ TOP-5 Булану Зона</h2>
   <div id="t5">⏳ Жүктелуде...</div>
@@ -132,230 +141,210 @@ footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;f
   <h2>📊 Конденсация Индексі (%)</h2>
   <div id="ch1">⏳ Жүктелуде...</div>
 
-  <h2>💧 Ылғал vs 🌡️ Темп</h2>
-  <div id="ch2">⏳ Жүктелуде...</div>
-
   <h2>💨 Булану Шкаласы (мм/күн)</h2>
   <div class="lbar"></div>
   <div class="ltick"><span>3</span><span>7</span><span>11</span><span>15+</span></div>
 </div>
 
-<footer>💧 CASPIAN WATER RECOVERY · I ХАЛЫҚАРАЛЫҚ CASPIAN HACKATHON 2026 · NASA POWER · OWM · Mapbox GL</footer>
+<footer>💧 CASPIAN WATER RECOVERY · SMART ION BUOYS · MAGNUS–TETENS · NASA POWER · OWM · CASPIAN HACKATHON 2026</footer>
 
 <script>
-// ──────────────────────────────────────────────────────────────
-// CONFIG
-// ──────────────────────────────────────────────────────────────
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFudXJrYXlldiIsImEiOiJjbXNjdGx3YWMwd3o1MnpzNXd4ZTB3a20xIn0.TFkYBesFueHqrCjX6wzUSw';
-
 const KZ_BOUNDS = [[48.5, 41.7], [55.1, 47.7]];
 const ALL_BOUNDS = [[47.0, 36.0], [55.5, 47.7]];
+const GLOB_BOUNDS = [[-10, 20], [70, 60]];
 
-// ──────────────────────────────────────────────────────────────
-// UTILS
-// ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
-
-const clean = obj => Object.fromEntries(
-  Object.entries(obj).map(([k, v]) => [k.trim(), v])
-);
+const clean = obj => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.trim(), v]));
 
 const interpolateColor = value => {
-  const stops = [
-    [3, [79, 195, 247]],
-    [7, [255, 209, 102]],
-    [11, [255, 140, 66]],
-    [15, [255, 59, 59]]
-  ];
+  const stops = [[3,[79,195,247]],[7,[255,209,102]],[11,[255,140,66]],[15,[255,59,59]]];
   if (value <= stops[0][0]) return `rgb(${stops[0][1].join(',')})`;
   for (let i = 0; i < stops.length - 1; i++) {
-    const [aVal, aCol] = stops[i];
-    const [bVal, bCol] = stops[i + 1];
+    const [aVal, aCol] = stops[i], [bVal, bCol] = stops[i + 1];
     if (value <= bVal) {
       const t = (value - aVal) / (bVal - aVal);
-      const r = Math.round(aCol[0] + (bCol[0] - aCol[0]) * t);
-      const g = Math.round(aCol[1] + (bCol[1] - aCol[1]) * t);
-      const b = Math.round(aCol[2] + (bCol[2] - aCol[2]) * t);
-      return `rgb(${r},${g},${b})`;
+      return `rgb(${Math.round(aCol[0]+(bCol[0]-aCol[0])*t)},${Math.round(aCol[1]+(bCol[1]-aCol[1])*t)},${Math.round(aCol[2]+(bCol[2]-aCol[2])*t)})`;
     }
   }
   return `rgb(${stops[3][1].join(',')})`;
 };
 
-// ──────────────────────────────────────────────────────────────
-// MAP INIT
-// ──────────────────────────────────────────────────────────────
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/satellite-streets-v12',
-  center: [51.9, 44.9],
-  zoom: 5.8,
-  pitch: 0,
-  bearing: 0
-});
-
-let markers = [];
-let allData = [];
-let seaData = [];
-let cities = [];
-
-function createVaporMarker(point) {
-  const evap = point.evaporation;
-  const color = interpolateColor(evap);
-  const size = 26 + evap * 4;
-  const count = Math.min(2 + Math.round(evap / 3), 7);
-  const duration = Math.max(6 - evap * 0.35, 1.6);
-
-  const el = document.createElement('div');
-  el.className = 'vp';
-  el.style.width = `${size}px`;
-  el.style.height = `${size}px`;
-  el.dataset.evap = evap;
-
-  let html = `<div class="base" style="background:radial-gradient(circle,${color} 0%,transparent 70%)"></div>`;
-  for (let i = 0; i < count; i++) {
-    html += `<div class="puff" style="
-      background:radial-gradient(circle,${color} 0%,transparent 70%);
-      left:${15 + Math.random() * 50}%;
-      animation-duration:${duration.toFixed(2)}s;
-      animation-delay:-${(Math.random() * duration).toFixed(2)}s"></div>`;
-  }
-  el.innerHTML = html;
-
-  el.addEventListener('click', () => {
-    document.getElementById('pCoord').textContent = `${point.lat}, ${point.lon}`;
-    document.getElementById('pEvap').textContent = `${point.evaporation} мм/күн`;
-    document.getElementById('pTemp').textContent = `${point.temp}°C`;
-    document.getElementById('pSst').textContent = `${point.sst}°C`;
-    document.getElementById('pHum').textContent = `${point.humidity}%`;
-    document.getElementById('pWind').textContent = `${point.wind} м/с`;
-  });
-
-  const popup = new mapboxgl.Popup({ offset: size / 2 }).setHTML(`
-    💧 <b>${evap.toFixed(2)} мм/күн</b><br>
-    🌡️ ${point.temp}°C · 🌊 ${point.sst}°C<br>
-    💧 ${point.humidity}% · 💨 ${point.wind} м/с<br>
-    <span style="color:${color}">●</span> түс = дәл осы мән
-  `);
-
-  return new mapboxgl.Marker({ element: el, anchor: 'center' })
-    .setLngLat([point.lon, point.lat])
-    .setPopup(popup)
-    .addTo(map);
+// ═══════════════════════════════════════════════════════════
+// 🧪 MAGNUS–TETENS ТЕРМОДИНАМИКАЛЫҚ МОДЕЛІ
+// ═══════════════════════════════════════════════════════════
+function magnusTetens(T, RH) {
+  const es = 6.1078 * Math.pow(10, (7.5 * T) / (T + 237.3)); // қаныққан бу қысымы, hPa
+  const ea = es * RH / 100;                                  // нақты бу қысымы
+  const g = Math.log(RH / 100) + (17.27 * T) / (237.3 + T);
+  const Td = (237.3 * g) / (1 - g);                          // шық нүктесі
+  return { es: +es.toFixed(1), ea: +ea.toFixed(1), Td: +Td.toFixed(1), deficit: +(es - ea).toFixed(1), coolNeed: +(T - Td).toFixed(1) };
 }
 
-function renderBars(containerId, data, max, color) {
-  const container = $(containerId);
-  container.innerHTML = data.map(item => `
-    <div class="crow">
-      <span class="cl">${item.name}</span>
-      <div class="cb"><i style="width:${Math.min(item.value / max * 100, 100)}%;background:${color}"></i></div>
-      <b>${item.value}</b>
-    </div>
-  `).join('');
-}
-
-function dewPoint(temp, humidity) {
-  return +(temp - ((100 - humidity) / 5)).toFixed(1);
-}
-
-function condensationIndex(temp, humidity, wind) {
-  const h = humidity;
-  const t = Math.max(0, (45 - temp) / 45 * 100);
-  const w = Math.min(wind * 5, 100);
-  return +(h * 0.5 + t * 0.3 + w * 0.2).toFixed(1);
-}
-
-function bestTech(temp, humidity, wind, evap) {
-  const dp = dewPoint(temp, humidity);
-  if (temp - dp < 5) return 'Радиациялық салқындату';
-  if (humidity > 70) return 'Fog collector торлары';
+function bestTech(mt, wind, evap, RH) {
+  if (mt.coolNeed < 5) return 'Радиациялық салқындату (түн)';
+  if (RH > 70) return 'Пассивті торлар (Fog collector)';
   if (wind > 5) return 'Ылғалды ауа ағыны';
-  if (evap > 10) return 'Ультрадыбыстық ионизатор';
+  if (evap > 10) return 'Smart Ion Buoys';
   return 'Күн+Жел энергиясы';
 }
 
+// ═══════════════════════════════════════════════════════════
+// 💰 ЭКОНОМИКА + ЭКОЛОГИЯ ЕСЕБІ
+// ═══════════════════════════════════════════════════════════
+function buoyPlan(zones) {
+  const BUOYS = 100, CAP = 0.5, COST = 250, PRICE = 1.0; // буй/зона, м³/күн, $, $/м³
+  const rows = zones.map(z => {
+    const daily = BUOYS * CAP, yearly = daily * 365;
+    const cost = BUOYS * COST, value = yearly * PRICE;
+    return { ...z, buoys: BUOYS, daily, yearly, cost, value, payback: +(cost / value).toFixed(1) };
+  });
+  const tot = rows.reduce((a, r) => ({ buoys: a.buoys + r.buoys, daily: a.daily + r.daily, yearly: a.yearly + r.yearly, cost: a.cost + r.cost, value: a.value + r.value }), { buoys: 0, daily: 0, yearly: 0, cost: 0, value: 0 });
+  tot.payback = +(tot.cost / tot.value).toFixed(1);
+  tot.people = Math.floor(tot.daily * 1000 / 200);
+  tot.co2 = +(tot.yearly * 0.4 / 1000).toFixed(1);
+  return { rows, tot };
+}
+
+const map = new mapboxgl.Map({
+  container: 'map', style: 'mapbox://styles/mapbox/satellite-streets-v12',
+  center: [51.9, 44.9], zoom: 5.8
+});
+
+let markers = [], buoyMarkers = [], allData = [], seaData = [];
+
+// 📍 Ғылыми нүкте маркері (анимациясыз, нақты)
+function createPointMarker(p) {
+  const el = document.createElement('div');
+  el.className = 'pt';
+  el.style.background = interpolateColor(p.evaporation);
+  el.dataset.evap = p.evaporation;
+  el.addEventListener('click', () => {
+    const mt = magnusTetens(p.temp, p.humidity);
+    $('pCoord').textContent = `${p.lat}, ${p.lon}`;
+    $('pEvap').textContent = `${p.evaporation} мм/күн`;
+    $('pTemp').textContent = `${p.temp}°C / ${p.sst}°C`;
+    $('pHum').textContent = `${p.humidity}% / ${p.wind} м/с`;
+    $('pDew').textContent = `${mt.Td}°C (es ${mt.es} hPa)`;
+    $('pCool').textContent = `${mt.coolNeed}°C`;
+    $('pTech').textContent = bestTech(mt, p.wind, p.evaporation, p.humidity);
+  });
+  const mt = magnusTetens(p.temp, p.humidity);
+  const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(`
+    📍 <b>${p.lat}, ${p.lon}</b><br>
+    💨 Булану: <b>${p.evaporation.toFixed(2)} мм/күн</b><br>
+    🌡️ ${p.temp}°C · 🌊 ${p.sst}°C · 💧 ${p.humidity}%<br>
+    🌫️ Td: ${mt.Td}°C · 🌙 ΔT: ${mt.coolNeed}°C<br>
+    ⚙️ <b>${bestTech(mt, p.wind, p.evaporation, p.humidity)}</b>`);
+  return new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([p.lon, p.lat]).setPopup(popup).addTo(map);
+}
+
+function addCityLabels(data) {
+  data.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'city-label';
+    el.innerHTML = `<span>${c.city}</span><b>${c.temp}°</b>`;
+    new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([c.lon, c.lat]).addTo(map);
+  });
+}
+
+function renderBars(id, data, max, color) {
+  $(id).innerHTML = data.map(i => `
+    <div class="crow"><span class="cl">${i.name}</span>
+    <div class="cb"><i style="width:${Math.min(i.value / max * 100, 100)}%;background:${color}"></i></div><b>${i.value}</b></div>`).join('');
+}
+
+function showWindy(overlay) {
+  let f = $('windyFrame');
+  if (!f) {
+    f = document.createElement('div');
+    f.id = 'windyFrame';
+    f.style.cssText = 'position:fixed;inset:0;z-index:50;display:none;background:#000';
+    f.innerHTML = `<iframe id="windyIframe" style="width:100%;height:100%;border:0" src=""></iframe>
+      <button id="windyClose" style="position:absolute;top:12px;right:12px;z-index:51;background:#ff3b3b;color:#fff;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;font-size:14px">✕ Жабу</button>`;
+    document.body.appendChild(f);
+    $('windyClose').onclick = () => { f.style.display = 'none'; };
+  }
+  $('windyIframe').src = `https://embed.windy.com/embed2.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=kt&zoom=5&overlay=${overlay}&product=ecmwf&level=surface&lat=44.5&lon=51.5`;
+  f.style.display = 'block';
+}
+
+async function initClimate() {
+  try {
+    const rv = await (await fetch('https://api.rainviewer.com/public/weather-maps.json')).json();
+    const sat = rv.satellite && rv.satellite.past ? rv.satellite.past[rv.satellite.past.length - 1] : null;
+    const rad = rv.radar && rv.radar.past ? rv.radar.past[rv.radar.past.length - 1] : null;
+    if (sat && !map.getSource('sat-clouds')) {
+      map.addSource('sat-clouds', { type: 'raster', tileSize: 256, tiles: [`https://tilecache.rainviewer.com${sat.path}/256/{z}/{x}/{y}/0/0_0.png`] });
+      map.addLayer({ id: 'sat-clouds', type: 'raster', source: 'sat-clouds', layout: { visibility: 'none' }, paint: { 'raster-opacity': 0.75 } });
+    }
+    if (rad && !map.getSource('rain-radar')) {
+      map.addSource('rain-radar', { type: 'raster', tileSize: 256, tiles: [`https://tilecache.rainviewer.com${rad.path}/256/{z}/{x}/{y}/2/1_1.png`] });
+      map.addLayer({ id: 'rain-radar', type: 'raster', source: 'rain-radar', layout: { visibility: 'none' }, paint: { 'raster-opacity': 0.7 } });
+    }
+  } catch (e) { console.error('RainViewer:', e); }
+}
+
+// ⚓ Буй орналастыру
+function placeBuoys(zones) {
+  buoyMarkers.forEach(m => m.remove());
+  buoyMarkers = [];
+  const plan = buoyPlan(zones);
+  zones.forEach(z => {
+    const el = document.createElement('div');
+    el.className = 'buoy';
+    el.addEventListener('click', () => {
+      const r = plan.rows.find(x => x.lat === z.lat && x.lon === z.lon);
+      new mapboxgl.Popup().setHTML(`
+        ⚓ <b>Smart Ion Buoy кластері</b><br>
+        📍 ${z.lat}, ${z.lon} · 💨 ${z.evaporation.toFixed(1)} мм/күн<br>
+        🔋 Күн+толқын энергиясы · ⚡ 0–50 м ионизация<br>
+        💧 ${r.daily} м³/күн · 📅 ${r.yearly.toLocaleString()} м³/жыл<br>
+        💰 Құны: $${r.cost.toLocaleString()} · Пайда: $${r.value.toLocaleString()}/жыл<br>
+        ⏱️ Өтелу: <b>${r.payback} жыл</b>`).setLngLat([z.lon, z.lat]).addTo(map);
+    });
+    buoyMarkers.push(new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([z.lon, z.lat]).addTo(map));
+  });
+  const t = plan.tot;
+  $('econ').innerHTML = `
+    <div class="row"><span>⚓ Буй саны</span><span class="v">${t.buoys}</span></div>
+    <div class="row"><span>💧 Суды қайтару</span><span class="v">${t.daily} м³/күн</span></div>
+    <div class="row"><span>📅 Жылдық көлем</span><span class="v">${t.yearly.toLocaleString()} м³</span></div>
+    <div class="row"><span>💰 Инвестиция</span><span class="v">$${t.cost.toLocaleString()}</span></div>
+    <div class="row"><span>📈 Жылдық пайда</span><span class="v">$${t.value.toLocaleString()}</span></div>
+    <div class="row"><span>⏱️ Өтелу мерзімі</span><span class="v">${t.payback} жыл</span></div>
+    <div class="row"><span>👥 Сумен қамту</span><span class="v">${t.people} адам/күн</span></div>
+    <div class="row"><span>🌱 CO₂ үнем (опресн. қарсы)</span><span class="v">${t.co2} т/жыл</span></div>`;
+  ai.notify('⚓ Smart Ion Buoys орналастырылды! Экономика есептелді.', 'success');
+}
+
 map.on('load', async () => {
-  map.addSource('kz-sector', {
-    type: 'geojson',
-    data: {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[[48.5, 41.7], [55.1, 41.7], [55.1, 47.7], [48.5, 47.7], [48.5, 41.7]]]
-      }
-    }
-  });
-  map.addLayer({
-    id: 'kz-line',
-    type: 'line',
-    source: 'kz-sector',
-    paint: {
-      'line-color': '#ffd166',
-      'line-width': 2,
-      'line-dasharray': [2, 2]
-    }
-  });
+  map.addSource('kz-sector', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[48.5,41.7],[55.1,41.7],[55.1,47.7],[48.5,47.7],[48.5,41.7]]] } } });
+  map.addLayer({ id: 'kz-line', type: 'line', source: 'kz-sector', paint: { 'line-color': '#ffd166', 'line-width': 2, 'line-dasharray': [2, 2] } });
 
   try {
-    const [r1, r2] = await Promise.allSettled([
-      fetch('caspian_grid.json'),
-      fetch('caspian_sea_grid.json')
-    ]);
+    const [r1, r2] = await Promise.allSettled([fetch('caspian_grid.json'), fetch('caspian_sea_grid.json')]);
+    if (r1.status === 'fulfilled' && r1.value.ok) allData = (await r1.value.json()).map(clean);
+    if (r2.status === 'fulfilled' && r2.value.ok) seaData = (await r2.value.json()).map(clean);
+  } catch (e) { console.error('JSON:', e); }
 
-    if (r1.status === 'fulfilled' && r1.value.ok) {
-      allData = (await r1.value.json()).map(clean);
-    }
-    if (r2.status === 'fulfilled' && r2.value.ok) {
-      seaData = (await r2.value.json()).map(clean);
-    }
-  } catch (e) {
-    console.error('JSON жүктеу қатесі:', e);
-  }
+  markers = seaData.map(p => createPointMarker(p));
 
-  if (false) {
-    seaData = [
-      { lat: 42.33, lon: 50.18, temp: 24.01, humidity: 76.0, wind: 5.1, sst: 24.09, evaporation: 3.3 },
-      { lat: 42.33, lon: 52.93, temp: 28.53, humidity: 32.0, wind: 4.85, sst: 30.99, evaporation: 12.09 },
-      { lat: 43.5, lon: 51.75, temp: 28.4, humidity: 33.1, wind: 4.79, sst: 30.94, evaporation: 11.77 },
-      { lat: 44.67, lon: 52.93, temp: 28.62, humidity: 31.6, wind: 4.65, sst: 31.23, evaporation: 12.1 },
-      { lat: 47.0, lon: 52.93, temp: 27.52, humidity: 34.0, wind: 4.44, sst: 29.62, evaporation: 10.84 }
-    ].map(clean);
-  }
+  // 🗺️ Ғылыми булану қабаты (градиентті шеңберлер)
+  map.addSource('evap-points', { type: 'geojson', data: { type: 'FeatureCollection', features: allData.map(p => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [p.lon, p.lat] }, properties: { evap: p.evaporation } })) } });
+  map.addLayer({ id: 'evap-circles', type: 'circle', source: 'evap-points', paint: {
+    'circle-radius': ['interpolate', ['linear'], ['get', 'evap'], 2, 4, 16, 18],
+    'circle-color': ['interpolate', ['linear'], ['get', 'evap'], 3, '#4fc3f7', 7, '#ffd166', 11, '#ff8c42', 15, '#ff3b3b'],
+    'circle-opacity': 0.4, 'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff', 'circle-stroke-opacity': 0.25 } });
 
-  markers = seaData.map(p => createVaporMarker(p));
+  map.addSource('evap-heat', { type: 'geojson', data: { type: 'FeatureCollection', features: allData.map(p => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [p.lon, p.lat] }, properties: { evap: p.evaporation } })) } });
+  map.addLayer({ id: 'heatmap', type: 'heatmap', source: 'evap-heat', layout: { visibility: 'none' }, paint: {
+    'heatmap-weight': ['interpolate', ['linear'], ['get', 'evap'], 2, 0.3, 16, 1],
+    'heatmap-radius': 25, 'heatmap-opacity': 0.45,
+    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(0,0,0,0)', 0.2, '#4fc3f7', 0.45, '#ffd166', 0.7, '#ff8c42', 1, '#ff3b3b'] } });
 
-  map.addSource('evap-heat', {
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: allData.map(p => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
-        properties: { evap: p.evaporation }
-      }))
-    }
-  });
-  map.addLayer({
-    id: 'heatmap',
-    type: 'heatmap',
-    source: 'evap-heat',
-    layout: { visibility: 'none' },
-    paint: {
-      'heatmap-weight': ['interpolate', ['linear'], ['get', 'evap'], 2, 0.3, 16, 1],
-      'heatmap-radius': 40,
-      'heatmap-opacity': 0.6,
-      'heatmap-color': [
-        'interpolate', ['linear'], ['heatmap-density'],
-        0, 'rgba(0,0,0,0)',
-        0.2, '#4fc3f7',
-        0.45, '#ffd166',
-        0.7, '#ff8c42',
-        1, '#ff3b3b'
-      ]
-    }
-  });
+  await initClimate();
 
   const kzPoints = seaData.filter(p => p.lat >= 42.33);
   $('sN').textContent = kzPoints.length;
@@ -368,17 +357,9 @@ map.on('load', async () => {
 
   const top5 = [...kzPoints].sort((a, b) => b.evaporation - a.evaporation).slice(0, 5);
   $('t5').innerHTML = top5.map((p, i) => `
-    <div class="item" data-lon="${p.lon}" data-lat="${p.lat}">
-      <span>#${i + 1} 📍 ${p.lat}, ${p.lon}</span>
-      <b>${p.evaporation.toFixed(1)}</b>
-    </div>
-  `).join('');
+    <div class="item" data-lon="${p.lon}" data-lat="${p.lat}"><span>#${i + 1} 📍 ${p.lat}, ${p.lon}</span><b>${p.evaporation.toFixed(1)}</b></div>`).join('');
   document.querySelectorAll('#t5 .item').forEach(el => {
-    el.onclick = () => map.flyTo({
-      center: [+el.dataset.lon, +el.dataset.lat],
-      zoom: 8.4,
-      duration: 1600
-    });
+    el.onclick = () => map.flyTo({ center: [+el.dataset.lon, +el.dataset.lat], zoom: 8.4, duration: 1600 });
   });
 
   async function loadCities() {
@@ -386,177 +367,72 @@ map.on('load', async () => {
       const r = await fetch('/api/weather');
       const d = await r.json();
       if (d.ok) {
-        cities = d.data;
-        $('ct').innerHTML = d.data.map(c => `
-          <div class="item" data-lon="${c.lon}" data-lat="${c.lat}">
-            <span>🏙️ ${c.city}</span>
-            <b>${c.temp}°C · ${c.humidity}%</b>
-          </div>
-        `).join('');
-
-        document.querySelectorAll('#ct .item').forEach(el => {
-          el.onclick = () => map.flyTo({
-            center: [+el.dataset.lon, +el.dataset.lat],
-            zoom: 10,
-            duration: 1400
-          });
-        });
-
-        $('tech').innerHTML = d.data.map(c => `
-          <div class="item">
-            <span>${c.city} · ылғал ${c.humidity}%</span>
-            <b style="color:#7fd0ff">${bestTech(c.temp, c.humidity, c.wind, c.index)}</b>
-          </div>
-        `).join('');
-
-        renderBars('ch1', d.data.map(c => ({
-          name: c.city,
-          value: c.index
-        })), 100, '#5fff9a');
-
-        $('ch2').innerHTML = d.data.map(c => `
-          <div class="crow">
-            <span class="cl">💧 ${c.city}</span>
-            <div class="cb"><i style="width:${c.humidity}%;background:#4fc3f7"></i></div>
-            <b>${c.humidity}%</b>
-          </div>
-          <div class="crow">
-            <span class="cl">🌡️ ${c.city}</span>
-            <div class="cb"><i style="width:${Math.min(c.temp * 2, 100)}%;background:#ff8c42"></i></div>
-            <b>${c.temp}°C</b>
-          </div>
-        `).join('');
-      } else {
-        $('ct').innerHTML = `<div class="item">🚫 API қатесі: ${d.error}</div>`;
-      }
-    } catch (e) {
-      $('ct').innerHTML = `<div class="item">🚫 API жауап бермейді</div>`;
-    }
+        addCityLabels(d.data);
+        $('ct').innerHTML = d.data.map(c => `<div class="item" data-lon="${c.lon}" data-lat="${c.lat}"><span>🏙️ ${c.city}</span><b>${c.temp}°C · ${c.humidity}%</b></div>`).join('');
+        document.querySelectorAll('#ct .item').forEach(el => { el.onclick = () => map.flyTo({ center: [+el.dataset.lon, +el.dataset.lat], zoom: 10, duration: 1400 }); });
+        $('tech').innerHTML = d.data.map(c => {
+          const mt = magnusTetens(c.temp, c.humidity);
+          return `<div class="item"><span>${c.city} · Td ${mt.Td}°C</span><b style="color:#7fd0ff">${bestTech(mt, c.wind, c.index, c.humidity)}</b></div>`;
+        }).join('');
+        renderBars('ch1', d.data.map(c => ({ name: c.city, value: c.index })), 100, '#5fff9a');
+      } else { $('ct').innerHTML = `<div class="item">🚫 API қатесі: ${d.error}</div>`; }
+    } catch (e) { $('ct').innerHTML = `<div class="item">🚫 API жауап бермейді</div>`; }
   }
-
   await loadCities();
 
   map.fitBounds(KZ_BOUNDS, { padding: 80, duration: 1500 });
-
   setTimeout(() => $('ld').classList.add('h'), 600);
 
-  const btnKZ = $('bK');
-  const btnAll = $('bA');
-  const btnClouds = $('bC');
-  const btnHeat = $('bH');
-  const btn3D = $('b3');
-  const btnCrit = $('bCr');
-  const btnRefresh = $('bR');
-
-  btnKZ.onclick = () => {
-    map.fitBounds(KZ_BOUNDS, { padding: 80 });
-    btnKZ.classList.add('active');
-    btnAll.classList.remove('active');
-  };
-
-  btnAll.onclick = () => {
-    map.fitBounds(ALL_BOUNDS, { padding: 50 });
-    btnAll.classList.add('active');
-    btnKZ.classList.remove('active');
-  };
-
-  let cloudsVisible = true;
-  btnClouds.onclick = () => {
-    cloudsVisible = !cloudsVisible;
-    markers.forEach(m => {
-      m.getElement().style.display = cloudsVisible ? '' : 'none';
-    });
-    btnClouds.classList.toggle('active', cloudsVisible);
-  };
-
+  // CONTROLS
+  $('bK').onclick = () => map.fitBounds(KZ_BOUNDS, { padding: 80 });
+  $('bA').onclick = () => map.fitBounds(ALL_BOUNDS, { padding: 50 });
+  $('bG').onclick = () => map.fitBounds(GLOB_BOUNDS, { padding: 30 });
   let heatVisible = false;
-  btnHeat.onclick = () => {
-    heatVisible = !heatVisible;
-    map.setLayoutProperty('heatmap', 'visibility', heatVisible ? 'visible' : 'none');
-    btnHeat.classList.toggle('active', heatVisible);
-  };
-
+  $('bH').onclick = () => { heatVisible = !heatVisible; map.setLayoutProperty('heatmap', 'visibility', heatVisible ? 'visible' : 'none'); $('bH').classList.toggle('active', heatVisible); };
+  let satOn = false;
+  $('bSat').onclick = () => { if (!map.getLayer('sat-clouds')) return; satOn = !satOn; map.setLayoutProperty('sat-clouds', 'visibility', satOn ? 'visible' : 'none'); $('bSat').classList.toggle('active', satOn); };
+  let radOn = false;
+  $('bRad').onclick = () => { if (!map.getLayer('rain-radar')) return; radOn = !radOn; map.setLayoutProperty('rain-radar', 'visibility', radOn ? 'visible' : 'none'); $('bRad').classList.toggle('active', radOn); };
   let is3D = false;
-  btn3D.onclick = () => {
-    is3D = !is3D;
-    map.easeTo({
-      pitch: is3D ? 55 : 0,
-      bearing: is3D ? -20 : 0,
-      duration: 1000
-    });
-    btn3D.classList.toggle('active', is3D);
-  };
-
+  $('b3').onclick = () => { is3D = !is3D; map.easeTo({ pitch: is3D ? 55 : 0, bearing: is3D ? -20 : 0, duration: 1000 }); $('b3').classList.toggle('active', is3D); };
   let showCrit = false;
-  btnCrit.onclick = () => {
+  $('bCr').onclick = () => {
     showCrit = !showCrit;
-    markers.forEach(m => {
-      const evap = parseFloat(m.getElement().dataset.evap);
-      m.getElement().classList.toggle('dim', showCrit && evap < 12);
-    });
-    btnCrit.classList.toggle('active', showCrit);
-    if (showCrit && top5[0]) {
-      map.flyTo({
-        center: [top5[0].lon, top5[0].lat],
-        zoom: 8,
-        duration: 1500
-      });
-    }
+    markers.forEach(m => { const ev = parseFloat(m.getElement().dataset.evap); m.getElement().style.opacity = (showCrit && ev < 12) ? .15 : 1; });
+    $('bCr').classList.toggle('active', showCrit);
+    if (showCrit && top5[0]) map.flyTo({ center: [top5[0].lon, top5[0].lat], zoom: 8, duration: 1500 });
   };
+  $('bBuoy').onclick = () => placeBuoys(top5);
+  $('bR').onclick = loadCities;
 
-  btnRefresh.onclick = loadCities;
-
-  // AI ЖҮЙЕСІН ІСКЕ ҚОСУ
   setTimeout(() => ai.analyze(), 2500);
   setInterval(() => ai.analyze(), 6 * 3600 * 1000);
 });
 
-map.on('error', e => {
-  console.error('Mapbox қатесі:', e);
-  $('ld').innerHTML = `<div style="color:#ff8c42;text-align:center;padding:20px">
-    ⚠️ Карта жүктелмеді. Token дұрыс емес болуы мүмкін.
-  </div>`;
-});
+map.on('error', e => console.error('Mapbox:', e));
 
 // ═══════════════════════════════════════════════════════════
-// 🧠 НАҒЫЗ AI ЖҮЙЕСІ v2.0 - NASA POWER + Machine Learning
+// 🧠 AI v2.0 — NASA POWER + Machine Learning
 // ═══════════════════════════════════════════════════════════
 class CaspianAI {
-  constructor() {
-    this.history = JSON.parse(localStorage.getItem('caspian_ai_v2') || '[]');
-  }
-
-  // 1. ШЫНАЙЫ NASA POWER API (30 күндік спутниктік деректер)
+  constructor() { this.history = JSON.parse(localStorage.getItem('caspian_ai_v2') || '[]'); }
   async fetchNASA(lat, lon, days = 30) {
-    const end = new Date();
-    const start = new Date(); start.setDate(end.getDate() - days);
+    const end = new Date(), start = new Date(); start.setDate(end.getDate() - days);
     const fmt = d => d.toISOString().slice(0,10).replace(/-/g,'');
     const url = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,T2M_MAX,T2M_MIN,RH2M,WS2M,ALLSKY_SFC_SW_DWN,EVPTRNS&community=AG&longitude=${lon}&latitude=${lat}&start=${fmt(start)}&end=${fmt(end)}&format=JSON`;
     try {
-      const r = await fetch(url);
-      const d = await r.json();
+      const d = await (await fetch(url)).json();
       const p = d.properties?.parameter;
-      if (!p) throw new Error('Деректер жоқ');
-      return Object.keys(p.T2M).map(date => ({
-        date,
-        temp: +p.T2M[date],
-        humidity: +p.RH2M[date],
-        wind: +p.WS2M[date],
-        solar: +p.ALLSKY_SFC_SW_DWN[date],
-        evap: +p.EVPTRNS[date]
-      })).filter(x => !isNaN(x.temp) && x.temp > -900);
+      if (!p) return null;
+      return Object.keys(p.T2M).map(date => ({ temp: +p.T2M[date], humidity: +p.RH2M[date], wind: +p.WS2M[date], solar: +p.ALLSKY_SFC_SW_DWN[date], evap: +p.EVPTRNS[date] })).filter(x => !isNaN(x.temp) && x.temp > -900);
     } catch(e) { return null; }
   }
-
-  // 2. MACHINE LEARNING - сызықтық регрессия + R² дәлдік
   mlPredict(data) {
     const n = data.length;
     if (n < 3) return { slope: 0, intercept: data[0]||0, r2: 0 };
     const x = Array.from({length:n},(_,i)=>i);
-    const sumX = x.reduce((a,b)=>a+b,0);
-    const sumY = data.reduce((a,b)=>a+b,0);
-    const sumXY = x.reduce((a,xi,i)=>a+xi*data[i],0);
-    const sumXX = x.reduce((a,xi)=>a+xi*xi,0);
+    const sumX = x.reduce((a,b)=>a+b,0), sumY = data.reduce((a,b)=>a+b,0);
+    const sumXY = x.reduce((a,xi,i)=>a+xi*data[i],0), sumXX = x.reduce((a,xi)=>a+xi*xi,0);
     const slope = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
     const intercept = (sumY - slope*sumX)/n;
     const mean = sumY/n;
@@ -564,159 +440,96 @@ class CaspianAI {
     const ssRes = data.reduce((a,y,i)=>a+Math.pow(y-(slope*x[i]+intercept),2),0);
     return { slope, intercept, r2: Math.max(0, 1 - ssRes/ssTot) };
   }
-
-  // 3. PENMAN-MONTEITH (ғылыми булану формуласы)
   penmanMonteith(T, RH, ws, Rs) {
     const es = 0.6108 * Math.exp((17.27*T)/(T+237.3));
     const ea = es * RH/100;
     const delta = (4098*es)/Math.pow(T+237.3,2);
-    const gamma = 0.066;
-    const Rn = Rs * 0.0864;
+    const gamma = 0.066, Rn = Rs * 0.0864;
     return Math.max(0, (0.408*delta*Rn + gamma*(900/(T+273))*ws*(es-ea)) / (delta + gamma*(1+0.34*ws)));
   }
-
-  // 4. Хабарлама жүйесі
   notify(msg, type='info') {
     const c = {info:'#1f6fae',success:'#5fff9a',warning:'#ffd166',error:'#ff3b3b'};
     const n = document.createElement('div');
     n.style.cssText=`position:fixed;top:80px;right:20px;background:${c[type]};color:${type==='success'?'#000':'#fff'};padding:15px 25px;border-radius:10px;z-index:9999;box-shadow:0 5px 20px rgba(0,0,0,.4);animation:slideIn .4s ease;max-width:400px;font-size:13px;border:1px solid #7fd0ff`;
-    n.innerHTML = msg;
-    document.body.appendChild(n);
+    n.innerHTML = msg; document.body.appendChild(n);
     setTimeout(()=>{n.style.animation='slideOut .4s ease';setTimeout(()=>n.remove(),400)},4000);
   }
-
-  // 5. ТОЛЫҚ ТАЛДАУ
   async analyze(lat=44.9, lon=51.9) {
     const aiEl = $('ai');
     if (!aiEl) return null;
     aiEl.className = 'ai warning';
-    aiEl.innerHTML = '🧠 <b>AI талдау жүргізуде...</b><br>📡 NASA POWER деректері жүктелуде (30 күн)...';
-    
+    aiEl.innerHTML = '🧠 <b>AI талдау...</b><br>📡 NASA POWER (30 күн)...';
     const data = await this.fetchNASA(lat, lon, 30);
-    if (!data || data.length < 7) {
-      aiEl.className = 'ai critical';
-      aiEl.innerHTML = '❌ NASA деректері қолжетімсіз. Кейінірек қайталаңыз.';
-      return null;
-    }
-    
+    if (!data || data.length < 7) { aiEl.className = 'ai critical'; aiEl.innerHTML = '❌ NASA деректері қолжетімсіз.'; return null; }
     const recent = data.slice(-7);
-    const tempModel = this.mlPredict(data.map(d=>d.temp));
-    const humModel = this.mlPredict(data.map(d=>d.humidity));
-    const windModel = this.mlPredict(data.map(d=>d.wind));
-    const evapModel = this.mlPredict(data.map(d=>d.evap));
-
+    const tM = this.mlPredict(data.map(d=>d.temp)), hM = this.mlPredict(data.map(d=>d.humidity)), eM = this.mlPredict(data.map(d=>d.evap));
     const predictions = [];
     for (let i=1; i<=7; i++) {
-      const T = tempModel.intercept + tempModel.slope*(data.length+i);
-      const RH = Math.max(0,Math.min(100, humModel.intercept + humModel.slope*(data.length+i)));
-      const ws = Math.max(0, windModel.intercept + windModel.slope*(data.length+i));
-      const evap = this.penmanMonteith(T, RH, ws, recent[recent.length-1].solar);
-      predictions.push({
-        date: new Date(Date.now()+i*86400000).toLocaleDateString('kk-KZ'),
-        T: T.toFixed(1), RH: RH.toFixed(0), evap: evap.toFixed(2)
-      });
+      const T = tM.intercept + tM.slope*(data.length+i);
+      const RH = Math.max(0,Math.min(100, hM.intercept + hM.slope*(data.length+i)));
+      const ws = Math.max(0.5, recent[recent.length-1].wind);
+      predictions.push({ date: new Date(Date.now()+i*86400000).toLocaleDateString('kk-KZ'), T: T.toFixed(1), RH: RH.toFixed(0), evap: this.penmanMonteith(T, RH, ws, recent[recent.length-1].solar).toFixed(2) });
     }
-
     const avgEvap = recent.reduce((s,d)=>s+d.evap,0)/recent.length;
     const maxPred = Math.max(...predictions.map(p=>+p.evap));
     let risk, color, rec;
-    if (avgEvap > 8 || maxPred > 10) { risk='КРИТИКАЛЫҚ'; color='#ff3b3b'; rec='⚠️ ШҰҒЫЛ: Радиациялық салқындату + Fog collector торларын орнатыңыз!'; }
-    else if (avgEvap > 5 || maxPred > 7) { risk='ОРТАША ҚАУІП'; color='#ffd166'; rec='⚡ Ылғалды ауа ағыны жүйесін белсендіріңіз.'; }
-    else { risk='ТҰРАҚТЫ'; color='#5fff9a'; rec='✅ Жағдай қалыпты. Жоспарлы мониторинг жеткілікті.'; }
-
-    const result = {
-      ts: new Date().toISOString(),
-      points: data.length,
+    if (avgEvap > 8 || maxPred > 10) { risk='КРИТИКАЛЫҚ'; color='#ff3b3b'; rec='⚠️ Smart Ion Buoys + радиациялық салқындатуды дереу орнатыңыз!'; }
+    else if (avgEvap > 5 || maxPred > 7) { risk='ОРТАША ҚАУІП'; color='#ffd166'; rec='⚡ лғалды ауа ағыны + пассивті торларды белсендіріңіз.'; }
+    else { risk='ТҰРАҚТЫ'; color='#5fff9a'; rec='✅ Жоспарлы мониторинг жеткілікті.'; }
+    const result = { ts: new Date().toISOString(), points: data.length,
       current: { evap: avgEvap.toFixed(2), T: recent[recent.length-1].temp.toFixed(1), RH: recent[recent.length-1].humidity.toFixed(0), ws: recent[recent.length-1].wind.toFixed(1) },
-      trends: {
-        T: { s: tempModel.slope.toFixed(3), r2: (tempModel.r2*100).toFixed(0), dir: tempModel.slope>0?'↗️':'↘️' },
-        RH: { s: humModel.slope.toFixed(3), r2: (humModel.r2*100).toFixed(0), dir: humModel.slope>0?'↗️':'↘️' },
-        evap: { s: evapModel.slope.toFixed(3), r2: (evapModel.r2*100).toFixed(0), dir: evapModel.slope>0?'↗️':'↘️' }
-      },
-      predictions, risk, color, rec
-    };
-
-    // Тарихқа сақтау (өшпейді!)
+      trends: { T: { s: tM.slope.toFixed(3), r2: (tM.r2*100).toFixed(0), dir: tM.slope>0?'↗️':'↘️' }, evap: { s: eM.slope.toFixed(3), r2: (eM.r2*100).toFixed(0), dir: eM.slope>0?'↗️':'↘️' } },
+      predictions, risk, color, rec };
     this.history.push(result);
     if (this.history.length > 100) this.history = this.history.slice(-100);
     localStorage.setItem('caspian_ai_v2', JSON.stringify(this.history));
-
-    // Экранға шығару
     aiEl.className = risk==='КРИТИКАЛЫҚ'?'ai critical':risk==='ОРТАША ҚАУІП'?'ai warning':'ai stable';
     aiEl.innerHTML = `
-      🧠 <b>НАҒЫЗ AI ТАЛДАУЫ</b> · ${new Date(result.ts).toLocaleString('kk-KZ')}
+      🧠 <b>AI ТАЛДАУЫ</b> · ${new Date(result.ts).toLocaleString('kk-KZ')}
       <br><small style="color:#9fb8cc">📡 NASA POWER · ${result.points} күн</small>
-      <br><br>📊 <b>ҚАЗІРГІ ЖАҒДАЙ:</b>
-      <br>• Булану: <b>${result.current.evap} мм/күн</b>
-      <br>• Темп: <b>${result.current.T}°C</b> · Ылғал: <b>${result.current.RH}%</b> · Жел: <b>${result.current.ws} м/с</b>
-      <br><br>📈 <b>ML ТРЕНДТЕР (R²):</b>
-      <br>• Темп: ${result.trends.T.dir} ${result.trends.T.s}°C/күн (${result.trends.T.r2}%)
-      <br>• Ылғал: ${result.trends.RH.dir} ${result.trends.RH.s}%/күн (${result.trends.RH.r2}%)
-      <br>• Булану: ${result.trends.evap.dir} ${result.trends.evap.s} мм/күн (${result.trends.evap.r2}%)
-      <br><br>🔮 <b>7 КҮНДІК БОЛЖАМ:</b>
+      <br><br>📊 Булану: <b>${result.current.evap} мм/күн</b> · Темп: <b>${result.current.T}°C</b> · Ылғал: <b>${result.current.RH}%</b>
+      <br><br>📈 ML тренд: Темп ${result.trends.T.dir}${result.trends.T.s}°C/күн (R²=${result.trends.T.r2}%) · Булану ${result.trends.evap.dir}${result.trends.evap.s} (R²=${result.trends.evap.r2}%)
+      <br><br>🔮 <b>7 күн болжам:</b>
       <br>${predictions.map(p=>`• ${p.date}: ${p.T}°C · ${p.RH}% · <b style="color:${+p.evap>8?'#ff3b3b':'#ffd166'}">${p.evap} мм</b>`).join('<br>')}
-      <br><br>🎯 <b style="color:${color}">ҚАУІП: ${risk}</b>
-      <br>${rec}
-      <br><br><small style="color:#7fd0ff">💾 Сақталды: ${this.history.length} талдау</small>
-    `;
-    
+      <br><br>🎯 <b style="color:${color}">${risk}</b><br>${rec}
+      <br><br><small style="color:#7fd0ff">💾 ${this.history.length} талдау сақтаулы</small>`;
     this.notify('✅ AI талдау аяқталды!','success');
     return result;
   }
-
-  // 6. ТАРИХ
   showHistory() {
-    if (!this.history.length) { this.notify('📊 Алдымен AI талдау жасаңыз!','warning'); return; }
+    if (!this.history.length) { this.notify('📊 Алдымен талдау жасаңыз!','warning'); return; }
     const m = document.createElement('div');
     m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;z-index:9999';
     m.innerHTML=`<div style="background:#0a2740;padding:25px;border-radius:15px;max-width:900px;width:95%;max-height:85vh;overflow-y:auto;border:2px solid #1e5c88;color:#d7ecfa">
-      <h2 style="color:#7fd0ff;margin-bottom:15px">📊 AI ТАРИХЫ (${this.history.length})</h2>
-      <p style="color:#9fb8cc;font-size:12px">💾 Деректер ешқашан өшпейді!</p>
+      <h2 style="color:#7fd0ff">📊 AI ТАРИХЫ (${this.history.length})</h2>
       ${this.history.slice().reverse().map((h,i)=>`<div style="background:#0d3350;padding:12px;border-radius:10px;margin:8px 0;border-left:4px solid ${h.color}">
         <div style="display:flex;justify-content:space-between"><b style="color:#7fd0ff">#${this.history.length-i}</b><small>${new Date(h.ts).toLocaleString('kk-KZ')}</small></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;font-size:12px;margin-top:6px">
-          <div>🌊 Булану: <b style="color:#ffd166">${h.current.evap}</b></div>
-          <div>🌡️ ${h.current.T}°C</div><div>💧 ${h.current.RH}%</div>
-          <div>🎯 <b style="color:${h.color}">${h.risk}</b></div>
-        </div></div>`).join('')}
-      <button onclick="this.closest('[style*=fixed]').remove()" style="margin-top:15px;width:100%;background:#1f6fae;color:#fff;padding:12px;border:none;border-radius:8px;cursor:pointer">Жабу ✕</button>
-    </div>`;
+          <div>🌊 ${h.current.evap} мм/күн</div><div>🌡️ ${h.current.T}°C</div><div>💧 ${h.current.RH}%</div>
+          <div>🎯 <b style="color:${h.color}">${h.risk}</b></div></div></div>`).join('')}
+      <button onclick="this.closest('[style*=fixed]').remove()" style="margin-top:15px;width:100%;background:#1f6fae;color:#fff;padding:12px;border:none;border-radius:8px;cursor:pointer">Жабу ✕</button></div>`;
     document.body.appendChild(m);
     m.onclick=e=>{if(e.target===m)m.remove()};
   }
-
-  // 7. ЕСЕП ШЫҒАРУ
   exportReport() {
     if (!this.history.length) { this.notify('📄 Алдымен талдау жасаңыз!','warning'); return; }
     const l = this.history[this.history.length-1];
-    let r = `💧 КАСПИЙ ТЕҢІЗІ - AI ЕСЕБІ\n📅 ${new Date(l.ts).toLocaleString('kk-KZ')}\n📡 NASA POWER · ${l.points} күн\n\n📊 ҚАЗІРГІ ЖАҒДАЙ:\n• Булану: ${l.current.evap} мм/күн\n• Темп: ${l.current.T}°C · Ылғал: ${l.current.RH}% · Жел: ${l.current.ws} м/с\n\n📈 ML ТРЕНДТЕР:\n• Темп: ${l.trends.T.dir} ${l.trends.T.s}°C/күн (R²=${l.trends.T.r2}%)\n• Булану: ${l.trends.evap.dir} ${l.trends.evap.s} мм/күн (R²=${l.trends.evap.r2}%)\n\n🔮 7 КҮНДІК БОЛЖАМ:\n${l.predictions.map(p=>`• ${p.date}: ${p.T}°C | ${p.RH}% | ${p.evap}мм`).join('\n')}\n\n🎯 ҚАУІП: ${l.risk}\n${l.rec}\n\n🧠 CaspianAI v2.0 · NASA POWER · ML · Penman-Monteith\n© 2026 Caspian Water Recovery`;
+    const r = `💧 КАСПИЙ ТЕҢІЗІ — CASPIAN WATER RECOVERY ЕСЕБІ\n📅 ${new Date(l.ts).toLocaleString('kk-KZ')}\n📡 NASA POWER · ${l.points} күн\n\n📊 ҚАЗІРГІ ЖАҒДАЙ:\n• Булану: ${l.current.evap} мм/күн\n• Темп: ${l.current.T}°C · Ылғал: ${l.current.RH}%\n\n📈 ML ТРЕНДТЕР:\n• Темп: ${l.trends.T.dir} ${l.trends.T.s}°C/күн (R²=${l.trends.T.r2}%)\n• Булану: ${l.trends.evap.dir} ${l.trends.evap.s} мм/күн (R²=${l.trends.evap.r2}%)\n\n🔮 7 КҮНДІК БОЛЖАМ:\n${l.predictions.map(p=>`• ${p.date}: ${p.T}°C | ${p.RH}% | ${p.evap}мм`).join('\n')}\n\n🎯 ҚАУІП: ${l.risk}\n${l.rec}\n\n⚓ SMART ION BUOYS (TOP-5 зона × 100 буй):\n• Инвестиция: $125,000\n• Қайтарылған су: 250 м³/күн = 91,250 м³/жыл\n• Жылдық пайда: $91,250 · Өтелу: ~1.4 жыл\n• CO₂ үнем: ~36.5 т/жыл\n\n🧠 Magnus–Tetens · Penman–Monteith · ML\n© 2026 Caspian Water Recovery · Hackathon`;
     const b = new Blob([r],{type:'text/plain;charset=utf-8'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(b);
-    a.download = `caspian-ai-${Date.now()}.txt`;
+    a.download = `caspian-report-${Date.now()}.txt`;
     a.click();
     this.notify('✅ Есеп жүктелді!','success');
   }
 }
-
 const ai = new CaspianAI();
 
-// Батырмаларды байланыстыру
 document.addEventListener('DOMContentLoaded', () => {
-  const btnAI = $('bAI');
-  const btnHist = $('bHist');
-  const btnExp = $('bExp');
-  
-  if (btnAI) btnAI.onclick = () => {
-    btnAI.disabled = true;
-    btnAI.innerHTML = '🔄...';
-    ai.analyze().then(() => {
-      btnAI.disabled = false;
-      btnAI.innerHTML = '🤖 AI';
-    });
-  };
-  if (btnHist) btnHist.onclick = () => ai.showHistory();
-  if (btnExp) btnExp.onclick = () => ai.exportReport();
+  $('bAI').onclick = () => { $('bAI').disabled = true; $('bAI').innerHTML = '🔄...'; ai.analyze().then(() => { $('bAI').disabled = false; $('bAI').innerHTML = '🤖 AI'; }); };
+  $('bHist').onclick = () => ai.showHistory();
+  $('bExp').onclick = () => ai.exportReport();
+  $('bWind').onclick = () => showWindy('wind');
 });
 </script>
 </body>
