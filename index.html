@@ -95,6 +95,14 @@ footer{position:absolute;bottom:4px;left:0;right:0;text-align:center;z-index:8;f
   <div class="row"><span>💨 Жел</span><span class="v" id="sW">—</span></div>
   <div class="row"><span>🌫️ Ылғал</span><span class="v" id="sH">—</span></div>
 
+  <h2>📍 НҮКТЕ СТАТИСТИКАСЫ</h2>
+  <div class="row"><span>📍 Координат</span><span class="v" id="pCoord">Нүктені басыңыз</span></div>
+  <div class="row"><span>💨 Булану</span><span class="v" id="pEvap">—</span></div>
+  <div class="row"><span>🌡️ Ауа темп.</span><span class="v" id="pTemp">—</span></div>
+  <div class="row"><span>🌊 Су темп.</span><span class="v" id="pSst">—</span></div>
+  <div class="row"><span>💧 Ылғал</span><span class="v" id="pHum">—</span></div>
+  <div class="row"><span>🌬️ Жел</span><span class="v" id="pWind">—</span></div>
+
   <h2>🤖 AI Автоматты Шешім</h2>
   <div id="ai" class="ai stable">⏳ Талдау жүргізілуде...</div>
 
@@ -205,6 +213,15 @@ function createVaporMarker(point) {
       animation-delay:-${(Math.random() * duration).toFixed(2)}s"></div>`;
   }
   el.innerHTML = html;
+
+  el.addEventListener('click', () => {
+    document.getElementById('pCoord').textContent = `${point.lat}, ${point.lon}`;
+    document.getElementById('pEvap').textContent = `${point.evaporation} мм/күн`;
+    document.getElementById('pTemp').textContent = `${point.temp}°C`;
+    document.getElementById('pSst').textContent = `${point.sst}°C`;
+    document.getElementById('pHum').textContent = `${point.humidity}%`;
+    document.getElementById('pWind').textContent = `${point.wind} м/с`;
+  });
 
   const popup = new mapboxgl.Popup({ offset: size / 2 }).setHTML(`
     💧 <b>${evap.toFixed(2)} мм/күн</b><br>
