@@ -317,7 +317,7 @@ map.on('load', async () => {
   }
 
   // Егер ештеңе жүктелмесе — fallback деректерін қолдану (JSON файлдары жоқ болса)
-  if (!seaData.length) {
+  if (false) { // fallback өшірілді
     seaData = [
       { lat: 42.33, lon: 50.18, temp: 24.01, humidity: 76.0, wind: 5.1, sst: 24.09, evaporation: 3.3 },
       { lat: 42.33, lon: 52.93, temp: 28.53, humidity: 32.0, wind: 4.85, sst: 30.99, evaporation: 12.09 },
