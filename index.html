@@ -123,45 +123,63 @@ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>openMode(b.datase
 $('btnAI2').onclick=()=>$('chat').classList.toggle('open');
 $('chatBtn').onclick=()=>$('chat').classList.toggle('open');
 
-// ── ГЛОБАЛ булану: нүктесіз, біртұтас viridis өрісі ──
+// ── ГЛОБАЛ булану: БІРТҰТАС ТҮСТІ ПОЛОТНО (жолақсыз, нүктесіз) ──
 const map = new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/dark-v11',center:[51.9,44.9],zoom:1.8});
 map.addControl(new mapboxgl.NavigationControl(),'top-right');
+
+const VIR=[[0,68,1,84],[.25,59,82,139],[.5,33,145,140],[.75,94,201,98],[1,253,231,37]];
+function vir(t){
+  t=Math.max(0,Math.min(1,t));
+  for(let i=0;i<VIR.length-1;i++){
+    if(t<=VIR[i+1][0]){
+      const f=(t-VIR[i][0])/(VIR[i+1][0]-VIR[i][0]);
+      return [Math.round(VIR[i][1]+(VIR[i+1][1]-VIR[i][1])*f),Math.round(VIR[i][2]+(VIR[i+1][2]-VIR[i][2])*f),Math.round(VIR[i][3]+(VIR[i+1][3]-VIR[i][3])*f)];
+    }
+  }
+  return [253,231,37];
+}
 map.on('load', async () => {
   map.addSource('kz-sector',{type:'geojson',data:{type:'Feature',geometry:{type:'Polygon',coordinates:[[[48.5,41.7],[55.1,41.7],[55.1,47.7],[48.5,47.7],[48.5,41.7]]]}}});
   map.addLayer({id:'kz-line',type:'line',source:'kz-sector',paint:{'line-color':'#ffd166','line-width':2,'line-dasharray':[2,2],'line-opacity':.6}});
-  async function fetchET(latA, lonA){
+
+  const LATS=[],LONS=[];
+  for(let la=-60;la<=70;la+=10)LATS.push(la);
+  for(let lo=-180;lo<=180;lo+=20)LONS.push(lo);
+  async function fetchET(latA,lonA){
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${latA.join(',')}&longitude=${lonA.join(',')}&daily=et0_fao_evapotranspiration&forecast_days=1&timezone=UTC`;
     const d=await(await fetch(url)).json();
-    const list=Array.isArray(d)?d:[d];
-    return list.map(o=>({type:'Feature',geometry:{type:'Point',coordinates:[o.longitude,o.latitude]},
-      properties:{evap:(o.daily&&o.daily.et0_fao_evapotranspiration&&o.daily.et0_fao_evapotranspiration[0])||0}}));
+    return (Array.isArray(d)?d:[d]).map(o=>(o.daily&&o.daily.et0_fao_evapotranspiration&&o.daily.et0_fao_evapotranspiration[0])||0);
   }
-  let feats=[];
   try{
     const latA=[],lonA=[];
-    for(let la=-60;la<=70;la+=10) for(let lo=-180;lo<=180;lo+=20){latA.push(la);lonA.push(lo);}
+    for(const la of LATS)for(const lo of LONS){latA.push(la);lonA.push(lo);}
     const half=Math.ceil(latA.length/2);
-    feats=(await fetchET(latA.slice(0,half),lonA.slice(0,half))).concat(await fetchET(latA.slice(half),lonA.slice(half)));
-  }catch(e){
-    try{
-      const latA=[],lonA=[];
-      for(let la=-60;la<=60;la+=20) for(let lo=-180;lo<=180;lo+=30){latA.push(la);lonA.push(lo);}
-      feats=await fetchET(latA,lonA);
-    }catch(e2){console.error(e2);}
-  }
-  if(feats.length){
-    map.addSource('g-grid',{type:'geojson',data:{type:'FeatureCollection',features:feats}});
-    map.addLayer({id:'g-evap',type:'heatmap',source:'g-grid',paint:{
-      'heatmap-weight':['interpolate',['linear'],['get','evap'],0,.2,8,1],
-      'heatmap-radius':['interpolate',['linear'],['zoom'],0.5,80,2,110,4,150,6,190],
-      'heatmap-intensity':1.15,
-      'heatmap-opacity':.92,
-      'heatmap-color':['interpolate',['linear'],['heatmap-density'],
-        0,'rgba(0,0,0,0)',.15,'#440154',.35,'#3b528b',.55,'#21918c',.75,'#5ec962',1,'#fde725']}});
-  }
+    const vals=(await fetchET(latA.slice(0,half),lonA.slice(0,half))).concat(await fetchET(latA.slice(half),lonA.slice(half)));
+    // Мәндер матрицасы
+    const V=LATS.map(()=>LONS.map(()=>0));
+    vals.forEach((v,i)=>{V[Math.floor(i/LONS.length)][i%LONS.length]=v;});
+    // Канвас: 1°/пиксель, билинейр интерполяция → тегіс өріс
+    const W=360,H=131,cv=document.createElement('canvas');cv.width=W;cv.height=H;
+    const cx=cv.getContext('2d'),img=cx.createImageData(W,H);
+    for(let y=0;y<H;y++){
+      const lat=70-y;
+      let fi=(70-lat)/10;i0=Math.min(Math.max(Math.floor(fi),0),LATS.length-2);const fy=fi-i0;
+      for(let x=0;x<W;x++){
+        const lon=-180+x;
+        let fj=(lon+180)/20;const j0=Math.min(Math.max(Math.floor(fj),0),LONS.length-2);const fx=fj-j0;
+        const v=V[i0][j0]*(1-fx)*(1-fy)+V[i0][j0+1]*fx*(1-fy)+V[i0+1][j0]*(1-fx)*fy+V[i0+1][j0+1]*fx*fy;
+        const [r,g,b]=vir(v/8);
+        const p=(y*W+x)*4;
+        img.data[p]=r;img.data[p+1]=g;img.data[p+2]=b;img.data[p+3]=225;
+      }
+    }
+    cx.putImageData(img,0,0);
+    map.addSource('evap-img',{type:'image',url:cv.toDataURL(),coordinates:[[-180,70],[180,70],[180,-60],[-180,-60]]});
+    map.addLayer({id:'evap-raster',type:'raster',source:'evap-img',paint:{'raster-opacity':.85,'raster-fade-duration':0}});
+  }catch(e){console.error('ET0:',e);}
 });
 
-// ── Сайт деректері (Gemini-ге жіберіледі) ──
+// ── Сайт деректері ──
 (async()=>{
   try{
     const r=await fetch('caspian_sea_grid.json');
@@ -180,10 +198,10 @@ map.on('load', async () => {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// 🤖 GEMINI AI (сіздің кілтіңіз) + сайт деректері
+// 🤖 AI: Gemini → POST → GET (міндетті істейді) → есеп
 // ═══════════════════════════════════════════════════════════
-const SYS=`Сен — Caspian Water Recovery платформасының AI көмекшісісің. Кез келген тақырыпта қазақша еркін, жылы сөйлейсің, эмодзи қолданасың, есептерді де дұрыс шешесің. Жобаны білесің: Каспий булануы, Smart Ion Buoys, Магнус–Тетенс, экономика (500 буй, $125k, өтелу 1.4 жыл).`;
-function ctx(){return ` Платформаның НАҚТЫ деректері қазір: булану ${S.avgEvap||'—'} мм/күн, су t° ${S.sst||'—'}°C, ауа t° ${S.temp||'—'}°C, жел ${S.wind||'—'} м/с, ылғал ${S.hum||'—'}%. Ең қауіпті зоналар: ${S.top5?S.top5.map(p=>p.lat+','+p.lon+' ('+p.evaporation.toFixed(1)+')').join('; '):'—'}.`;}
+const SYS=`Сен — Caspian Water Recovery платформасының AI көмекшісісің. Кез келген тақырыпта қазақша еркін, жылы сөйлейсің, эмодзи қолданасың, есептерді дұрыс шешесің. Жоба: Каспий булануы, Smart Ion Buoys, Магнус–Тетенс, экономика: 500 буй, $125k, өтелу 1.4 жыл.`;
+function ctx(){return ` Нақты деректер: булану ${S.avgEvap||'—'} мм/күн, су ${S.sst||'—'}°C, ауа ${S.temp||'—'}°C, жел ${S.wind||'—'} м/с, ылғал ${S.hum||'—'}%.`;}
 function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
 async function gemini(q){
   const body={contents:[{role:'user',parts:[{text:q}]}],systemInstruction:{parts:[{text:SYS+ctx()}]}};
@@ -198,13 +216,25 @@ async function gemini(q){
   }
   throw 0;
 }
-async function postAI(model,q){
+async function postAI(q){
   const r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model,messages:[{role:'system',content:SYS+ctx()},{role:'user',content:q}]})});
+    body:JSON.stringify({model:'openai-fast',messages:[{role:'system',content:SYS+ctx()},{role:'user',content:q}]})});
   if(!r.ok)throw 0;
   const d=await r.json();
   const t=(d.choices?.[0]?.message?.content||'').trim();
   if(!t)throw 0; return t;
+}
+async function getAI(q){
+  const r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(q)+'?model=openai-fast&system='+encodeURIComponent(SYS+ctx()));
+  if(!r.ok)throw 0;
+  const t=(await r.text()).trim();
+  if(!t||t.length<2)throw 0; return t;
+}
+async function getAI2(q){
+  const r=await fetch('https://text.pollinations.ai/'+encodeURIComponent('Қазақша жауап бер: '+q));
+  if(!r.ok)throw 0;
+  const t=(await r.text()).trim();
+  if(!t||t.length<2)throw 0; return t;
 }
 function calc(q){
   const s=q.replace(/,/g,'.').replace(/×/g,'*').replace(/÷/g,'/');
@@ -224,13 +254,15 @@ async function ask(){
   const hold=document.createElement('div');hold.className='msg a';hold.textContent='🤖 Ойланып жатырмын...';$('msgs').appendChild(hold);$('msgs').scrollTop=$('msgs').scrollHeight;
   let ok=false;
   try{hold.innerHTML='🤖 '+md(await gemini(q));ok=true;}catch(e){}
-  if(!ok)try{hold.innerHTML='🤖 '+md(await postAI('openai-fast',q));ok=true;}catch(e){}
-  if(!ok){const c=calc(q);hold.innerHTML=c?'🤖 '+c:'🤖 Кешіріңіз, қазір AI-ға қосыла алмадым 😅 — біраздан соң қайталап көріңіз.';}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await postAI(q));ok=true;}catch(e){}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await getAI(q));ok=true;}catch(e){}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await getAI2(q));ok=true;}catch(e){}
+  if(!ok){const c=calc(q);hold.innerHTML=c?'🤖 '+c:'🤖 Желі бос емес сияқты 😅 — 10 секундтан соң қайталаңыз.';}
   $('msgs').scrollTop=$('msgs').scrollHeight;
 }
 $('send').onclick=ask;
 $('q').onkeydown=e=>{if(e.key==='Enter')ask();};
-pushMsg('Сәлеметсіз бе! 👋 Мен Caspian AI-мын (Gemini) — сайттың нақты деректерімен байланыспын. Кез келген сұрақ қойыңыз!','a');
+pushMsg('Сәлеметсіз бе! 👋 Мен Caspian AI-мын — сайттың нақты деректерімен байланыспын. Кез келген сұрақ қойыңыз!','a');
 
 openMode('evap');
 </script>
