@@ -2,6 +2,7 @@
 <html lang="kk">
 <head>
 <meta charset="UTF-8"/>
+<meta name="google-site-verification" content="mwitdqhIO6JiLPtiJc46Rfd4AMu_0RRfEHT0E7zb394"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>💧 Caspian Water Recovery</title>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
@@ -151,10 +152,10 @@ const clean = obj => Object.fromEntries(
 // Түс интерполяциясы (3→көк, 7→сары, 11→қызғылт, 15→қызыл)
 const interpolateColor = value => {
   const stops = [
-    [3, [79, 195, 247]],    // көк
-    [7, [255, 209, 102]],   // сары
-    [11, [255, 140, 66]],   // қызғылт
-    [15, [255, 59, 59]]     // қызыл
+    [3, [79, 195, 247]],
+    [7, [255, 209, 102]],
+    [11, [255, 140, 66]],
+    [15, [255, 59, 59]]
   ];
   if (value <= stops[0][0]) return `rgb(${stops[0][1].join(',')})`;
   for (let i = 0; i < stops.length - 1; i++) {
@@ -188,15 +189,12 @@ let allData = [];
 let seaData = [];
 let cities = [];
 
-// ──────────────────────────────────────────────────────────────
-// MARKER CREATOR (булардың анимациясы)
-// ──────────────────────────────────────────────────────────────
 function createVaporMarker(point) {
   const evap = point.evaporation;
   const color = interpolateColor(evap);
   const size = 26 + evap * 4;
-  const count = Math.min(2 + Math.round(evap / 3), 7); // әр мәнге әр қарқындылық
-  const duration = Math.max(6 - evap * 0.35, 1.6); // жоғары булану = жылдам бу
+  const count = Math.min(2 + Math.round(evap / 3), 7);
+  const duration = Math.max(6 - evap * 0.35, 1.6);
 
   const el = document.createElement('div');
   el.className = 'vp';
@@ -236,9 +234,6 @@ function createVaporMarker(point) {
     .addTo(map);
 }
 
-// ──────────────────────────────────────────────────────────────
-// GRAPHICS RENDER
-// ──────────────────────────────────────────────────────────────
 function renderBars(containerId, data, max, color) {
   const container = $(containerId);
   container.innerHTML = data.map(item => `
@@ -250,9 +245,6 @@ function renderBars(containerId, data, max, color) {
   `).join('');
 }
 
-// ──────────────────────────────────────────────────────────────
-// AI LOGIC (технологиялар)
-// ──────────────────────────────────────────────────────────────
 function dewPoint(temp, humidity) {
   return +(temp - ((100 - humidity) / 5)).toFixed(1);
 }
@@ -273,11 +265,7 @@ function bestTech(temp, humidity, wind, evap) {
   return 'Күн+Жел энергиясы';
 }
 
-// ──────────────────────────────────────────────────────────────
-// MAIN LOAD
-// ──────────────────────────────────────────────────────────────
 map.on('load', async () => {
-  // ── Қазақстан секторының полигоны ──
   map.addSource('kz-sector', {
     type: 'geojson',
     data: {
@@ -299,7 +287,6 @@ map.on('load', async () => {
     }
   });
 
-  // ── Деректерді жүктеу ──
   try {
     const [r1, r2] = await Promise.allSettled([
       fetch('caspian_grid.json'),
@@ -316,8 +303,7 @@ map.on('load', async () => {
     console.error('JSON жүктеу қатесі:', e);
   }
 
-  // Егер ештеңе жүктелмесе — fallback деректерін қолдану (JSON файлдары жоқ болса)
-  if (false) { // fallback өшірілді
+  if (false) {
     seaData = [
       { lat: 42.33, lon: 50.18, temp: 24.01, humidity: 76.0, wind: 5.1, sst: 24.09, evaporation: 3.3 },
       { lat: 42.33, lon: 52.93, temp: 28.53, humidity: 32.0, wind: 4.85, sst: 30.99, evaporation: 12.09 },
@@ -327,10 +313,8 @@ map.on('load', async () => {
     ].map(clean);
   }
 
-  // ── Буларды орнату (Қазақстан секторы үшін) ──
   markers = seaData.map(p => createVaporMarker(p));
 
-  // ── Heatmap қабаты ──
   map.addSource('evap-heat', {
     type: 'geojson',
     data: {
@@ -362,7 +346,6 @@ map.on('load', async () => {
     }
   });
 
-  // ── Статистика (Қазақстан секторы) ──
   const kzPoints = seaData.filter(p => p.lat >= 42.33);
   $('sN').textContent = kzPoints.length;
   $('sS').textContent = avg(kzPoints.map(p => p.sst)).toFixed(2) + '°C';
@@ -372,7 +355,6 @@ map.on('load', async () => {
   $('sW').textContent = avg(kzPoints.map(p => p.wind)).toFixed(2) + ' м/с';
   $('sH').textContent = avg(kzPoints.map(p => p.humidity)).toFixed(1) + '%';
 
-  // ── AI Талдау ──
   const aiEl = $('ai');
   if (avgEvap > 10) {
     aiEl.className = 'ai critical';
@@ -385,7 +367,6 @@ map.on('load', async () => {
     aiEl.innerHTML = `✅ <b>ТҰРАҚТЫ ДЕҢГЕЙ</b>: ${avgEvap.toFixed(1)} мм/күн. Жағдай қалыпты.<br><br>🔧 Ұсыныс: Ультрадыбыстық ионизатор режимі.`;
   }
 
-  // ── TOP-5 булану ──
   const top5 = [...kzPoints].sort((a, b) => b.evaporation - a.evaporation).slice(0, 5);
   $('t5').innerHTML = top5.map((p, i) => `
     <div class="item" data-lon="${p.lon}" data-lat="${p.lat}">
@@ -401,7 +382,6 @@ map.on('load', async () => {
     });
   });
 
-  // ── Қалалар (OWM API) ──
   async function loadCities() {
     try {
       const r = await fetch('/api/weather');
@@ -423,7 +403,6 @@ map.on('load', async () => {
           });
         });
 
-        // ── Технология кестесі ──
         $('tech').innerHTML = d.data.map(c => `
           <div class="item">
             <span>${c.city} · ылғал ${c.humidity}%</span>
@@ -431,7 +410,6 @@ map.on('load', async () => {
           </div>
         `).join('');
 
-        // ── Графиктер ──
         renderBars('ch1', d.data.map(c => ({
           name: c.city,
           value: c.index
@@ -459,15 +437,10 @@ map.on('load', async () => {
 
   await loadCities();
 
-  // ── Бастапқы фокус ──
   map.fitBounds(KZ_BOUNDS, { padding: 80, duration: 1500 });
 
-  // ── LOADER ──
   setTimeout(() => $('ld').classList.add('h'), 600);
 
-  // ──────────────────────────────────────────────────────────────
-  // CONTROLS
-  // ──────────────────────────────────────────────────────────────
   const btnKZ = $('bK');
   const btnAll = $('bA');
   const btnClouds = $('bC');
@@ -535,7 +508,6 @@ map.on('load', async () => {
   btnRefresh.onclick = loadCities;
 });
 
-// ── Карта қатесі ──
 map.on('error', e => {
   console.error('Mapbox қатесі:', e);
   $('ld').innerHTML = `<div style="color:#ff8c42;text-align:center;padding:20px">
@@ -545,4 +517,3 @@ map.on('error', e => {
 </script>
 </body>
 </html>
-
