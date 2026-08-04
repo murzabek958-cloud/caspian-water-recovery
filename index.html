@@ -4,45 +4,47 @@
 <meta charset="UTF-8"/>
 <meta name="google-site-verification" content="mwitdqhIO6JiLPtiJc46Rfd4AMu_0RRfEHT0E7zb394"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="Caspian Water Recovery — Каспий теңізінің климаттық мониторингі: температура, жауын, жел, теңіз, булану. Smart Ion Buoys. Caspian Hackathon 2026"/>
-<meta property="og:title" content="💧 Caspian Water Recovery — Климат платформасы"/>
+<meta name="description" content="Caspian Water Recovery — Каспий теңізінің булануын бақылау және локальды микро-конденсация платформасы. Smart Ion Buoys · Magnus–Tetens · NASA POWER. Caspian Hackathon 2026"/>
+<meta property="og:title" content="💧 Caspian Water Recovery — Smart Ion Buoys"/>
 <meta property="og:url" content="https://caspian-water-recovery.vercel.app"/>
-<title>💧 Caspian Water Recovery — Климат платформасы</title>
+<title>💧 Caspian Water Recovery — Smart Ion Buoys</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
 html,body{height:100%;overflow:hidden;background:#0b1016}
 #frame{position:absolute;inset:0;width:100%;height:100%;border:0}
-/* ── Жоғарғы кәсіби тақта (Windy/Ventusky стилі) ── */
-.topbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:10px;
-  padding:10px 16px;background:linear-gradient(180deg,rgba(10,14,20,.88),rgba(10,14,20,.55) 80%,transparent);
-  pointer-events:none}
+/* ── Кәсіби жоғарғы тақта ── */
+.topbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 14px;background:linear-gradient(180deg,rgba(8,12,18,.92),rgba(8,12,18,.6) 75%,transparent);pointer-events:none}
 .topbar>*{pointer-events:auto}
-.logo{display:flex;align-items:center;gap:8px;color:#fff;font-weight:700;font-size:15px;letter-spacing:.3px;
-  text-shadow:0 1px 6px rgba(0,0,0,.8)}
-.logo .drop{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7fd0ff,#1f6fae 70%);
-  display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 10px rgba(31,111,174,.7)}
-.sub{color:#9fb8cc;font-size:10px;font-weight:400}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.85)}
+.logo .drop{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7fd0ff,#1f6fae 75%);
+  display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 0 14px rgba(31,111,174,.8)}
+.logo b{font-size:15px;letter-spacing:.4px}
+.logo small{display:block;color:#9fb8cc;font-size:9.5px;font-weight:400;margin-top:1px}
 .spacer{flex:1}
-/* ── Pill батырмалар (кәсіби, минимал) ── */
-.pill{border:0;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer;
-  background:rgba(255,255,255,.14);color:#eaf4fb;backdrop-filter:blur(8px);transition:.2s;
-  box-shadow:0 2px 8px rgba(0,0,0,.35)}
-.pill:hover{background:rgba(255,255,255,.25)}
-.pill.on{background:#2f80ed;color:#fff;box-shadow:0 0 12px rgba(47,128,237,.6)}
-.pill.data{background:rgba(255,140,66,.9);color:#fff}
-.pill.data:hover{background:#ff8c42}
-/* ── Бүйір панель (Windy мәзірі сияқты қараңғы) ── */
-#side{position:absolute;top:0;right:-360px;width:340px;height:100%;z-index:30;overflow-y:auto;
-  background:rgba(16,22,30,.96);backdrop-filter:blur(12px);border-left:1px solid rgba(255,255,255,.08);
-  padding:60px 18px 20px;transition:right .35s ease;color:#d7ecfa}
+/* ── Модуль батырмалары ── */
+.pill{border:0;border-radius:22px;padding:8px 15px;font-size:12px;font-weight:600;cursor:pointer;color:#eaf4fb;
+  background:rgba(255,255,255,.13);backdrop-filter:blur(8px);transition:.2s;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.pill:hover{background:rgba(255,255,255,.26)}
+.pill.on{background:linear-gradient(135deg,#2f80ed,#1f6fae);color:#fff;box-shadow:0 0 14px rgba(47,128,237,.65)}
+.pill.sol{background:linear-gradient(135deg,#ff8c42,#e2711d);color:#fff}
+.pill.sol:hover{filter:brightness(1.1)}
+/* ── Бүйір панель ── */
+#side{position:absolute;top:0;right:-380px;width:355px;height:100%;z-index:30;overflow-y:auto;
+  background:rgba(13,18,26,.97);backdrop-filter:blur(14px);border-left:1px solid rgba(255,255,255,.08);
+  padding:58px 18px 24px;transition:right .35s ease;color:#d7ecfa}
 #side.open{right:0}
-#side h2{font-size:11px;color:#7fd0ff;text-transform:uppercase;letter-spacing:1.2px;margin:18px 0 8px}
+#side h2{font-size:11px;color:#7fd0ff;text-transform:uppercase;letter-spacing:1.3px;margin:20px 0 8px}
 #side h2:first-child{margin-top:0}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin:8px 0;
+  font-size:12px;line-height:1.55}
+.card b{color:#ffd166}
+.card .t{color:#7fd0ff;font-weight:700;font-size:12.5px;margin-bottom:4px}
 .row{display:flex;justify-content:space-between;font-size:12px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
 .row .v{color:#ffd166;font-weight:600}
 .item{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:8px 10px;margin:5px 0;
   border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:.15s}
-.item:hover{background:rgba(47,128,237,.2);border-color:#2f80ed}
+.item:hover{background:rgba(47,128,237,.22);border-color:#2f80ed}
 .item b{color:#ffd166}
 .close{position:absolute;top:14px;right:14px;border:0;background:rgba(255,255,255,.1);color:#fff;width:32px;height:32px;
   border-radius:50%;cursor:pointer;font-size:14px}
@@ -50,12 +52,8 @@ html,body{height:100%;overflow:hidden;background:#0b1016}
 .lbar{height:8px;border-radius:4px;background:linear-gradient(90deg,#4fc3f7,#ffd166 33%,#ff8c42 66%,#ff3b3b)}
 .ltick{display:flex;justify-content:space-between;font-size:9px;color:#9fb8cc;margin-top:3px}
 .note{font-size:10px;color:#7d93a8;line-height:1.5;margin-top:6px}
-footer{position:absolute;bottom:6px;left:12px;z-index:20;font-size:9px;color:rgba(255,255,255,.55);
-  text-shadow:0 1px 3px #000;pointer-events:none}
-@media(max-width:720px){
-  #side{width:88%}
-  .sub{display:none}
-}
+footer{position:absolute;bottom:6px;left:12px;z-index:20;font-size:9px;color:rgba(255,255,255,.5);text-shadow:0 1px 3px #000;pointer-events:none}
+@media(max-width:720px){#side{width:90%}.logo small{display:none}}
 </style>
 </head>
 <body>
@@ -64,24 +62,41 @@ footer{position:absolute;bottom:6px;left:12px;z-index:20;font-size:9px;color:rgb
 
 <div class="topbar">
   <div class="logo"><span class="drop">💧</span>
-    <span>CASPIAN WATER RECOVERY<br><span class="sub">Smart Ion Buoys · Климат мониторингі · Hackathon 2026</span></span>
+    <span><b>CASPIAN WATER RECOVERY</b><small>Smart Ion Buoys · Локальды микро-конденсация · Hackathon 2026</small></span>
   </div>
   <div class="spacer"></div>
-  <button class="pill on" id="btnV">Ventusky</button>
-  <button class="pill" id="btnW">Windy</button>
-  <button class="pill data" id="btnD">📊 Каспий деректері</button>
+  <button class="pill on" data-m="climate">🌡️ Климат</button>
+  <button class="pill" data-m="rain">🌧️ Жауын</button>
+  <button class="pill" data-m="sea">🌊 Теңіз</button>
+  <button class="pill" data-m="hum">💧 Ылғал</button>
+  <button class="pill" data-m="wind">🌬️ Жел ағыны</button>
+  <button class="pill sol" id="btnD">💧 Шешім</button>
 </div>
 
 <div id="side">
   <button class="close" id="btnX">✕</button>
-  <h2>📡 Каспий статистикасы (Қазақстан секторы)</h2>
-  <div id="stats"><div class="row"><span>⏳ Жүктелуде...</span></div></div>
 
-  <h2>⚠️ TOP-5 булану зонасы</h2>
-  <div id="t5"><div class="row"><span>⏳</span></div></div>
-  <div class="note">Зонаны бассаңыз — карта сол нүктеге орталықтанып, белгі қойылады.</div>
+  <h2>🎯 Шешім</h2>
+  <div class="card">Біз бүкіл теңізді жабу сияқты орындалмайтын идеяны ұсынбаймыз. Оның орнына — <b>нақты координаттарға дәлдікпен</b> бағытталған платформа.</div>
 
-  <h2>⚓ Smart Ion Buoys — экономика</h2>
+  <div class="card"><div class="t">📡 1. Деректерді бақылау</div>
+  NASA POWER · OpenWeather · CMEMS арқылы су мен ауа температурасын, ылғалдылықты, желді және булану қарқынын <b>нақты уақытта</b> талдаймыз.</div>
+
+  <div class="card"><div class="t">🧮 2. Ақылды таңдау</div>
+  Математикалық термодинамикалық модельдер (<b>Магнус–Тетенс теңдеулері</b>) арқылы дәл қазір қай координатта конденсация тиімді екенін есептейміз.</div>
+
+  <div class="card"><div class="t">⚓ 3. Локальды микро-конденсация</div>
+  🌙 Түнде — <b>Радиациялық салқындату</b><br>
+  💨 лғалды жел соққанда — <b>Пассивті торлар</b><br>
+  🌊 Теңіз бетінде — <b>Smart Ion Buoys</b></div>
+
+  <h2>⚓ Smart Ion Buoys — аппараттық концепт</h2>
+  <div class="card">
+  🔋 Күн мен толқын энергиясынан <b>автономды қуат</b><br>
+  ⚡ Су жаңа буланғанда <b>0–50 м</b> биіктікте микро-заряд шығарып, бу молекулаларын иондайды<br>
+  🌧️ Зарядталған молекулалар ауырлап, атмосфераға тарамай, теңіз үстіне <b>жаңбыр/тұман</b> болып оралады</div>
+
+  <h2>💰 Экономика және экология</h2>
   <div class="row"><span>⚓ Буй саны (5 зона × 100)</span><span class="v">500</span></div>
   <div class="row"><span>💧 Қайтарылған су</span><span class="v">250 м³/күн</span></div>
   <div class="row"><span>📅 Жылдық көлем</span><span class="v">91,250 м³</span></div>
@@ -90,7 +105,13 @@ footer{position:absolute;bottom:6px;left:12px;z-index:20;font-size:9px;color:rgb
   <div class="row"><span>⏱️ Өтелу мерзімі</span><span class="v">1.4 жыл</span></div>
   <div class="row"><span>👥 Сумен қамту</span><span class="v">1,250 адам/күн</span></div>
   <div class="row"><span>🌱 CO₂ үнем</span><span class="v">36.5 т/жыл</span></div>
-  <div class="note">⚡ Күн+толқын энергиясы · 0–50 м ионизация · Magnus–Tetens термодинамикасы негізінде.</div>
+
+  <h2>📡 Каспий статистикасы (Қазақстан секторы)</h2>
+  <div id="stats"><div class="row"><span>⏳ Жүктелуде...</span></div></div>
+
+  <h2>⚠️ TOP-5 булану зонасы</h2>
+  <div id="t5"><div class="row"><span>⏳</span></div></div>
+  <div class="note">Зонаны бассаңыз — карта сол нүктеге орталықтанып, белгі қояды.</div>
 
   <h2>🏙️ Қалалар (тірі ауа райы)</h2>
   <div id="ct"><div class="row"><span>⏳</span></div></div>
@@ -100,56 +121,60 @@ footer{position:absolute;bottom:6px;left:12px;z-index:20;font-size:9px;color:rgb
   <div class="ltick"><span>3</span><span>7</span><span>11</span><span>15+</span></div>
 </div>
 
-<footer>💧 CASPIAN WATER RECOVERY · NASA POWER · OWM · Ventusky · Windy · I Caspian Hackathon 2026</footer>
+<footer>💧 CASPIAN WATER RECOVERY · NASA POWER · OWM · CMEMS · I Халықаралық Caspian Hackathon 2026</footer>
 
 <script>
 const $ = id => document.getElementById(id);
 const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
 const clean = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.trim(), v]));
 
-let mode = 'v';
-let layer = 'temperature-2m';
+// ── Біздің климат модульдеріміз ──
+const MODULES = {
+  climate: { t: 'v', l: 'temperature-2m' },
+  rain:    { t: 'v', l: 'rain-3h' },
+  sea:     { t: 'v', l: 'sea-temperature' },
+  hum:     { t: 'v', l: 'humidity' },
+  wind:    { t: 'w' }
+};
+let cur = 'climate';
 
-// ── Кәсіби карта режимдері ──
-function ventusky(l, pin) {
-  layer = l || layer;
-  let url = `https://embed.ventusky.com/?p=44.5;51.5;6&l=${layer}&w=soft`;
-  if (pin) url += `&pin=${pin.lat};${pin.lon};dot;${encodeURIComponent(pin.name)}`;
-  $('frame').src = url;
-  mode = 'v';
-  $('btnV').classList.add('on'); $('btnW').classList.remove('on');
+function openModule(key, pin) {
+  cur = key;
+  const m = MODULES[key];
+  if (m.t === 'v') {
+    let url = `https://embed.ventusky.com/?p=44.5;51.5;6&l=${m.l}&w=soft`;
+    if (pin) url += `&pin=${pin.lat};${pin.lon};dot;${encodeURIComponent(pin.name)}`;
+    $('frame').src = url;
+  } else {
+    $('frame').src = 'https://embed.windy.com/embed2.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=kt&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=44.5&lon=51.5';
+  }
+  document.querySelectorAll('[data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === key));
 }
-function windy() {
-  $('frame').src = 'https://embed.windy.com/embed2.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=kt&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=44.5&lon=51.5';
-  mode = 'w';
-  $('btnW').classList.add('on'); $('btnV').classList.remove('on');
-}
-$('btnV').onclick = () => ventusky();
-$('btnW').onclick = windy;
+document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => openModule(b.dataset.m));
 $('btnD').onclick = () => $('side').classList.add('open');
 $('btnX').onclick = () => $('side').classList.remove('open');
 
-// ── Каспий деректерін жүктеу (картасыз, таза панель) ──
+// ── Каспий деректері ──
 (async () => {
   try {
     const r = await fetch('caspian_sea_grid.json');
     if (r.ok) {
-      const sea = (await r.json()).map(clean);
-      const kz = sea.filter(p => p.lat >= 42.33);
+      const kz = (await r.json()).map(clean).filter(p => p.lat >= 42.33);
       $('stats').innerHTML = `
         <div class="row"><span>🔵 Нүктелер</span><span class="v">${kz.length}</span></div>
         <div class="row"><span>🌊 Су темп. (SST)</span><span class="v">${avg(kz.map(p=>p.sst)).toFixed(2)}°C</span></div>
         <div class="row"><span>🌡️ Ауа темп.</span><span class="v">${avg(kz.map(p=>p.temp)).toFixed(2)}°C</span></div>
         <div class="row"><span>💧 Булану</span><span class="v">${avg(kz.map(p=>p.evaporation)).toFixed(2)} мм/күн</span></div>
         <div class="row"><span>💨 Жел</span><span class="v">${avg(kz.map(p=>p.wind)).toFixed(2)} м/с</span></div>
-        <div class="row"><span>🌫️ Ылғал</span><span class="v">${avg(kz.map(p=>p.humidity)).toFixed(1)}%</span></div>`;
+        <div class="row"><span>🌫️ лғал</span><span class="v">${avg(kz.map(p=>p.humidity)).toFixed(1)}%</span></div>`;
       const top5 = [...kz].sort((a, b) => b.evaporation - a.evaporation).slice(0, 5);
       $('t5').innerHTML = top5.map((p, i) => `
         <div class="item" data-lat="${p.lat}" data-lon="${p.lon}" data-n="Зона ${i+1} · ${p.evaporation.toFixed(1)} мм/күн">
           <span>#${i+1} 📍 ${p.lat}, ${p.lon}</span><b>${p.evaporation.toFixed(1)}</b></div>`).join('');
       document.querySelectorAll('#t5 .item').forEach(el => {
         el.onclick = () => {
-          ventusky(layer, { lat: el.dataset.lat, lon: el.dataset.lon, name: el.dataset.n });
+          if (MODULES[cur].t !== 'v') cur = 'climate';
+          openModule(cur, { lat: el.dataset.lat, lon: el.dataset.lon, name: el.dataset.n });
           $('side').classList.remove('open');
         };
       });
@@ -163,8 +188,7 @@ $('btnX').onclick = () => $('side').classList.remove('open');
   } catch (e) { $('ct').innerHTML = '<div class="row"><span>🚫 API жауап бермейді</span></div>'; }
 })();
 
-// Бастапқыда — Ventusky толық кәсіби карта
-ventusky('temperature-2m');
+openModule('climate');
 </script>
 </body>
 </html>
