@@ -84,7 +84,7 @@ footer{position:absolute;bottom:5px;left:12px;z-index:20;font-size:9px;color:rgb
 
 <button id="chatBtn">🤖</button>
 <div id="chat">
-  <div class="hd">🤖 Caspian AI — интернеттен дерек жинап, толық шешім береді</div>
+  <div class="hd">🤖 Caspian AI — нақты деректермен толық шешім береді</div>
   <div id="msgs"></div>
   <div class="in"><input id="q" placeholder="Сұрақ қойыңыз... (мыс: шешімдерің қандай?)"/><button id="send">➤</button></div>
 </div>
@@ -98,7 +98,7 @@ const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
 const clean = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.trim(), v]));
 const S = {};
 
-// ── Карталар (қырқылған, логотипсіз; қар — нақты қар қабаты) ──
+// ── Карталар (қырқылған, логотипсіз) ──
 const M = {
   evap:{own:1,t:'💨 Булану (мм/күн)',ticks:['3','7','11','15+']},
   temp:{u:'v',l:'temperature-2m',t:'🌡️ Жылулық (°C)',ticks:['-10','0','15','30','45']},
@@ -125,7 +125,7 @@ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>openMode(b.datase
 $('btnAI2').onclick=()=>$('chat').classList.toggle('open');
 $('chatBtn').onclick=()=>$('chat').classList.toggle('open');
 
-// ── Біздің булану картасы ──
+// ── Біздің булану картасы (жұмсақ, теңіз пішінінде) ──
 const map = new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/dark-v11',center:[51.9,44.9],zoom:5.6});
 map.addControl(new mapboxgl.NavigationControl(),'top-right');
 map.on('load', async () => {
@@ -134,15 +134,17 @@ map.on('load', async () => {
   let grid=[];
   try{const r=await fetch('caspian_grid.json');if(r.ok)grid=(await r.json()).map(clean);}catch(e){}
   map.addSource('grid',{type:'geojson',data:{type:'FeatureCollection',features:grid.map(p=>({type:'Feature',geometry:{type:'Point',coordinates:[p.lon,p.lat]},properties:{evap:p.evaporation}}))}});
+  // Жұмсақ, табиғи градиент (қызыл таяқша емес)
   map.addLayer({id:'h-evap',type:'heatmap',source:'grid',paint:{
-    'heatmap-weight':['interpolate',['linear'],['get','evap'],3,.3,15,1],
-    'heatmap-radius':['interpolate',['linear'],['zoom'],3,60,5,110,7,170,9,240],
-    'heatmap-intensity':['interpolate',['linear'],['zoom'],3,.8,7,1.4],
-    'heatmap-opacity':.85,
-    'heatmap-color':['interpolate',['linear'],['heatmap-density'],0,'rgba(0,0,0,0)',.15,'rgba(79,195,247,.4)',.4,'#ffd166',.65,'#ff8c42',1,'#ff3b3b']}});
+    'heatmap-weight':['interpolate',['linear'],['get','evap'],3,.25,15,.9],
+    'heatmap-radius':['interpolate',['linear'],['zoom'],3,40,5,70,7,110,9,150],
+    'heatmap-intensity':['interpolate',['linear'],['zoom'],3,.7,7,1.1],
+    'heatmap-opacity':['interpolate',['linear'],['zoom'],3,.9,7,.7],
+    'heatmap-color':['interpolate',['linear'],['heatmap-density'],
+      0,'rgba(0,0,0,0)',.2,'rgba(79,195,247,.55)',.45,'#ffd166',.7,'#ff8c42',1,'#e23b2e']}});
 });
 
-// ── Нақты деректерді жинау (AI контексті үшін) ──
+// ── Нақты деректерді жинау ──
 (async()=>{
   try{
     const r=await fetch('caspian_sea_grid.json');
@@ -157,16 +159,12 @@ map.on('load', async () => {
       S.top5=[...kz].sort((a,b)=>b.evaporation-a.evaporation).slice(0,5);
     }
   }catch(e){}
-  try{
-    const d=await(await fetch('/api/weather')).json();
-    if(d.ok)S.cities=d.data;
-  }catch(e){}
+  try{const d=await(await fetch('/api/weather')).json();if(d.ok)S.cities=d.data;}catch(e){}
   try{
     const e=new Date(),s=new Date();s.setDate(e.getDate()-30);
     const f=d=>d.toISOString().slice(0,10).replace(/-/g,'');
     const d=await(await fetch(`https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,RH2M,WS2M,EVPTRNS&community=AG&longitude=51.9&latitude=44.9&start=${f(s)}&end=${f(e)}&format=JSON`)).json();
-    const p=d.properties.parameter;
-    const arr=Object.keys(p.T2M).map(x=>+p.EVPTRNS[x]).filter(v=>!isNaN(v)&&v>-900);
+    const p=d.properties.parameter,arr=Object.keys(p.T2M).map(x=>+p.EVPTRNS[x]).filter(v=>!isNaN(v)&&v>-900);
     const n=arr.length,X=Array.from({length:n},(_,i)=>i),sX=X.reduce((a,b)=>a+b,0),sY=arr.reduce((a,b)=>a+b,0),
       sXY=X.reduce((a,v,i)=>a+v*arr[i],0),sXX=X.reduce((a,v)=>a+v*v,0);
     S.trendE=+(((n*sXY-sX*sY)/(n*sXX-sX*sX))||0).toFixed(3);
@@ -175,14 +173,13 @@ map.on('load', async () => {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// 🤖 GEMINI AI — интернеттен дерек жинап, ТОЛЫҚ ШЕШІМ береді
+// 🤖 AI: Gemini (берілген кілт) → Pollinations (қор LLM) → жергілікті жауап
 // ═══════════════════════════════════════════════════════════
 const GEMINI_KEY = 'AQ.Ab8RN6IHmY02hpob0Dt67ckAgmforTN6cAuW5KBVDI8GWCo9gA';
-const PERSONA = `Сен — Caspian Water Recovery экологиялық платформасының AI көмекшісісің. Қазақ тілінде еркін, жылы әрі кәсіби сөйлейсің, кейде эмодзи қолданасың. Жауаптарың нақты сандарға негізделеді. Егер пайдаланушы шешім/ұсыныс сұраса — ТОЛЫҚ ШЕШІМДІ айт: 1) Деректерді бақылау (NASA POWER, OpenWeather, CMEMS); 2) Ақылды таңдау (Магнус–Тетенс теңдеулері); 3) Локальды микро-конденсация: түнде радиациялық салқындату, ылғалды желде пассивті торлар, теңіз бетінде Smart Ion Buoys (күн+толқын қуаты, 0–50 м ионизация, бу молекулаларын жаңбыр/тұман қылып қайтару). Экономика: 500 буй, $125,000, 91,250 м³/жыл, өтелу 1.4 жыл. Қажет болса интернеттен (google search) нақты уақыттағы деректерді қолдан.`;
-function ctx(){
-  return ` Платформаның қазіргі нақты деректері (Каспий, Қазақстан секторы): булану ${S.avgEvap||'—'} мм/күн, су t° ${S.sst||'—'}°C, ауа t° ${S.temp||'—'}°C, жел ${S.wind||'—'} м/с, ылғал ${S.hum||'—'}%. NASA (30 күн): булану ${S.nasaEvap||'—'} мм/күн, тренд ${S.trendE||0} мм/күн. Ең қауіпті зоналар: ${S.top5?S.top5.map(p=>p.lat+','+p.lon+' ('+p.evaporation.toFixed(1)+')').join('; '):'—'}. Қалалар: ${S.cities?S.cities.map(c=>c.city+' '+c.temp+'°C/'+c.humidity+'%').join(', '):'—'}.`;
-}
+const PERSONA = `Сен — Caspian Water Recovery экологиялық платформасының AI көмекшісісің. Қазақ тілінде еркін, жылы әрі кәсіби, сенімді дос сияқты сөйлейсің, кейде эмодзи қолданасың. Жауаптарың нақты сандарға негізделеді. Шешім/ұсыныс сұралса — ТОЛЫҚ ШЕШІМДІ айт: 1) Деректерді бақылау (NASA POWER, OpenWeather, CMEMS); 2) Ақылды таңдау (Магнус–Тетенс теңдеулері); 3) Локальды микро-конденсация: түнде радиациялық салқындату, ылғалды желде пассивті торлар, теңіз бетінде Smart Ion Buoys (күн+толқын қуаты, 0–50 м ионизация, бу молекулаларын жаңбыр/тұман қылып қайтару). Экономика: 500 буй, $125,000, 91,250 м³/жыл, өтелу 1.4 жыл.`;
+function ctx(){return ` Платформаның нақты деректері (Каспий, Қазақстан секторы): булану ${S.avgEvap||'—'} мм/күн, су t° ${S.sst||'—'}°C, ауа t° ${S.temp||'—'}°C, жел ${S.wind||'—'} м/с, ылғал ${S.hum||'—'}%. NASA(30күн): булану ${S.nasaEvap||'—'} мм/күн, тренд ${S.trendE||0}. Ең қауіпті зоналар: ${S.top5?S.top5.map(p=>p.lat+','+p.lon+' ('+p.evaporation.toFixed(1)+')').join('; '):'—'}. Қалалар: ${S.cities?S.cities.map(c=>c.city+' '+c.temp+'°C/'+c.humidity+'%').join(', '):'—'}.`;}
 function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+
 async function gemini(prompt, withSearch, model){
   const body={contents:[{role:'user',parts:[{text:prompt}]}],systemInstruction:{parts:[{text:PERSONA+ctx()}]}};
   if(withSearch)body.tools=[{google_search:{}}];
@@ -190,8 +187,13 @@ async function gemini(prompt, withSearch, model){
   if(!r.ok)throw 0;
   const d=await r.json();
   const t=(d.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim();
-  if(!t)throw 0;
-  return t;
+  if(!t)throw 0; return t;
+}
+async function pollinations(prompt){
+  const full=`${PERSONA}${ctx()}\n\nПайдаланушы сұрағы: ${prompt}\n\nЖауапты қазақша, 2-5 сөйлеммен, нақты сандармен бер.`;
+  const r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(full));
+  const t=(await r.text()).trim();
+  if(!t||t.length<3)throw 0; return t;
 }
 function localAnswer(q){
   q=q.toLowerCase();
@@ -201,6 +203,7 @@ function localAnswer(q){
   if(q.includes('ылғал'))return `Орташа ылғал — ${S.hum}%.`;
   if(q.includes('жел'))return `Орташа жел — ${S.wind} м/с.`;
   if(q.includes('буй')||q.includes('эконом')||q.includes('пайда'))return 'Smart Ion Buoys: 500 буй, $125,000 инвестиция, 250 м³/күн қайтарылған су, өтелу 1.4 жыл.';
+  if(q.includes('сәлем')||q.includes('салем'))return 'Сәлеметсіз бе! 👋 Мен Caspian AI-мын. Шешім, булану, температура, буйлар немесе болжам туралы сұраңыз!';
   return `Мен Caspian AI-мын! Булану қазір ${S.avgEvap} мм/күн. Сұраңыз: шешім / булану / температура / буйлар / болжам.`;
 }
 function pushMsg(t,cls){const m=document.createElement('div');m.className='msg '+cls;m.innerHTML=t;$('msgs').appendChild(m);$('msgs').scrollTop=$('msgs').scrollHeight;}
@@ -208,22 +211,18 @@ async function ask(){
   const q=$('q').value.trim();if(!q)return;$('q').value='';
   pushMsg(q,'u');
   const hold=document.createElement('div');hold.className='msg a';hold.textContent='🤖 Ойланып жатырмын...';$('msgs').appendChild(hold);$('msgs').scrollTop=$('msgs').scrollHeight;
-  const prompt=`Пайдаланушы сұрағы: ${q}. Жауапты қазақша бер. Егер нақты уақыттағы ақпарат керек болса (ауа райы, Каспий деңгейі, жаңалықтар) — интернеттен іздеп, толық талдау/шешім қос.`;
-  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),14000);
-  try{hold.innerHTML='🤖 '+md(await gemini(prompt,true,'gemini-2.0-flash'));}
-  catch(e){
-    try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-2.0-flash'));}
-    catch(e2){
-      try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-1.5-flash'));}
-      catch(e3){hold.innerHTML='🤖 '+localAnswer(q);}
-    }
-  }
-  clearTimeout(to);
+  const prompt=`Пайдаланушы сұрағы: ${q}. Жауапты қазақша бер. Нақты уақыттағы ақпарат керек болса (ауа райы, Каспий деңгейі) — интернеттен іздеп, толық талдау/шешім қос.`;
+  let ok=false;
+  try{hold.innerHTML='🤖 '+md(await gemini(prompt,true,'gemini-2.0-flash'));ok=true;}catch(e){}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-2.0-flash'));ok=true;}catch(e){}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-1.5-flash'));ok=true;}catch(e){}
+  if(!ok)try{hold.innerHTML='🤖 '+md(await pollinations(prompt));ok=true;}catch(e){}
+  if(!ok)hold.innerHTML='🤖 '+localAnswer(q);
   $('msgs').scrollTop=$('msgs').scrollHeight;
 }
 $('send').onclick=ask;
 $('q').onkeydown=e=>{if(e.key==='Enter')ask();};
-pushMsg('Сәлеметсіз бе! 👋 Мен Caspian AI-мын — нақты деректерді жинап, толық шешім айтамын. Мысалы: «Шешімдерің қандай?», «Булану қанша?», «Каспий деңгейі неге төмендеп жатыр?»','a');
+pushMsg('Сәлеметсіз бе! 👋 Мен Caspian AI-мын — нақты деректерді жинап, толық шешім айтамын. Мысалы: «Шешімдерің қандай?», «Булану қанша?», «Каспий неге тартылып жатыр?»','a');
 
 openMode('evap');
 </script>
