@@ -28,42 +28,20 @@ html,body{height:100%;overflow:hidden;background:#0b1016}
   background:rgba(255,255,255,.13);backdrop-filter:blur(8px);transition:.2s;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .pill:hover{background:rgba(255,255,255,.26)}
 .pill.on{background:linear-gradient(135deg,#2f80ed,#1f6fae);color:#fff;box-shadow:0 0 12px rgba(47,128,237,.65)}
-.pill.sol{background:linear-gradient(135deg,#ff8c42,#e2711d);color:#fff}
 .pill.ai{background:linear-gradient(135deg,#8e44ad,#5e2f80);color:#fff}
 #legend{position:absolute;left:12px;bottom:30px;z-index:20;background:rgba(13,18,26,.9);backdrop-filter:blur(10px);
   border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:9px 13px;width:225px;color:#d7ecfa}
 #legend .t{font-size:11px;font-weight:700;color:#7fd0ff;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
 #legend .bar{height:9px;border-radius:5px;background:linear-gradient(90deg,#4fc3f7,#ffd166 33%,#ff8c42 66%,#ff3b3b)}
 #legend .tick{display:flex;justify-content:space-between;font-size:9px;color:#9fb8cc;margin-top:3px}
-#side{position:absolute;top:0;right:-380px;width:355px;height:100%;z-index:30;overflow-y:auto;
-  background:rgba(13,18,26,.97);backdrop-filter:blur(14px);border-left:1px solid rgba(255,255,255,.08);
-  padding:56px 18px 24px;transition:right .35s ease;color:#d7ecfa}
-#side.open{right:0}
-#side h2{font-size:11px;color:#7fd0ff;text-transform:uppercase;letter-spacing:1.3px;margin:20px 0 8px}
-#side h2:first-child{margin-top:0}
-.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin:8px 0;font-size:12px;line-height:1.55}
-.card b{color:#ffd166}.card .t{color:#7fd0ff;font-weight:700;font-size:12.5px;margin-bottom:4px}
-.row{display:flex;justify-content:space-between;font-size:12px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
-.row .v{color:#ffd166;font-weight:600}
-.item{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:8px 10px;margin:5px 0;
-  border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:.15s}
-.item:hover{background:rgba(47,128,237,.22);border-color:#2f80ed}
-.item b{color:#ffd166}
-.close{position:absolute;top:12px;right:12px;border:0;background:rgba(255,255,255,.1);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px}
-.close:hover{background:rgba(255,59,59,.6)}
-.ai{padding:10px;border-radius:9px;font-size:12px;line-height:1.5;border-left:3px solid;margin:8px 0}
-.ai.critical{background:rgba(255,59,59,.12);border-color:#ff3b3b;color:#ffc2c2}
-.ai.warning{background:rgba(255,209,102,.12);border-color:#ffd166;color:#ffe7a8}
-.ai.stable{background:rgba(127,255,180,.1);border-color:#5fff9a;color:#b7ffd8}
-/* ── AI ЧАТ ── */
-#chatBtn{position:absolute;right:16px;bottom:34px;z-index:40;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
-  background:linear-gradient(135deg,#8e44ad,#5e2f80);color:#fff;font-size:24px;box-shadow:0 4px 18px rgba(94,47,128,.7)}
-#chat{position:absolute;right:16px;bottom:100px;z-index:40;width:340px;max-height:60vh;display:none;flex-direction:column;
+#chatBtn{position:absolute;right:16px;bottom:34px;z-index:40;width:58px;height:58px;border-radius:50%;border:0;cursor:pointer;
+  background:linear-gradient(135deg,#8e44ad,#5e2f80);color:#fff;font-size:25px;box-shadow:0 4px 18px rgba(94,47,128,.7)}
+#chat{position:absolute;right:16px;bottom:102px;z-index:40;width:360px;max-height:62vh;display:none;flex-direction:column;
   background:rgba(13,18,26,.98);border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;backdrop-filter:blur(14px)}
 #chat.open{display:flex}
 #chat .hd{padding:10px 14px;background:linear-gradient(135deg,#8e44ad,#5e2f80);color:#fff;font-size:12px;font-weight:700}
 #msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:85%;padding:8px 11px;border-radius:12px;font-size:12px;line-height:1.5}
+.msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12px;line-height:1.55;white-space:pre-wrap}
 .msg.u{align-self:flex-end;background:#1f6fae;color:#fff;border-bottom-right-radius:3px}
 .msg.a{align-self:flex-start;background:rgba(255,255,255,.08);color:#d7ecfa;border-bottom-left-radius:3px}
 #chat .in{display:flex;gap:6px;padding:8px;border-top:1px solid rgba(255,255,255,.08)}
@@ -71,7 +49,7 @@ html,body{height:100%;overflow:hidden;background:#0b1016}
 #send{border:0;border-radius:10px;background:#8e44ad;color:#fff;padding:0 14px;cursor:pointer;font-size:14px}
 footer{position:absolute;bottom:5px;left:12px;z-index:20;font-size:9px;color:rgba(255,255,255,.5);text-shadow:0 1px 3px #000;pointer-events:none}
 .mapboxgl-ctrl-attrib{opacity:.5}
-@media(max-width:720px){#side,#chat{width:92%}.logo small{display:none}#legend{width:170px}}
+@media(max-width:720px){#chat{width:92%}.logo small{display:none}#legend{width:170px}}
 </style>
 </head>
 <body>
@@ -95,8 +73,6 @@ footer{position:absolute;bottom:5px;left:12px;z-index:20;font-size:9px;color:rgb
   <button class="pill" data-m="press">📊 Қысым</button>
   <button class="pill" data-m="sea">🌊 Теңіз t°</button>
   <button class="pill" data-m="snow">❄️ Қар</button>
-  <button class="pill" data-m="air">🌫️ Ауа сапасы</button>
-  <button class="pill sol" id="btnD">💧 Шешім</button>
   <button class="pill ai" id="btnAI2">🤖 AI</button>
 </div>
 
@@ -106,45 +82,11 @@ footer{position:absolute;bottom:5px;left:12px;z-index:20;font-size:9px;color:rgb
   <div class="tick" id="lTick"><span>3</span><span>7</span><span>11</span><span>15+</span></div>
 </div>
 
-<div id="side">
-  <button class="close" id="btnX">✕</button>
-  <h2>🎯 Шешім (инновация)</h2>
-  <div class="card">Біз бүкіл теңізді жабуды ұсынбаймыз — <b>нақты координаттарға дәлдікпен</b> бағытталған платформа ұсынамыз.</div>
-  <div class="card"><div class="t">📡 1. Деректерді бақылау</div>NASA POWER · OpenWeather · CMEMS арқылы су/ауа t°, ылғалдылық, жел және булану қарқынын <b>нақты уақытта</b> талдаймыз.</div>
-  <div class="card"><div class="t">🧮 2. Ақылды таңдау</div><b>Магнус–Тетенс теңдеулері</b> арқылы дәл қазір қай координатта конденсация тиімді екенін есептейміз.</div>
-  <div class="card"><div class="t">⚓ 3. Локальды микро-конденсация</div>🌙 Түнде — <b>Радиациялық салқындату</b><br>💨 Ылғалды желде — <b>Пассивті торлар</b><br>🌊 Теңіз бетінде — <b>Smart Ion Buoys</b></div>
-
-  <h2>⚓ Smart Ion Buoys (аппараттық концепт)</h2>
-  <div class="card">🔋 Күн + толқын энергиясынан автономды қуат<br>⚡ 0–50 м биіктікте микро-заряд → бу молекулаларын иондайды<br>🌧️ Зарядталған молекулалар теңіз үстіне жаңбыр/тұман болып оралады</div>
-
-  <h2>💰 Экономика · Экология · Масштаб</h2>
-  <div class="row"><span>⚓ Буй саны (5 зона × 100)</span><span class="v">500</span></div>
-  <div class="row"><span>💧 Қайтарылған су</span><span class="v">250 м³/күн</span></div>
-  <div class="row"><span>📅 Жылдық көлем</span><span class="v">91,250 м³</span></div>
-  <div class="row"><span>💰 Инвестиция</span><span class="v">$125,000</span></div>
-  <div class="row"><span>📈 Пайда</span><span class="v">$91,250/жыл</span></div>
-  <div class="row"><span>⏱️ Өтелу</span><span class="v">1.4 жыл</span></div>
-  <div class="row"><span>🌱 CO₂ үнем</span><span class="v">36.5 т/жыл</span></div>
-  <div class="card" style="margin-top:8px"><div class="t">🌍 Scalability</div>Платформа кез келген тұйық су айдынына көшіріледі: <b>Арал, Балқаш, Өзбекстан/Түрікменстан секторлары</b>. API-лер глобал, буйлар модульді.</div>
-
-  <h2>🧠 AI Талдауы (NASA + ML)</h2>
-  <div id="ai" class="ai stable">⏳ Шынайы деректер жиналуда...</div>
-
-  <h2>📡 Каспий статистикасы (Қазақстан секторы)</h2>
-  <div id="stats"><div class="row"><span>⏳</span></div></div>
-
-  <h2>⚠️ TOP-5 булану зонасы</h2>
-  <div id="t5"><div class="row"><span>⏳</span></div></div>
-
-  <h2>🏙️ Қалалар (тірі ауа райы)</h2>
-  <div id="ct"><div class="row"><span>⏳</span></div></div>
-</div>
-
 <button id="chatBtn">🤖</button>
 <div id="chat">
-  <div class="hd">🤖 Caspian AI — нақты деректермен жауап береді</div>
+  <div class="hd">🤖 Caspian AI — интернеттен дерек жинап, толық шешім береді</div>
   <div id="msgs"></div>
-  <div class="in"><input id="q" placeholder="Сұрақ қойыңыз... (мыс: булану қанша?)"/><button id="send">➤</button></div>
+  <div class="in"><input id="q" placeholder="Сұрақ қойыңыз... (мыс: шешімдерің қандай?)"/><button id="send">➤</button></div>
 </div>
 
 <footer>💧 CASPIAN WATER RECOVERY · NASA POWER · OWM · CMEMS · I Халықаралық Caspian Hackathon 2026</footer>
@@ -154,9 +96,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFudXJrYXlldiIsImEiOiJjbXNjdGx3YWMwd3o1MnpzN
 const $ = id => document.getElementById(id);
 const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
 const clean = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.trim(), v]));
-const S = {}; let aiRes = null;
+const S = {};
 
-// ── Карталар (қырқылған, логотипсіз) ──
+// ── Карталар (қырқылған, логотипсіз; қар — нақты қар қабаты) ──
 const M = {
   evap:{own:1,t:'💨 Булану (мм/күн)',ticks:['3','7','11','15+']},
   temp:{u:'v',l:'temperature-2m',t:'🌡️ Жылулық (°C)',ticks:['-10','0','15','30','45']},
@@ -167,8 +109,7 @@ const M = {
   hum:{u:'w',o:'humidity',t:'💧 лғалдылық (%)',ticks:['0','25','50','75','100']},
   press:{u:'v',l:'pressure',t:'📊 Қысым (hPa)',ticks:['980','1000','1020','1040']},
   sea:{u:'w',o:'sst',t:'🌊 Теңіз температурасы (°C)',ticks:['0','10','20','28','32+']},
-  snow:{u:'v',l:'snow-depth',t:'❄️ Қар жамылғысы',ticks:['0','10','50','100+']},
-  air:{u:'v',l:'air-quality',t:'🌫️ Ауа сапасы (AQI)',ticks:['жақсы','орта','нашар','қауіпті']}
+  snow:{u:'v',l:'snow-new-ac',t:'❄️ Қар жамылғысы',ticks:['0','5','20','50+']}
 };
 function openMode(k){
   const c=M[k];
@@ -181,9 +122,7 @@ function openMode(k){
     :`https://embed.windy.com/embed2.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=kt&zoom=5&overlay=${c.o}&product=ecmwf&level=surface&lat=44.5&lon=51.5`;
 }
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>openMode(b.dataset.m));
-$('btnD').onclick=()=>{$('side').classList.add('open');$('chat').classList.remove('open');};
-$('btnX').onclick=()=>$('side').classList.remove('open');
-$('btnAI2').onclick=()=>{$('chat').classList.toggle('open');$('side').classList.remove('open');};
+$('btnAI2').onclick=()=>$('chat').classList.toggle('open');
 $('chatBtn').onclick=()=>$('chat').classList.toggle('open');
 
 // ── Біздің булану картасы ──
@@ -203,7 +142,7 @@ map.on('load', async () => {
     'heatmap-color':['interpolate',['linear'],['heatmap-density'],0,'rgba(0,0,0,0)',.15,'rgba(79,195,247,.4)',.4,'#ffd166',.65,'#ff8c42',1,'#ff3b3b']}});
 });
 
-// ── Деректерді жинау ──
+// ── Нақты деректерді жинау (AI контексті үшін) ──
 (async()=>{
   try{
     const r=await fetch('caspian_sea_grid.json');
@@ -216,89 +155,75 @@ map.on('load', async () => {
       S.wind=+avg(kz.map(p=>p.wind)).toFixed(2);
       S.hum=+avg(kz.map(p=>p.humidity)).toFixed(1);
       S.top5=[...kz].sort((a,b)=>b.evaporation-a.evaporation).slice(0,5);
-      $('stats').innerHTML=`
-        <div class="row"><span>🔵 Нүктелер</span><span class="v">${kz.length}</span></div>
-        <div class="row"><span>🌊 Су темп. (SST)</span><span class="v">${S.sst}°C</span></div>
-        <div class="row"><span>🌡️ Ауа темп.</span><span class="v">${S.temp}°C</span></div>
-        <div class="row"><span>💧 Булану</span><span class="v">${S.avgEvap} мм/күн</span></div>
-        <div class="row"><span>💨 Жел</span><span class="v">${S.wind} м/с</span></div>
-        <div class="row"><span>🌫️ Ылғал</span><span class="v">${S.hum}%</span></div>`;
-      $('t5').innerHTML=S.top5.map((p,i)=>`<div class="item" data-lon="${p.lon}" data-lat="${p.lat}"><span>#${i+1} 📍 ${p.lat}, ${p.lon}</span><b>${p.evaporation.toFixed(1)}</b></div>`).join('');
-      document.querySelectorAll('#t5 .item').forEach(el=>{el.onclick=()=>{$('side').classList.remove('open');openMode('evap');map.flyTo({center:[+el.dataset.lon,+el.dataset.lat],zoom:8.4,duration:1600});};});
     }
   }catch(e){}
   try{
     const d=await(await fetch('/api/weather')).json();
-    if(d.ok){S.cities=d.data;$('ct').innerHTML=d.data.map(c=>`<div class="item"><span>🏙️ ${c.city}</span><b>${c.temp}°C · ${c.humidity}%</b></div>`).join('');}
+    if(d.ok)S.cities=d.data;
   }catch(e){}
-  analyze();
-})();
-
-// ═══════════════════════════════════════════════════════════
-// 🧠 НАҒЫЗ AI: NASA POWER (30 күн) + ML регрессия + Penman–Monteith
-// ═══════════════════════════════════════════════════════════
-async function analyze(){
-  const el=$('ai');el.className='ai warning';el.innerHTML='🧠 NASA POWER деректері жиналуда (30 күн)...';
   try{
     const e=new Date(),s=new Date();s.setDate(e.getDate()-30);
     const f=d=>d.toISOString().slice(0,10).replace(/-/g,'');
-    const d=await(await fetch(`https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,RH2M,WS2M,ALLSKY_SFC_SW_DWN,EVPTRNS&community=AG&longitude=51.9&latitude=44.9&start=${f(s)}&end=${f(e)}&format=JSON`)).json();
+    const d=await(await fetch(`https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,RH2M,WS2M,EVPTRNS&community=AG&longitude=51.9&latitude=44.9&start=${f(s)}&end=${f(e)}&format=JSON`)).json();
     const p=d.properties.parameter;
-    const data=Object.keys(p.T2M).map(x=>({temp:+p.T2M[x],hum:+p.RH2M[x],wind:+p.WS2M[x],solar:+p.ALLSKY_SFC_SW_DWN[x],evap:+p.EVPTRNS[x]})).filter(v=>!isNaN(v.temp)&&v.temp>-900);
-    const ml=a=>{const n=a.length,X=Array.from({length:n},(_,i)=>i),sX=X.reduce((x,y)=>x+y,0),sY=a.reduce((x,y)=>x+y,0),sXY=X.reduce((x,v,i)=>x+v*a[i],0),sXX=X.reduce((x,v)=>x+v*v,0);const sl=(n*sXY-sX*sY)/(n*sXX-sX*sX),ic=(sY-sl*sX)/n,m=sY/n,t=a.reduce((x,y)=>x+Math.pow(y-m,2),0),r=a.reduce((x,y,i)=>x+Math.pow(y-(sl*X[i]+ic),2),0);return{sl,ic,r2:Math.max(0,1-r/t)};};
-    const tM=ml(data.map(v=>v.temp)),eM=ml(data.map(v=>v.evap));
-    const rec=data.slice(-7);
-    const pm=(T,RH,ws,Rs)=>{const es=0.6108*Math.exp(17.27*T/(T+237.3)),ea=es*RH/100,dl=4098*es/Math.pow(T+237.3,2),g=0.066;return Math.max(0,(0.408*dl*Rs*0.0864+g*(900/(T+273))*ws*(es-ea))/(dl+g*(1+0.34*ws)));};
-    const pred=[];for(let i=1;i<=7;i++){const T=tM.ic+tM.sl*(data.length+i),RH=Math.max(0,Math.min(100,ml(data.map(v=>v.hum)).ic+ml(data.map(v=>v.hum)).sl*(data.length+i)));pred.push({date:new Date(Date.now()+i*864e5).toLocaleDateString('kk-KZ'),T:+T.toFixed(1),evap:+pm(T,RH,Math.max(.5,rec[rec.length-1].wind),rec[rec.length-1].solar).toFixed(2)});}
-    const av=+rec.reduce((x,v)=>x+v.evap,0)/rec.length;
-    const mx=Math.max(...pred.map(v=>v.evap));
-    let risk,col,recm;
-    if(av>8||mx>10){risk='КРИТИКАЛЫҚ';col='#ff3b3b';recm='Smart Ion Buoys + радиациялық салқындату қажет';}
-    else if(av>5||mx>7){risk='ОРТАША ҚАУІП';col='#ffd166';recm='Пассивті торлар + ауа ағыны жүйесін қосу';}
-    else{risk='ТҰРАҚТЫ';col='#5fff9a';recm='Жоспарлы мониторинг жеткілікті';}
-    aiRes={av,trendT:tM.sl,trendE:eM.sl,r2:+(tM.r2*100).toFixed(0),pred,risk};
-    el.className=risk==='КРИТИКАЛЫҚ'?'ai critical':risk==='ОРТАША ҚАУІП'?'ai warning':'ai stable';
-    el.innerHTML=`🧠 <b>AI ТАЛДАУЫ</b> · ${new Date().toLocaleString('kk-KZ')}<br>📡 NASA POWER · ${data.length} күндік шынайы деректер<br><br>📊 Булану: <b>${av.toFixed(2)} мм/күн</b><br>📈 Темп тренді: ${tM.sl>0?'↗️':'↘️'} ${tM.sl.toFixed(3)}°C/күн (R²=${(tM.r2*100).toFixed(0)}%)<br>🔮 7 күн болжам:<br>${pred.map(v=>`• ${v.date}: ${v.T}°C · <b>${v.evap} мм</b>`).join('<br>')}<br><br>🎯 <b style="color:${col}">${risk}</b> — ${recm}`;
-  }catch(e){el.className='ai critical';el.innerHTML='❌ NASA деректері қолжетімсіз, кейінірек қайталаңыз.';}
-}
+    const arr=Object.keys(p.T2M).map(x=>+p.EVPTRNS[x]).filter(v=>!isNaN(v)&&v>-900);
+    const n=arr.length,X=Array.from({length:n},(_,i)=>i),sX=X.reduce((a,b)=>a+b,0),sY=arr.reduce((a,b)=>a+b,0),
+      sXY=X.reduce((a,v,i)=>a+v*arr[i],0),sXX=X.reduce((a,v)=>a+v*v,0);
+    S.trendE=+(((n*sXY-sX*sY)/(n*sXX-sX*sX))||0).toFixed(3);
+    S.nasaEvap=+(arr.slice(-7).reduce((a,b)=>a+b,0)/7).toFixed(2);
+  }catch(e){}
+})();
 
 // ═══════════════════════════════════════════════════════════
-// 🤖 AI ЧАТ (шынайы деректермен жауап)
+// 🤖 GEMINI AI — интернеттен дерек жинап, ТОЛЫҚ ШЕШІМ береді
 // ═══════════════════════════════════════════════════════════
+const GEMINI_KEY = 'AQ.Ab8RN6IHmY02hpob0Dt67ckAgmforTN6cAuW5KBVDI8GWCo9gA';
+const PERSONA = `Сен — Caspian Water Recovery экологиялық платформасының AI көмекшісісің. Қазақ тілінде еркін, жылы әрі кәсіби сөйлейсің, кейде эмодзи қолданасың. Жауаптарың нақты сандарға негізделеді. Егер пайдаланушы шешім/ұсыныс сұраса — ТОЛЫҚ ШЕШІМДІ айт: 1) Деректерді бақылау (NASA POWER, OpenWeather, CMEMS); 2) Ақылды таңдау (Магнус–Тетенс теңдеулері); 3) Локальды микро-конденсация: түнде радиациялық салқындату, ылғалды желде пассивті торлар, теңіз бетінде Smart Ion Buoys (күн+толқын қуаты, 0–50 м ионизация, бу молекулаларын жаңбыр/тұман қылып қайтару). Экономика: 500 буй, $125,000, 91,250 м³/жыл, өтелу 1.4 жыл. Қажет болса интернеттен (google search) нақты уақыттағы деректерді қолдан.`;
 function ctx(){
-  return `Жоба: Caspian Water Recovery (Каспий теңізі, Қазақстан секторы). Шешім: Smart Ion Buoys, радиациялық салқындату, пассивті торлар. Қазіргі деректер: булану ${S.avgEvap} мм/күн, су t° ${S.sst}°C, ауа t° ${S.temp}°C, жел ${S.wind} м/с, ылғал ${S.hum}%. Ең қауіпті зона: ${S.top5&&S.top5[0]?S.top5[0].lat+','+S.top5[0].lon+' ('+S.top5[0].evaporation+' мм/күн)':'—'}. Экономика: 500 буй, $125,000 инвестиция, 91,250 м³/жыл, өтелу 1.4 жыл. AI болжамы: ${aiRes?aiRes.risk+', булану '+aiRes.av+' мм/күн':'әзірге жоқ'}.`;
+  return ` Платформаның қазіргі нақты деректері (Каспий, Қазақстан секторы): булану ${S.avgEvap||'—'} мм/күн, су t° ${S.sst||'—'}°C, ауа t° ${S.temp||'—'}°C, жел ${S.wind||'—'} м/с, ылғал ${S.hum||'—'}%. NASA (30 күн): булану ${S.nasaEvap||'—'} мм/күн, тренд ${S.trendE||0} мм/күн. Ең қауіпті зоналар: ${S.top5?S.top5.map(p=>p.lat+','+p.lon+' ('+p.evaporation.toFixed(1)+')').join('; '):'—'}. Қалалар: ${S.cities?S.cities.map(c=>c.city+' '+c.temp+'°C/'+c.humidity+'%').join(', '):'—'}.`;
+}
+function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+async function gemini(prompt, withSearch, model){
+  const body={contents:[{role:'user',parts:[{text:prompt}]}],systemInstruction:{parts:[{text:PERSONA+ctx()}]}};
+  if(withSearch)body.tools=[{google_search:{}}];
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw 0;
+  const d=await r.json();
+  const t=(d.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim();
+  if(!t)throw 0;
+  return t;
 }
 function localAnswer(q){
   q=q.toLowerCase();
-  if(q.includes('булан'))return `Қазір Каспийдің Қазақстан секторында орташа булану — ${S.avgEvap} мм/күн. Ең қауіпті зона: ${S.top5[0].lat}, ${S.top5[0].lon} (${S.top5[0].evaporation} мм/күн). ${S.avgEvap>8?'Деңгей критикалық — Smart Ion Buoys қажет!':S.avgEvap>5?'Деңгей орташа — мониторинг күшейтілуі тиіс.':'Деңгей тұрақты.'}`;
-  if(q.includes('темп')||q.includes('жылу'))return `Ауа температурасы ${S.temp}°C, теңіз беті (SST) ${S.sst}°C. ${aiRes?`ML тренді: ${aiRes.trendT>0?'өсу':'төмендеу'} бағытында (${aiRes.trendT.toFixed(3)}°C/күн).`:''}`;
-  if(q.includes('ылғал'))return `Орташа ылғалдылық — ${S.hum}%. Қалалар бойынша: ${S.cities?S.cities.map(c=>c.city+' '+c.humidity+'%').join(', '):'—'}.`;
-  if(q.includes('жел'))return `Орташа жел жылдамдығы — ${S.wind} м/с. Ылғалды жел соққанда пассивті торлар тиімді.`;
-  if(q.includes('болжам')||q.includes('прогноз'))return aiRes?`7 күндік болжам: ${aiRes.pred.map(v=>v.date+': '+v.evap+' мм').join('; ')}. Қауіп деңгейі: ${aiRes.risk}.`:'Болжам әзірленуде...';
-  if(q.includes('қауіп')||q.includes('қауп'))return aiRes?`Қауіп деңгейі: ${aiRes.risk}. Булану ${aiRes.av} мм/күн.`:'Талдау жүргізілуде...';
-  if(q.includes('буй')||q.includes('эконом')||q.includes('ақша')||q.includes('пайда')||q.includes('өтел'))return `Smart Ion Buoys: 500 буй, инвестиция $125,000. Қайтарылған су 250 м³/күн = 91,250 м³/жыл → пайда $91,250/жыл. Өтелу мерзімі 1.4 жыл. CO₂ үнем 36.5 т/жыл.`;
-  if(q.includes('технолог'))return `Ұсыныс: ең қауіпті зонада (${S.top5[0].lat}, ${S.top5[0].lon}) — Smart Ion Buoys; ылғалды жағалауда — пассивті торлар; түнде — радиациялық салқындату.`;
-  if(q.includes('қала'))return `Қалалар: ${S.cities?S.cities.map(c=>c.city+' '+c.temp+'°C/'+c.humidity+'%').join(', '):'—'}.`;
-  if(q.includes('сәлем')||q.includes('салем'))return 'Сәлеметсіз бе! Мен Caspian Water Recovery AI-мын. Булану, температура, болжам, экономика туралы сұраңыз!';
-  return `Біздің платформа Каспий теңізінің булануын нақты уақытта бақылайды (булану қазір ${S.avgEvap} мм/күн) және Smart Ion Buoys арқылы суды қайтарады. Нақтырақ сұраңыз: булану / температура / болжам / экономика / қалалар.`;
+  if(q.includes('шешім')||q.includes('идея'))return 'Біздің шешім — бүкіл теңізді емес, нақты координаттарды бағыттау: 1) NASA POWER/OWM/CMEMS деректерін нақты уақытта талдау; 2) Магнус–Тетенс арқылы конденсация тиімді нүктені табу; 3) Түнде радиациялық салқындату, ылғалды желде пассивті торлар, теңіз бетінде Smart Ion Buoys. Экономика: 500 буй → 91,250 м³/жыл, өтелу 1.4 жыл. 💧';
+  if(q.includes('булан'))return `Қазір орташа булану — ${S.avgEvap} мм/күн. Ең қауіпті зона: ${S.top5[0].lat}, ${S.top5[0].lon} (${S.top5[0].evaporation} мм/күн).`;
+  if(q.includes('темп')||q.includes('жылу'))return `Ауа ${S.temp}°C, су ${S.sst}°C.`;
+  if(q.includes('ылғал'))return `Орташа ылғал — ${S.hum}%.`;
+  if(q.includes('жел'))return `Орташа жел — ${S.wind} м/с.`;
+  if(q.includes('буй')||q.includes('эконом')||q.includes('пайда'))return 'Smart Ion Buoys: 500 буй, $125,000 инвестиция, 250 м³/күн қайтарылған су, өтелу 1.4 жыл.';
+  return `Мен Caspian AI-мын! Булану қазір ${S.avgEvap} мм/күн. Сұраңыз: шешім / булану / температура / буйлар / болжам.`;
 }
 function pushMsg(t,cls){const m=document.createElement('div');m.className='msg '+cls;m.innerHTML=t;$('msgs').appendChild(m);$('msgs').scrollTop=$('msgs').scrollHeight;}
 async function ask(){
   const q=$('q').value.trim();if(!q)return;$('q').value='';
-  pushMsg(q,'u');pushMsg('🤖 Ойланып жатыр...','a');
-  const last=$('msgs').lastChild;
-  try{
-    const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),9000);
-    const r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(`Сен Caspian Water Recovery экологиялық платформасының AI көмекшісісің. Жауапты қазақ тілінде, 2-4 сөйлеммен, нақты сандарды қолданып бер. КОНТЕКСТ: ${ctx()} СҰРАҚ: ${q}`),{signal:ctrl.signal});
-    clearTimeout(to);
-    const t=(await r.text()).trim();
-    if(!t||t.length<2)throw 0;
-    last.innerHTML='🤖 '+t;
-  }catch(e){last.innerHTML='🤖 '+localAnswer(q);}
+  pushMsg(q,'u');
+  const hold=document.createElement('div');hold.className='msg a';hold.textContent='🤖 Ойланып жатырмын...';$('msgs').appendChild(hold);$('msgs').scrollTop=$('msgs').scrollHeight;
+  const prompt=`Пайдаланушы сұрағы: ${q}. Жауапты қазақша бер. Егер нақты уақыттағы ақпарат керек болса (ауа райы, Каспий деңгейі, жаңалықтар) — интернеттен іздеп, толық талдау/шешім қос.`;
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),14000);
+  try{hold.innerHTML='🤖 '+md(await gemini(prompt,true,'gemini-2.0-flash'));}
+  catch(e){
+    try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-2.0-flash'));}
+    catch(e2){
+      try{hold.innerHTML='🤖 '+md(await gemini(prompt,false,'gemini-1.5-flash'));}
+      catch(e3){hold.innerHTML='🤖 '+localAnswer(q);}
+    }
+  }
+  clearTimeout(to);
+  $('msgs').scrollTop=$('msgs').scrollHeight;
 }
 $('send').onclick=ask;
 $('q').onkeydown=e=>{if(e.key==='Enter')ask();};
-pushMsg('Сәлем! Мен нақты деректермен жауап беремін. Мысалы: «Булану қанша?», «Буйлардың пайдасы?», «7 күн болжамы?»','a');
+pushMsg('Сәлеметсіз бе! 👋 Мен Caspian AI-мын — нақты деректерді жинап, толық шешім айтамын. Мысалы: «Шешімдерің қандай?», «Булану қанша?», «Каспий деңгейі неге төмендеп жатыр?»','a');
 
 openMode('evap');
 </script>
